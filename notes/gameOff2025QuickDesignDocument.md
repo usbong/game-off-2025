@@ -20,6 +20,7 @@ Learns new skill; Summon wolf;
 
 ## Stage 2: Forest; Mountain;
 To the castle; to meet the emperor;
+
 Boss Fight; Giant Skeleton;
 
 Enemy monsters: Ghouls/Wraiths; Skeleton;
@@ -28,6 +29,7 @@ Learns new skill: Summon lion;
 
 ## Stage 3: Castle
 Meeting with the emperor;
+
 Boss Fight; Giant Devil;
 
 Enemy monsters: Ghouls/Wraiths;
