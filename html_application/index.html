@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251102; from 20241130
+' @date updated: 20251103; from 20251102
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -489,6 +489,18 @@
 
 			z-index: 2; /*3;*/
 		}
+		
+		.FontImage32x32Tile {
+			position: absolute;
+			clip: rect(0px,32px,32px,0px);
+
+			visibility: hidden;
+
+			margin: 0px;
+			padding: 0px;
+
+			z-index: 2;
+		}		
 		
 		.ImageRiverTile {
 			position: absolute;
@@ -1480,6 +1492,68 @@ var bIsHeroFacingUp=false;
 	var iInnerHorizontalOffset=0;//(iStageMaxWidth-iStageMaxHeight)/4;
 
 	var iInnerVerticalOffset=iImageFrameHeight/4;//2;
+
+	//added by Mike, 20251103
+	//reminder: font512x512Rescaled.png; 32x32px; width x height;  
+	function drawChar(iInputX, iInputY, cInput, fontImage) { 
+/*
+		let cFontChar=cInput;
+		let iFontCharInAscii=cFontChar.charCodeAt(0);
+*/		
+		let iFontCharInAscii=cInput; //already in ASCII
+		
+		let iNumber=iFontCharInAscii-32;
+		let iRow=Math.floor(iNumber/12); //cast to int
+		let iColumn=(iNumber-iRow*12);
+
+/*				
+		var fontImage = document.getElementById("fontImageId");
+*/		
+		fontImage.style.visibility="visible";
+
+		const iFrameWidth=32;
+		const iFrameHeight=32;
+/*	
+		alert("iRow: "+iRow);
+		alert("iColumn: "+iColumn);
+*/
+		const iFrameXOffset=0;
+
+		fontImage.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidth*iColumn + "px -" + iImageFrameHeight*iRow + "px";
+		
+		fontImage.style.left=iInputX+"px"; 
+		fontImage.style.top=iInputY+"px"; 
+	}
+  
+	function drawString(iInputX, iInputY, sInput) {
+	  const iFrameWidth=32;
+	  let iStringInputLength=sInput.length;
+/*
+	  var fontImage0 = document.getElementById("fontImageId0");
+	  var fontImage1 = document.getElementById("fontImageId1");
+	  var fontImage2 = document.getElementById("fontImageId2");
+	  var fontImage3 = document.getElementById("fontImageId3");
+	  var fontImage4 = document.getElementById("fontImageId4");
+	  var fontImage5 = document.getElementById("fontImageId5");
+*/
+	  var fontImageArray = [];
+	  const iFontImageCountMax=6;
+	  
+	  for (iCount=0; iCount<iFontImageCountMax; iCount++) {
+		fontImageArray[iCount]=document.getElementById("fontImageId"+iCount);
+	  }
+
+	  for (var i=0; i<iStringInputLength; i++) {
+	  
+		//alert("A".charCodeAt(0));
+	  
+		let cFontChar=sInput.charCodeAt(i);	
+
+		//alert(cFontChar);
+
+		drawChar(iInputX+iFrameWidth*i, iInputY, cFontChar, fontImageArray[i]);
+	  }
+	}
 
 	function resetProjectile() {
 		var mainImageTile = document.getElementById("mainImageTileImageId");
@@ -5172,6 +5246,10 @@ alert("iInputY: "+iInputY);
     //myCanvasTwoContext.fillRect(0, 0, iStageMaxWidth, 120);//iStageMaxHeight/2);
     /*myCanvasTwoContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);//iStageMaxHeight/2);
 	*/
+
+	//added by Mike, 20251103
+	//drawChar(iImageFrameWidthDefault*5,iImageFrameHeightDefault*0,"5");
+	drawString(iImageFrameWidthDefault*5,iImageFrameHeightDefault*0,"ABC123");
 
 	//edited by Mike, 20241114	
 	//iCurrSnowFlakeCountMax
@@ -9648,6 +9726,13 @@ opting to put assets folder in "html_application" folder instead
 
 	<img id="faviconImageId" class="ImageTileFrame1" src="assets/images/favicon.png">
 	<img id="deathCountImageId" class="ImageTileFrame1" src="assets/images/favicon.png">
+	
+	<img id="fontImageId0" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
+	<img id="fontImageId1" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
+	<img id="fontImageId2" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
+	<img id="fontImageId3" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
+	<img id="fontImageId4" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
+	<img id="fontImageId5" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
 
 	<img id="doorImageRightId" class="Image64x64Tile" src="assets/images/tile.png">
 	<img id="doorImageLeftId" class="Image64x64Tile" src="assets/images/tile.png">
