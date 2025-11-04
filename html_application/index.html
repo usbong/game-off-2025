@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251104; from 20251103
+' @date updated: 20251105; from 20251104
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -266,6 +266,13 @@
 			z-index: 4;
 		}
 		
+		.ImageTransparentLayer {
+			position: absolute;
+			visibility: visible;
+			
+			z-index: 6;
+		}
+
 
 		.ImageMouseInput {
 			position: absolute;
@@ -1621,8 +1628,10 @@ var bIsHeroFacingUp=false;
 		//TODO: -add: idle animation	
 		iHeroAnimationCount=0; 
 		
+/*		
 		mainImageTileTankBody.style.visibility="hidden";
 		mainImageTileHeroBody.style.visibility="hidden";
+*/
 
 /*
 		if (bIsHeroInTank) {
@@ -2975,21 +2984,29 @@ alert("iInputY: "+iInputY);
 	function executeHeroWalkingAnimation() {
 		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
 		
-		//edited by Mike, 20251104
-		//mainImageTileHeroBody.style.visibility="visible";
+		//edited by Mike, 20251105; from 20251104
+		mainImageTileHeroBody.style.visibility="visible";
 
-		if (bIsHeroAttacked) {
+		//error in output; always visible
+		//if (bIsHeroAttacked) {
+/*		
+		if (iHeroInvincibileCount<iHeroInvincibileCountMax) {
+			alert(iHeroInvincibileCount);
+			alert(mainImageTileHeroBody.style.visibility);
+		
 			if (mainImageTileHeroBody.style.visibility=="hidden") {
 				mainImageTileHeroBody.style.visibility="visible";
 			}
 			else {
+				//alert("DITO!!!");
+
 				mainImageTileHeroBody.style.visibility="hidden";
 			}
 		}
 		else {
 			mainImageTileHeroBody.style.visibility="visible";
 		}
-
+*/
 
 		if (iHeroAnimationDelayCount==iHeroAnimationDelayCountMax) {
 			iHeroAnimationCount=(iHeroAnimationCount+1)%4; //last hidden
@@ -4514,7 +4531,7 @@ alert("iInputY: "+iInputY);
 				
 		iHeroInvincibileCount=0;
 				
-		resetProjectile();
+		//resetProjectile();
 
 		//added by Mike, 20251104
 /*	
@@ -4522,9 +4539,30 @@ alert("iInputY: "+iInputY);
 		//TODO: -reverify: this
 		mainImageTilePosY=iMonsterImageTilePosY+iImageFrameHeightLarge;
 		mainImageTileHeroBody.style.top = mainImageTilePosY+"px";
+*/
+/*
+		mainImageTilePosX=0; //mainImageTileProjectileStepX*5;
+		mainImageTilePosY=0;
+		
+		////mainImageTile.style.left=mainImageTilePosX+"px";		
+		////resetProjectile();			
+		//alert(mainImageTilePosX);
+
+
+		//var mainImageTile = document.getElementById("mainImageTileImageId");
+		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
+
+		//alert(">>>"+mainImageTile.style.left);
+
+		mainImageTileHeroBody.style.left=mainImageTilePosX+"px";
+		
+		//alert(">>>>>"+mainImageTile.style.left);
 */		
-	}
-	
+		
+		resetProjectile();
+
+	}	
+
 	function monsterHitByHero(mainImageTilePosX, mainImageTilePosY, iMonsterImageTilePosX, iMonsterImageTilePosY) {	
 		
 		//+iImageFrameWidthDefault/2
@@ -4676,7 +4714,29 @@ alert("iInputY: "+iInputY);
 			
 			if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {
 
-				//alert("HALLO"); 	
+				//added by Mike, 20251105
+				//TODO: -set this to be reusable
+				//---------------------------------------
+				const computedStyle = window.getComputedStyle(wraithMonsterImageTile);
+				const zIndexValue = computedStyle.zIndex;
+				
+				//alert(zIndexValue);
+
+				//alert(mainImageTileHeroBody.style.zIndex);
+/*
+				mainImageTileHeroBody.style.zIndex=wraithMonsterImageTile.style.zIndex;
+				wraithMonsterImageTile.style.zIndex=currHeroZIndex;
+*/
+				//mainImageTileHeroBody.style.zIndex="99";
+			
+				if (mainImageTilePosY>wraithMonsterImageTilePosY) {//+iImageFrameHeightLarge/4) {
+					mainImageTileHeroBody.style.zIndex=zIndexValue+1;
+				}
+				else {
+					mainImageTileHeroBody.style.zIndex=zIndexValue; //put on top; same index
+				}
+				//---------------------------------------
+				
 				
 				//verify if hero attacked
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
@@ -10131,6 +10191,9 @@ opting to put assets folder in "html_application" folder instead
 	<img id="bossBattleBgImagePart2Id" class="ImageBossBattleBgPart2" src="assets/images/bossBattleBgPart2.png">	
 
 	<img id="bossBattleBgImagePart3Id" class="ImageBossBattleBgPart3" src="assets/images/bossBattleBgPart3.png">	
+
+	<img id="transparentLayerId" class="ImageTransparentLayer" src="assets/images/transparentLayer.png">	
+
 	
 	<div id="textStatusDivId" class="DivTextStatus">CONGRATULATIONS!</div>
 	<div id="textStatusBackgroundDivId" class="DivTextStatusBackground"></div>
