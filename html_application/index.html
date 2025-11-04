@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251103; from 20251102
+' @date updated: 20251104; from 20251103
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1077,6 +1077,12 @@ var iBatMonsterAnimationCountMax=5;
 var iBatMonsterAnimationDelayCount=10; //bat; //0
 var iBatMonsterAnimationDelayCountMax=6;
 
+//added by Mike, 20251104
+var iWraithMonsterAnimationCount=-1;//0; start at -1
+const iWraithMonsterAnimationCountMax=5;
+var iWraithMonsterAnimationDelayCount=10; //bat; //0
+const iWraithMonsterAnimationDelayCountMax=5;//6;
+
 var iBossMonsterAnimationCount=-1;//0; start at -1
 var iBossMonsterAnimationCountMax=5;
 var iBossMonsterAnimationDelayCount=10; //0
@@ -1195,8 +1201,9 @@ var iHeroAttackEffectAnimationDelayCountMax=2;//2;//1;
 var iMonsterBossAttackDelayCount=0;
 var iMonsterBossAttackDelayCountMax=120;
 
-var iImageExplosionEffectAnimationWidth=32;//64;
-var iImageExplosionEffectAnimationHeight=32;//64;
+//edited by Mike, 20251104
+var iImageExplosionEffectAnimationWidth=64;//32;//64;
+var iImageExplosionEffectAnimationHeight=64;//32;//64;
 
 var iImageFireballExplosionEffectAnimationWidth=32;//64;
 var iImageFireballExplosionEffectAnimationHeight=32;//64;
@@ -1412,6 +1419,23 @@ var bIsHeroFacingUp=false;
 	var batMonsterTileStepDelay=0;	
 	var batMonsterTileStepDelayMax=5;	
 	var isBatMonsterTileActive=false;
+
+	//added by Mike, 20251104
+	var wraithMonsterImageTilePosX=0;
+	var wraithMonsterImageTilePosY=0;
+	var wraithMonsterTileStepX=2;
+	var wraithMonsterTileStepY=2;
+	var wraithMonsterTileStepDelay=0;	
+	var wraithMonsterTileStepDelayMax=10;//0;//1;	
+	var isWraithMonsterTileActive=false;
+
+	const WALKING_STATE=0;
+	const ATTACKING_STATE=1;
+	const HIT_STATE=2;
+	const DYING_STATE=3;
+	const DEATH_STATE=4;
+	var currWraithMonsterTileState=0;
+	
 
 	var miniBossMonsterImageTilePosX=0;
 	var miniBossMonsterImageTilePosY=0;
@@ -1639,7 +1663,9 @@ var bIsHeroFacingUp=false;
 /*
 			}
 */
-			mainImageTileHeroBody.style.visibility="visible";
+			//removed by Mike, 20251104
+			//mainImageTileHeroBody.style.visibility="visible";
+
 			mainImageTileHeroBody.style.objectPosition = "-" + 0 + "px -" + iFrameY + "px";
 /*
 		}
@@ -2109,6 +2135,12 @@ var bIsHeroFacingUp=false;
 		iBatMonsterAnimationCountMax=5;
 		iBatMonsterAnimationDelayCount=10; //bat; //0
 		iBatMonsterAnimationDelayCountMax=6;
+		
+		//added by Mike, 20251104
+		iWraithMonsterAnimationCount=-1;//0; start at -1
+		//iWraithMonsterAnimationCountMax=5;
+		iWraithMonsterAnimationDelayCount=10;
+		//iWraithMonsterAnimationDelayCountMax=6;		
 
 		iGrassCutEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
 		iGrassCutEffectAnimationCountMax=5;
@@ -2210,6 +2242,9 @@ var bIsHeroFacingUp=false;
 
 		var batMonsterImageTile = document.getElementById("batMonsterImageId");
 
+		//added by Mike, 20251104
+		var wraithMonsterImageTile = document.getElementById("wraithMonsterImageId");		
+
 		var bossMonsterImageTile = document.getElementById("bossMonsterImageId");
 
 		var explosionEffectImage = document.getElementById("explosionEffectImageId");
@@ -2280,7 +2315,10 @@ var bIsHeroFacingUp=false;
 
 		batMonsterImageTile.style.visibility="hidden";
 		bossMonsterImageTile.style.visibility="hidden";
-		
+
+		//added by Mike, 20251104
+		wraithMonsterImageTile.style.visibility="hidden";
+
 		explosionEffectImage.style.visibility="hidden";
 		grassCutEffectImage.style.visibility="hidden";
 		pearlImageTile.style.visibility="hidden";
@@ -2936,7 +2974,22 @@ alert("iInputY: "+iInputY);
 	//added by Mike, 20241103
 	function executeHeroWalkingAnimation() {
 		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
-		mainImageTileHeroBody.style.visibility="visible";
+		
+		//edited by Mike, 20251104
+		//mainImageTileHeroBody.style.visibility="visible";
+
+		if (bIsHeroAttacked) {
+			if (mainImageTileHeroBody.style.visibility=="hidden") {
+				mainImageTileHeroBody.style.visibility="visible";
+			}
+			else {
+				mainImageTileHeroBody.style.visibility="hidden";
+			}
+		}
+		else {
+			mainImageTileHeroBody.style.visibility="visible";
+		}
+
 
 		if (iHeroAnimationDelayCount==iHeroAnimationDelayCountMax) {
 			iHeroAnimationCount=(iHeroAnimationCount+1)%4; //last hidden
@@ -3091,8 +3144,121 @@ alert("iInputY: "+iInputY);
 				riverImageRight.style.objectPosition = "-" + iRiverImageFrameWidth + "px -" + iFrameY + "px";
 			}			
 			iRiverAnimationDelayCount++;				
-	}	
+	}
+	
+	//added by Mike, 20251104
+	function executeWraithMonsterWalkingAnimation() {
+		var wraithMonsterImageTile = document.getElementById("wraithMonsterImageId");	
+		wraithMonsterImageTile.style.visibility="visible";
+		
+		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
+		
+		if (iWraithMonsterAnimationDelayCount>=iWraithMonsterAnimationDelayCountMax) {
+			iWraithMonsterAnimationCount=(iWraithMonsterAnimationCount+1)%4; //last hidden
 
+			iWraithMonsterAnimationDelayCount=0;
+
+			//==============================
+			//AI; movement
+			if (wraithMonsterTileStepDelay>=wraithMonsterTileStepDelayMax) {
+				wraithMonsterTileStepDelay=0;
+				
+				if (currWraithMonsterTileState==WALKING_STATE) {
+					currWraithMonsterTileState=ATTACKING_STATE;
+				}
+				else {
+					currWraithMonsterTileState=WALKING_STATE;
+				}
+			}
+			else {
+				wraithMonsterTileStepDelay++;
+			}			
+			
+			if (currWraithMonsterTileState==WALKING_STATE) {
+				//if (wraithMonsterImageTilePosY+iImageFrameHeightLarge/2<mainImageTilePosY) {
+				//if (wraithMonsterImageTilePosY+iImageFrameHeightLarge<mainImageTilePosY) {
+				if (wraithMonsterImageTilePosY+iImageFrameHeightLarge*0.75<mainImageTilePosY) {
+					wraithMonsterImageTilePosY+=wraithMonsterTileStepY;
+				}
+				//else if (wraithMonsterImageTilePosY>mainImageTilePosY+iImageFrameHeightLarge/2) {
+				//else if (wraithMonsterImageTilePosY>mainImageTilePosY+iImageFrameHeightLarge) {
+				else if (wraithMonsterImageTilePosY>mainImageTilePosY+iImageFrameHeightLarge*0.75) {
+					wraithMonsterImageTilePosY-=wraithMonsterTileStepY;
+				}
+					
+				wraithMonsterImageTile.style.top=wraithMonsterImageTilePosY+"px";
+				
+				if (wraithMonsterImageTilePosX<mainImageTilePosX) {
+					wraithMonsterImageTilePosX+=wraithMonsterTileStepX;
+				}
+				else {
+					wraithMonsterImageTilePosX-=wraithMonsterTileStepX;
+				}
+
+				wraithMonsterImageTile.style.left=wraithMonsterImageTilePosX+"px";	
+			}
+			
+			//==============================
+
+		}
+		else {
+			iWraithMonsterAnimationDelayCount++;
+		}
+
+		var iFrameY=0;
+		var iFrameXOffset=0;
+		
+		//alert("wraithMonsterImageTile.style.left: "+wraithMonsterImageTile.style.left);		
+		//alert("mainImageTileHeroBody.style.left+iImageFrameHeightLarge: "+mainImageTileHeroBody.style.left+iImageFrameHeightLarge);
+		
+		
+		//if wraith is to the left of hero
+		//if (wraithMonsterImageTile.style.left+iImageFrameWidthLarge<mainImageTileHeroBody.style.left) {
+		//if hero is to the right of wraith
+		//if (wraithMonsterImageTile.style.left+iImageFrameWidthLarge<mainImageTileHeroBody.style.left) {		
+		if (wraithMonsterImageTilePosX+iImageFrameWidthLarge/4<mainImageTilePosX) {
+			iFrameY=iImageFrameHeightLarge*0; //face right
+			
+			//if wraith is facing up; below hero
+			if (wraithMonsterImageTilePosY>mainImageTilePosY+iImageFrameHeightLarge/4) {
+				iFrameY=iImageFrameHeightLarge*5; //face up
+			}
+			else if (wraithMonsterImageTilePosY+iImageFrameHeightLarge/4<mainImageTilePosY) {
+				iFrameY=iImageFrameHeightLarge*3; //face down
+			}
+		}
+		//if hero is to the left of wraith
+		else if (wraithMonsterImageTilePosX>mainImageTilePosX+iImageFrameWidthLarge/4) {
+			iFrameY=iImageFrameHeightLarge*1; //face left
+
+			//if wraith is facing up; below hero
+			if (wraithMonsterImageTilePosY>mainImageTilePosY+iImageFrameHeightLarge/4) {
+				iFrameY=iImageFrameHeightLarge*4; //face up
+			}
+			else if (wraithMonsterImageTilePosY+iImageFrameHeightLarge/4<mainImageTilePosY) {
+				iFrameY=iImageFrameHeightLarge*2; //face down
+			}
+		}
+		//if parallel
+		else {
+			//if wraith is facing up; below hero
+			if (wraithMonsterImageTilePosY>mainImageTilePosY+iImageFrameHeightLarge/4) {
+				iFrameY=iImageFrameHeightLarge*4; //face up
+			}
+			else if (wraithMonsterImageTilePosY+iImageFrameHeightLarge/4<mainImageTilePosY) {
+			//else {
+				iFrameY=iImageFrameHeightLarge*2; //face down
+			}
+			else {
+				iFrameY=iImageFrameHeightLarge*4; //default
+			}
+		}
+		
+		//alert(iWraithMonsterAnimationDelayCount);
+		
+		wraithMonsterImageTile.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iWraithMonsterAnimationCount + "px -" + iFrameY + "px";
+	}
+	
 	function executeBatMonsterWalkingAnimation() {
 		var batMonsterImageTile = document.getElementById("batMonsterImageId");
 		
@@ -4329,6 +4495,9 @@ alert("iInputY: "+iInputY);
 
 	//function heroHitByMonster(mainImageTilePosX, mainImageTilePosY, iMonsterImageTilePosX, iMonsterImageTilePosY) {			
 	function heroHitByMonster(mainImageTilePosX, mainImageTilePosY, iMonsterImageTilePosX, iMonsterImageTilePosY, iMonsterAttackDamage) {				
+		/*var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
+		*/
+		
 		if (iHeroInvincibileCount<iHeroInvincibileCountMax) {
 			return;
 		}
@@ -4345,7 +4514,15 @@ alert("iInputY: "+iInputY);
 				
 		iHeroInvincibileCount=0;
 				
-		resetProjectile();	
+		resetProjectile();
+
+		//added by Mike, 20251104
+/*	
+		//put hero out
+		//TODO: -reverify: this
+		mainImageTilePosY=iMonsterImageTilePosY+iImageFrameHeightLarge;
+		mainImageTileHeroBody.style.top = mainImageTilePosY+"px";
+*/		
 	}
 	
 	function monsterHitByHero(mainImageTilePosX, mainImageTilePosY, iMonsterImageTilePosX, iMonsterImageTilePosY) {	
@@ -4471,7 +4648,58 @@ alert("iInputY: "+iInputY);
 				inputArraySnakeMonsterWithIdCount[MONSTER_IS_IN_RIVER]=false;			
 			}
 		}
-	}		
+	}
+	
+	//added by Mike, 20251104
+	function verifyHeroCollideWithWraithMonsters() {
+		var wraithMonsterImageTile = document.getElementById("wraithMonsterImageId");
+
+		//var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
+		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");	
+
+		if (!isWraithMonsterTileActive) {
+			return;
+		}		
+		else {
+			if (bIsHeroAttacked) {
+				//bIsHeroAttacked=false;
+				return;
+			}
+			
+			//bIsHeroAttacked=false;		
+
+			//+iImageFrameWidthDefault/2; iImageFrameHeightDefault/2
+
+			//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2)) {
+			
+			//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge)) {
+			
+			if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {
+
+				//alert("HALLO"); 	
+				
+				//verify if hero attacked
+				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
+				
+					monsterHitByHero(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY);
+										
+					setExplosionEffectPosition(wraithMonsterImageTilePosX+iImageFrameWidthLarge/2,wraithMonsterImageTilePosY+iImageFrameHeightLarge/2);
+					
+					wraithMonsterImageTile.style.visibility="hidden";				
+					isWraithMonsterTileActive=false;
+					iCurrMonsterDeathCount++;
+				}
+				else {
+					heroHitByMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iMonsterAttackDamageDefault);
+
+					//added by Mike, 20251104
+					//note: if hero is intersects at lower half of enemy monster's body in y-axis, push hero out; and deal damage; otherwise, z-buffer problem;
+					//TODO: -add: monster body throw or similar attack;
+				}
+			}
+		}
+	}
+	
 	
 	function verifyHeroCollideWithBatMonsters() {
 		var batMonsterImageTile = document.getElementById("batMonsterImageId");
@@ -5934,6 +6162,11 @@ alert("iInputY: "+iInputY);
 		var batMonsterImageTile = document.getElementById("batMonsterImageId");
 		batMonsterImageTile.style.visibility="hidden";
 
+		//added by Mike, 20251104
+		var wraithMonsterImageTile = document.getElementById("wraithMonsterImageId");
+		wraithMonsterImageTile.style.visibility="hidden";
+		
+
 		var pearlImageTile = document.getElementById("pearlImageTileId");
 		pearlImageTile.style.visibility="hidden";
 /*
@@ -6027,9 +6260,38 @@ alert("iInputY: "+iInputY);
 				//bossBattleBgImageBeachPart2.style.visibility = "visible";
 				
 				bossBattleBgImagePart2.style.visibility = "visible";
-				bossBattleBgImagePart3.style.visibility = "hidden";		
+				bossBattleBgImagePart3.style.visibility = "hidden";	
+
+				//edited by Mike, 20251104
+				//hasInitMapLocation=true;
+
+				if (!hasInitMapLocation) {
+					isWraithMonsterTileActive=true;
+					wraithMonsterImageTile.style.visibility="visible";
+					
+					//TilePosX; width; square based on iStageMaxHeight
+					wraithMonsterImageTilePosX=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2;
+					wraithMonsterImageTilePosY=iInnerVerticalOffset+iStageMaxHeight/2-iImageFrameHeightDefault/2;
+					
+					hasInitMapLocation=true;					
+				}
 				
-				hasInitMapLocation=true;
+				if (isWraithMonsterTileActive) {
+					wraithMonsterImageTile.style.visibility="visible";
+
+					wraithMonsterImageTile.style.top = 0+wraithMonsterImageTilePosY+"px"; //iInnerVerticalOffset
+					wraithMonsterImageTile.style.left = 0+wraithMonsterImageTilePosX+"px"; //iInnerHorizontalOffset
+			
+					executeWraithMonsterWalkingAnimation();
+					verifyHeroCollideWithWraithMonsters();					
+
+
+/*
+					verifyHeroFireballCollideWithBatMonsters();
+*/					
+				}
+				
+				
 
 /*
 				executeRiverAnimation();
@@ -8664,8 +8926,10 @@ alert(Date.now()-iMouseClickStartTime);
 	if (bHasFiredTemp) {
 			//quick double mouse click; within 1/4 second
 			if (bIsHeroDash) {
+/*	//removed by Mike, 20251104
 				mainImageTileProjectileStepY=mainImageTileProjectileStepYMax;
 				mainImageTileProjectileStepX=mainImageTileProjectileStepXMax;
+*/
 
 	/*			//part of command to create fireball
 				mainImageTileProjectilePosY=mainImageTilePosY;
@@ -8698,13 +8962,16 @@ alert(Date.now()-iMouseClickStartTime);
 		mainImageTileProjectileStepX=mainImageTileProjectileStepXMax;
 	}
 */	
-	if (mainImageTileProjectileStepY>mainImageTileProjectileStepYMax) {
-		mainImageTileProjectileStepY=mainImageTileProjectileStepYMin;
+	//edited by Mike, 20251104
+	//if (mainImageTileProjectileStepY>mainImageTileProjectileStepYMax) {
+	if (mainImageTileProjectileStepY>mainImageTileProjectileStepYMin) {
+	mainImageTileProjectileStepY=mainImageTileProjectileStepYMin;
 	}
-	if (mainImageTileProjectileStepX>mainImageTileProjectileStepXMax) {
+	//if (mainImageTileProjectileStepX>mainImageTileProjectileStepXMax) {
+	if (mainImageTileProjectileStepX>mainImageTileProjectileStepXMin) {
 		mainImageTileProjectileStepX=mainImageTileProjectileStepXMin;
 	}
-				
+	
 
 /*	
 	if (bIsActionKeyPressed) {
@@ -9746,6 +10013,8 @@ opting to put assets folder in "html_application" folder instead
 		<img id="mainImageTileImageTankBodyId" class="ImageTankFrame1" src="assets/images/inputImageLarge.png?lastmod=20241110">
 		
 		<img id="mainImageTileImageHeroBodyId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251102T1242">		
+
+		<img id="wraithMonsterImageId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251104T1007">
 
 		<img id="mainImageTileImageId" class="ImageTileFrame1" src="assets/images/inputImage.png?lastmod=20241107">
 
