@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251105; from 20251104
+' @date updated: 20251106; from 20251105
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1011,7 +1011,7 @@ var iShakeOffsetWidth=iShakeOffsetWidthMax;
 var iShakeOffsetHeight=iShakeOffsetHeightMax;
 
 var iHeroInvincibileCount=0;
-var iHeroInvincibileCountMax=50;
+var iHeroInvincibileCountMax=100;//50;
 
 var iCurrHeroLifeMax=10;
 var iCurrHeroLife=iCurrHeroLifeMax;
@@ -1435,6 +1435,8 @@ var bIsHeroFacingUp=false;
 	var wraithMonsterTileStepDelay=0;	
 	var wraithMonsterTileStepDelayMax=10;//0;//1;	
 	var isWraithMonsterTileActive=false;
+	var iWraithMonsterHPMax=3;
+	var iWraithMonsterHP=iWraithMonsterHPMax;
 
 	const WALKING_STATE=0;
 	const ATTACKING_STATE=1;
@@ -2230,7 +2232,7 @@ var bIsHeroFacingUp=false;
 
 		var howToPlayGuideImage = document.getElementById("howToPlayGuideImageId");
 		var howToPlayGuideImageFrame2 = document.getElementById("howToPlayGuideImageFrame2Id");
-		var bossBattleBgImage = document.getElementById("bossBattleBgImageId");			
+		//var bossBattleBgImage = document.getElementById("bossBattleBgImageId");			
 		var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");			
 		var bossBattleBgImageBeachPart2 = document.getElementById("bossBattleBgImageBeachPart2Id");			
 		
@@ -2304,7 +2306,7 @@ var bIsHeroFacingUp=false;
 		
 		howToPlayGuideImage.style.visibility="hidden";
 		howToPlayGuideImageFrame2.style.visibility="hidden";		
-		bossBattleBgImage.style.visibility="hidden";
+		////bossBattleBgImage.style.visibility="hidden";
 		bossBattleBgImageBeach.style.visibility="hidden";
 		bossBattleBgImageBeachPart2.style.visibility="hidden";
 
@@ -4855,19 +4857,30 @@ alert("iInputY: "+iInputY);
 					monsterHitByHero(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY);
 										
 					setExplosionEffectPosition(wraithMonsterImageTilePosX+iImageFrameWidthLarge/2,wraithMonsterImageTilePosY+iImageFrameHeightLarge/2);
-/*					
-					wraithMonsterImageTile.style.visibility="hidden";				
-					isWraithMonsterTileActive=false;
-					iCurrMonsterDeathCount++;
-*/					
+										
+					if (iWraithMonsterHP<=0) {
+						wraithMonsterImageTile.style.visibility="hidden";				
+						isWraithMonsterTileActive=false;
+						iCurrMonsterDeathCount++;
+
+						setExplosionEffectPosition(wraithMonsterImageTilePosX+iImageFrameWidthLarge/2,wraithMonsterImageTilePosY+iImageFrameHeightLarge/2);
+
+					}
+					else {
+						//alert("iWraithMonsterHP!!!"+iWraithMonsterHP);
+
+						iWraithMonsterHP--;
+					}
 				}
 				else {
-					if (currWraithMonsterTileState==ATTACKING_STATE) {
-						heroHitByMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iMonsterAttackDamageDefault);
+					if (!bHasHeroHitMonster) {
+						if (currWraithMonsterTileState==ATTACKING_STATE) {
+							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iMonsterAttackDamageDefault);
 
-						//added by Mike, 20251104
-						//note: if hero is intersects at lower half of enemy monster's body in y-axis, push hero out; and deal damage; otherwise, z-buffer problem;
-						//TODO: -add: monster body throw or similar attack;
+							//added by Mike, 20251104
+							//note: if hero is intersects at lower half of enemy monster's body in y-axis, push hero out; and deal damage; otherwise, z-buffer problem;
+							//TODO: -add: monster body throw or similar attack;
+						}
 					}
 				}
 			}
@@ -5586,7 +5599,7 @@ alert("iInputY: "+iInputY);
 		
 		var mainImageTileFireballProjectileHold = document.getElementById("mainImageTileFireballProjectileHoldImageId");
 		
-		var bossBattleBgImage = document.getElementById("bossBattleBgImageId");
+		//var bossBattleBgImage = document.getElementById("bossBattleBgImageId");
 		var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");
 		var bossBattleBgImageBeachPart2 = document.getElementById("bossBattleBgImageBeachPart2Id");
 
@@ -5727,10 +5740,10 @@ alert("iInputY: "+iInputY);
 		}
 */	
 	}
-	
+/*	
 	bossBattleBgImage.style.left=0+iHorizontalOffset+"px";
 	bossBattleBgImage.style.top=0+iVerticalOffsetInnerScreen+"px";	
-
+*/
 	bossBattleBgImageBeach.style.left=0+iHorizontalOffset+"px";
 	bossBattleBgImageBeach.style.top=0+iVerticalOffsetInnerScreen+"px";	
 
@@ -5851,7 +5864,8 @@ alert("iInputY: "+iInputY);
 				//----------------------------------
 				myCanvasTwo.style.visibility="visible";
 
-				bossBattleBgImage.style.visibility = "visible"; //default
+				//bossBattleBgImage.style.visibility = "visible"; //default
+
 				bossBattleBgImageBeach.style.visibility = "hidden";
 				bossBattleBgImageBeachPart2.style.visibility = "hidden";
 				
@@ -6106,10 +6120,10 @@ alert("iInputY: "+iInputY);
 			//var sText = "CONTINUE?";
 			
 			//"The <font color='#4a50d9'>PEST</font> was destroyed.<br/>But not without heavy<br/> damage to the city...<br/>There is still a lot to learn<br/>and do. Thank you, and<br/> great work! Peace.";
- 			
+/* 			
 			bossBattleBgImage.style.opacity = "0.6";
 			bossBattleBgImage.style.filter  = 'alpha(opacity=60)'; // IE fallback
-
+*/
 			textStatusDiv.innerHTML = sText; //sCurrText
 
 			textStatusDiv.style.left=iInnerHorizontalOffset+iStageMaxHeight/2-textStatusDiv.clientWidth/2;
@@ -6127,10 +6141,10 @@ alert("iInputY: "+iInputY);
 			//fire; cat and hat;
 			return;
 		}
-	  
+/*	  
 	  	bossBattleBgImage.style.opacity = "1.0";
 		bossBattleBgImage.style.filter  = 'alpha(opacity=100)'; // IE fallback
-	
+*/	
         bossMonsterImageTile.style.visibility = "hidden"; //"visible";
 
 		executeExplosionEffect();
@@ -6470,10 +6484,11 @@ alert("iInputY: "+iInputY);
 				//DOOR
 				//top-most					
 				//doorImageTop.style.visibility="visible";
-				
+/*				
 				bossBattleBgImage.style.visibility = "hidden"; //default
+*/				
 				bossBattleBgImageBeach.style.visibility = "visible";
-				
+
 				//removed by Mike, 20251102
 				//bossBattleBgImageBeachPart2.style.visibility = "visible";
 				
@@ -6491,6 +6506,8 @@ alert("iInputY: "+iInputY);
 					//TilePosX; width; square based on iStageMaxHeight
 					wraithMonsterImageTilePosX=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2;
 					wraithMonsterImageTilePosY=iInnerVerticalOffset+iStageMaxHeight/2-iImageFrameHeightDefault/2;
+
+					iWraithMonsterHP=iWraithMonsterHPMax;
 					
 					hasInitMapLocation=true;					
 				}
@@ -6506,7 +6523,6 @@ alert("iInputY: "+iInputY);
 
 					verifyHeroFireballCollideWithWraithMonsters();
 				}
-				
 				
 
 /*
@@ -6598,6 +6614,7 @@ alert("iInputY: "+iInputY);
 					resetProjectile();
 				}					
 */				
+/*
 				//right-most
 				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth) {
 					//OK;
@@ -6608,6 +6625,19 @@ alert("iInputY: "+iInputY);
 				else if (mainImageTilePosX<0+(iInnerHorizontalOffset)) {
 					//OK;
 					mainImageTilePosX=0+(iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthDefault/2);
+					resetProjectile();
+				}
+*/
+				//right-most
+				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault) {
+					//OK;
+					mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
+					resetProjectile();			
+				}
+				//left-most
+				else if (mainImageTilePosX<0+(iInnerHorizontalOffset)) {
+					//OK;
+					mainImageTilePosX=0+(iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthDefault-iImageFrameWidthDefault);
 					resetProjectile();
 				}
 				break;		
@@ -8330,7 +8360,7 @@ alert("iInputY: "+iInputY);
 			//OK; TOP, BOTTOM DOOR; REST of the sides WALLS
 			//secret passage
 			case 11:				
-				bossBattleBgImage.style.visibility="hidden";
+				//bossBattleBgImage.style.visibility="hidden";
 				doorImageTop.style.visibility="visible";
 				doorImageBottom.style.visibility="visible";
 				//doorImageRight.style.visibility="visible";
@@ -8668,7 +8698,7 @@ alert("iInputY: "+iInputY);
 		}
 						
 		//--------------------------------------		
-		var bossBattleBgImage = document.getElementById("bossBattleBgImageId");
+		//var bossBattleBgImage = document.getElementById("bossBattleBgImageId");
 
 /*			
 		//edited by Mike, 20241103
@@ -10355,9 +10385,9 @@ opting to put assets folder in "html_application" folder instead
 	<img id="titleImageId" class="ImageHowToPlayGuide" src="assets/images/gameOff2024TitleBG.png">
 
 	<img id="titleImageFrame2Id" class="ImageHowToPlayGuide" src="assets/images/gameOff2024TitleBGFrame2.png">
-
+<!--
 	<img id="bossBattleBgImageId" class="ImageBossBattleBg" src="assets/images/bgImageCave.png?lastmod=20241127">
-
+-->
 	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageCaveStart.png?lastmod=20251102T1659">
 
 	<img id="bossBattleBgImageBeachPart2Id" class="ImageBossBattleBgBeachPart2" src="assets/images/bgImageCaveStartPart2.png?lastmod=20241128">
