@@ -38,10 +38,8 @@
 			width: 100%;
 			height: 100%;
 
-			/*added by Mike, 20231119*/
-			background-color: white; /*black; transparent*/
+			background-color: black; /*white; transparent*/
 			border: none;
-
 
 			padding: 0;
 			margin: 0;
@@ -2916,11 +2914,9 @@ alert("iInputY: "+iInputY);
 		}
 
 		heroAttackEffectImage.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
-
 		heroAttackEffectImage.style.visibility="visible";
 
 		iHeroAttackEffectAnimationDelayCount=iHeroAttackEffectAnimationDelayCountMax;
-
 		iHeroAttackEffectAnimationCount=-1; //0;
 
 		heroAttackEffectImage.style.left = iInputX;
@@ -4729,7 +4725,8 @@ alert("iInputY: "+iInputY);
 */
 				//mainImageTileHeroBody.style.zIndex="99";
 			
-				if (mainImageTilePosY>wraithMonsterImageTilePosY) {//+iImageFrameHeightLarge/4) {
+				//if (mainImageTilePosY>wraithMonsterImageTilePosY) {//+iImageFrameHeightLarge/4) {
+				if (mainImageTilePosY>wraithMonsterImageTilePosY) {				
 					mainImageTileHeroBody.style.zIndex=zIndexValue+1;
 				}
 				else {
@@ -4740,6 +4737,8 @@ alert("iInputY: "+iInputY);
 				
 				//verify if hero attacked
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
+				
+					//TODO: -add: update hero animation frame to attack pose;
 				
 					monsterHitByHero(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY);
 										
@@ -4832,6 +4831,47 @@ alert("iInputY: "+iInputY);
 */			
 		}
 	}
+	
+	function verifyHeroFireballCollideWithWraithMonsters() {
+		var wraithMonsterImageTile = document.getElementById("wraithMonsterImageId");
+
+		var mainImageTileFireballProjectile = document.getElementById("mainImageTileFireballProjectileImageId");
+
+		//var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
+		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId")
+		
+		if (!isWraithMonsterTileActive) {
+			return;
+		}		
+		else {
+			if (bIsHeroAttacked) {
+				//bIsHeroAttacked=false;
+				return;
+			}
+			
+			//bIsHeroAttacked=false;		
+
+			//+iImageFrameWidthDefault/2; iImageFrameHeightDefault/2
+			if (isPointsOfRectIntersectingPointsOfRectMonster(parseInt(mainImageTileFireballProjectilePosX),parseInt(mainImageTileFireballProjectilePosY), wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidth, iImageFrameHeight, iImageFrameWidthLarge, iImageFrameHeightLarge)) {			
+				
+				//verify if hero attacked
+				//if (bHasFired && bHasHeroShotFireball) {
+				if (bHasHeroShotFireball) {
+				
+					//alert("HALLO"); 	
+				
+					monsterHitByHeroFireball(parseInt(mainImageTileFireballProjectilePosX),parseInt(mainImageTileFireballProjectilePosY), wraithMonsterImageTilePosX,wraithMonsterImageTilePosY);
+					//setExplosionEffectPosition(batMonsterImageTilePosX,batMonsterImageTilePosY);
+					
+					setFireballExplosionEffectPosition(wraithMonsterImageTilePosX+iImageFrameWidthLarge/4,wraithMonsterImageTilePosY+iImageFrameHeightLarge/4);
+					
+					wraithMonsterImageTile.style.visibility="hidden";				
+					isWraithMonsterTileActive=false;
+					iCurrMonsterDeathCount++;					
+				}
+			}
+		}
+	}	
 	
 	function verifyHeroFireballCollideWithBatMonsters() {
 		var batMonsterImageTile = document.getElementById("batMonsterImageId");
@@ -5514,9 +5554,12 @@ alert("iInputY: "+iInputY);
     var myCanvas = document.getElementById("myCanvasId");
     var myCanvasContext = myCanvas.getContext("2d");
     //myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight)
-
-    myCanvasContext.fillStyle = "#f3f3f3"; //"#f9f9f9"; //"#f3f3f3"; //"#ffffff"; //white background//stage
-    myCanvasContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+	
+	//edited by Mike, 20251105
+    //myCanvasContext.fillStyle = "#f3f3f3"; //"#f9f9f9"; //"#f3f3f3"; //"#ffffff"; //white background//stage
+    myCanvasContext.fillStyle = "#000000"; //black background//stage
+    
+	myCanvasContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
 
 
     //added by Mike, 20231126
@@ -6345,10 +6388,7 @@ alert("iInputY: "+iInputY);
 					executeWraithMonsterWalkingAnimation();
 					verifyHeroCollideWithWraithMonsters();					
 
-
-/*
-					verifyHeroFireballCollideWithBatMonsters();
-*/					
+					verifyHeroFireballCollideWithWraithMonsters();
 				}
 				
 				
