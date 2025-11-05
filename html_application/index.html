@@ -1355,6 +1355,8 @@ var newMainImageTileProjectilePosX=0;
 var newMainImageTileProjectilePosY=0;
 var bHasFired=false;
 
+var bHasHeroHitMonster=false;
+
 var iMousePointPosX=0;
 var iMousePointPosY=0;
 
@@ -1609,6 +1611,8 @@ var bIsHeroFacingUp=false;
 		bIsHeroDash=false;
 		//bHasHeroShotFireball=false;
 
+		//bHasHeroHitMonster=false;
+
 /*
 		bIsHeroFacingLeft=false;
 		bIsHeroFacingUpOrDown=false;
@@ -1673,7 +1677,14 @@ var bIsHeroFacingUp=false;
 			//removed by Mike, 20251104
 			//mainImageTileHeroBody.style.visibility="visible";
 
-			mainImageTileHeroBody.style.objectPosition = "-" + 0 + "px -" + iFrameY + "px";
+			if (bHasHeroHitMonster) {
+				mainImageTileHeroBody.style.objectPosition = "-" + iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+			
+			}
+			else {
+				mainImageTileHeroBody.style.objectPosition = "-" + 0 + "px -" + iFrameY + "px";
+			}
+
 /*
 		}
 */		
@@ -3015,7 +3026,7 @@ alert("iInputY: "+iInputY);
 
 		var iFrameY=0;
 		var iFrameXOffset=0;
-		
+				
 		//added by Mike, 20251102
 /*
 		iImageFrameWidth=64;
@@ -3034,6 +3045,8 @@ alert("iInputY: "+iInputY);
 		}
 		else {
 */
+
+
 			if (bIsHeroFacingLeft) {
 				iFrameY=iImageFrameHeightLarge*1;
 				
@@ -3058,25 +3071,116 @@ alert("iInputY: "+iInputY);
 					}
 				}
 			}
-
 /*
-		}			
-*/		
-/*
-		if (iHeroAnimationCount==0) { 
-			mainImageTileHeroBody.style.objectPosition = "-" + 0-iFrameXOffset + "px -" + iFrameY + "px";
-		}
-		else if (iHeroAnimationCount==1) { 
-			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidth + "px -" + iFrameY + "px";
-		}
-		else {
-			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidth*2 + "px -" + iFrameY + "px";
-		}
-*/		
-			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount + "px -" + iFrameY + "px";
-
+			//if (bHasFired) {
+			//if (iHeroAttackEffectAnimationDelayCount<iHeroAttackEffectAnimationDelayCountMax) {
+			if (bHasHeroHitMonster) {
+				mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+				
+				//alert("DITO!");
+				
+				//TODO: -add: constant 3; for last animation frame of four frames
+				if (iHeroAnimationCount>=3) {
+					bHasHeroHitMonster=false;
+				}
+			}
+			else {
+*/			
+				mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount + "px -" + iFrameY + "px";
+/*				
+			}
+*/			
 	}
 	
+	//added by Mike, 20251105
+	function executeHeroAttackingAnimation() {
+		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
+		
+		//edited by Mike, 20251105; from 20251104
+		mainImageTileHeroBody.style.visibility="visible";
+
+		if (iHeroAnimationDelayCount==0) {//iHeroAnimationDelayCountMax) {
+			iHeroAnimationCount=(iHeroAnimationCount+1)%4; //last hidden
+
+			//alert(iHeroAnimationCount);
+
+			iHeroAnimationDelayCount=0;
+		}
+		else {
+			iHeroAnimationDelayCount++;
+		}
+
+		var iFrameY=0;
+		var iFrameXOffset=0;
+				
+		if (bIsHeroFacingLeft) {
+			iFrameY=iImageFrameHeightLarge*1;
+			
+			if (bIsHeroFacingUpOrDown) {
+				if (!bIsHeroFacingUp) {
+					iFrameY=iImageFrameHeightLarge*2;
+				}
+				else {
+					iFrameY=iImageFrameHeightLarge*4;
+				}				
+			}
+		}
+		else {
+			iFrameY=iImageFrameHeightLarge*0;
+
+			if (bIsHeroFacingUpOrDown) {
+				if (!bIsHeroFacingUp) {
+					iFrameY=iImageFrameHeightLarge*3;
+				}
+				else {
+					iFrameY=iImageFrameHeightLarge*5;
+				}
+			}
+		}
+
+		//if (bHasFired) {
+		//if (iHeroAttackEffectAnimationDelayCount<iHeroAttackEffectAnimationDelayCountMax) {
+		//if (bHasHeroHitMonster) {
+
+		////mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+		
+		//alert("DITO!");
+		
+		//TODO: -add: constant 3; for last animation frame of four frames
+		if (iHeroAnimationCount>=3) {
+
+			//alert("DITO! "+iHeroAnimationCount);
+			iHeroAnimationDelayCount=0;
+			iHeroAnimationCount=3;//-1;
+
+			bHasHeroHitMonster=false;
+
+			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*1 - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+		}
+		else {
+			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+		}
+	}
+
+	//added by Mike, 20251105
+	function executeHeroIdleAnimation() {
+		//resetProjectile();
+
+		if (iHeroAnimationDelayCount==iHeroAnimationDelayCountMax) {
+			iHeroAnimationCount=(iHeroAnimationCount+1)%4; //last hidden
+
+			//alert(iHeroAnimationCount);
+
+			resetProjectile();
+
+			iHeroAnimationDelayCount=0;
+		}
+		else {
+			iHeroAnimationDelayCount++;
+		}
+
+	}
+
 	function executeTankWalkingAnimation() {
 		var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
 		mainImageTileTankBody.style.visibility="visible";
@@ -4739,21 +4843,32 @@ alert("iInputY: "+iInputY);
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 				
 					//TODO: -add: update hero animation frame to attack pose;
+									
+					bHasHeroHitMonster=true;
+					iHeroAnimationDelayCount=0;
+					iHeroAnimationCount=-1;
+
+					//alert("DITO!!!");
+				
+					bIsExecutingShake=true;
 				
 					monsterHitByHero(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY);
 										
 					setExplosionEffectPosition(wraithMonsterImageTilePosX+iImageFrameWidthLarge/2,wraithMonsterImageTilePosY+iImageFrameHeightLarge/2);
-					
+/*					
 					wraithMonsterImageTile.style.visibility="hidden";				
 					isWraithMonsterTileActive=false;
 					iCurrMonsterDeathCount++;
+*/					
 				}
 				else {
-					heroHitByMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iMonsterAttackDamageDefault);
+					if (currWraithMonsterTileState==ATTACKING_STATE) {
+						heroHitByMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iMonsterAttackDamageDefault);
 
-					//added by Mike, 20251104
-					//note: if hero is intersects at lower half of enemy monster's body in y-axis, push hero out; and deal damage; otherwise, z-buffer problem;
-					//TODO: -add: monster body throw or similar attack;
+						//added by Mike, 20251104
+						//note: if hero is intersects at lower half of enemy monster's body in y-axis, push hero out; and deal damage; otherwise, z-buffer problem;
+						//TODO: -add: monster body throw or similar attack;
+					}
 				}
 			}
 		}
@@ -6362,8 +6477,9 @@ alert("iInputY: "+iInputY);
 				//removed by Mike, 20251102
 				//bossBattleBgImageBeachPart2.style.visibility = "visible";
 				
-				bossBattleBgImagePart2.style.visibility = "visible";
-				bossBattleBgImagePart3.style.visibility = "hidden";	
+				//bossBattleBgImagePart2.style.visibility = "visible";
+				bossBattleBgImagePart2.style.visibility = "hidden";
+				bossBattleBgImagePart3.style.visibility = "visible";	
 
 				//edited by Mike, 20251104
 				//hasInitMapLocation=true;
@@ -8655,8 +8771,16 @@ alert("iInputY: "+iInputY);
 			//alert ("DITO");
 			resetFireballProjectile();
 		}
-		
-		
+			
+/*		
+		//added by Mike, 20251105
+		if (bHasHeroHitMonster) {
+			executeHeroAttackingAnimation();
+		}
+		else {
+			executeHeroIdleAnimation();
+		}
+*/		
 			//movement
 			if (bHasFired) {
 /*			
@@ -8716,6 +8840,7 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 			}
 		}
 
+		
 //-----------------
 /*
     if (isPointsOfRectIntersectingPointsOfRect(mainImageTileProjectilePosX,mainImageTileProjectilePosY, parseInt(mainImageMonster.style.left),parseInt(mainImageMonster.style.top))) {
@@ -8840,6 +8965,16 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 			}		
 		
 			}
+			//added by Mike, 20251105
+			else { //bHasfired
+				if (bHasHeroHitMonster) {
+					executeHeroAttackingAnimation();
+				}
+				else {
+					executeHeroIdleAnimation();
+				}
+			}
+			
 
 		  }	 
 		  		  
