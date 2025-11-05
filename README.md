@@ -12,11 +12,13 @@ This is a work of fiction created for Game Off 2025 with the theme WAVES.
 ## PLAY in BROWSER (Mobile Friendly)
 
 ## [<img src="https://github.com/masarapmabuhay/game-off-2024/blob/main/notes/art/catLunge.png" width="10%">](https://masarapmabuhay.itch.io/blue-sapphire-galaxy)   
+-->
 
 ### ITCH.IO: PROTOTYPES
 
-1) https://masarapmabuhay.itch.io/game-off-2024-prototype0 (updated from [Game Off 2023](https://github.com/usbong/game-off-2023))
+1) https://masarapmabuhay.itch.io/game-off-2025-prototype0 (updated from [Game Off 2024](https://github.com/usbong/game-off-2024))
 
+<!--
 2) https://masarapmabuhay.itch.io/game-off-2024-prototype1
 
 3) https://masarapmabuhay.itch.io/game-off-2024-prototype2
