@@ -1243,6 +1243,14 @@ var iHeroAnimationCountMax=5;
 var iHeroAnimationDelayCount=0;
 var iHeroAnimationDelayCountMax=5;//2;//1; //TODO: -add: more dust effect if target walking distance is far
 
+var iHeroAttackAnimationCount=-1; //0; //due to immediately +1 in execution;
+var iHeroAttackAnimationCountMax=5;
+var iHeroAttackAnimationDelayCount=0;
+var iHeroAttackAnimationDelayCountMax=5;//2;//1; //TODO: -add: more dust effect if target walking distance 
+
+//added by Mike, 20251106
+var iHeroAttackComboCount=0;
+
 /*
 var iScore=10000;//0;
 var iTargetScore=10000;//0;
@@ -1413,6 +1421,7 @@ var iPrevMouseXPos=-1;
 var iPrevMouseYPos=-1;
 	
 var bIsHeroFacingLeft=false;
+var bIsHeroFacingLeftPrev=false;
 
 //added by Mike, 20251102
 var bIsHeroFacingUpOrDown=false;
@@ -1435,7 +1444,7 @@ var bIsHeroFacingUp=false;
 	var wraithMonsterTileStepDelay=0;	
 	var wraithMonsterTileStepDelayMax=10;//0;//1;	
 	var isWraithMonsterTileActive=false;
-	var iWraithMonsterHPMax=3;
+	var iWraithMonsterHPMax=99;//3;
 	var iWraithMonsterHP=iWraithMonsterHPMax;
 
 	const WALKING_STATE=0;
@@ -1632,6 +1641,10 @@ var bIsHeroFacingUp=false;
 		//TODO: -add: idle animation	
 		iHeroAnimationCount=0; 
 		
+		//added by Mike, 20251106
+		iHeroAttackAnimationCount=0;//-1; 		
+		//iHeroAttackComboCount=0;
+		
 /*		
 		mainImageTileTankBody.style.visibility="hidden";
 		mainImageTileHeroBody.style.visibility="hidden";
@@ -1665,20 +1678,48 @@ var bIsHeroFacingUp=false;
 			else {
 */			
 				//TODO: -add: idle state;
-				
+				//edited by Mike, 20251106
+/*				
 				if (bIsHeroFacingLeft) {
 					iFrameY=iImageFrameHeightLarge*2;
 				}
 				else {
 					iFrameY=iImageFrameHeightLarge*3;
 				}
+*/				
+
+			if (bIsHeroFacingLeft) {
+				iFrameY=iImageFrameHeightLarge*1;
 				
-/*
+				if (bIsHeroFacingUpOrDown) {
+					if (!bIsHeroFacingUp) {
+						iFrameY=iImageFrameHeightLarge*2;
+					}
+					else {
+						iFrameY=iImageFrameHeightLarge*4;
+					}				
+				}
 			}
-*/
+			else {
+				iFrameY=iImageFrameHeightLarge*0;
+
+				if (bIsHeroFacingUpOrDown) {
+					if (!bIsHeroFacingUp) {
+						iFrameY=iImageFrameHeightLarge*3;
+					}
+					else {
+						iFrameY=iImageFrameHeightLarge*5;
+					}
+				}
+			}
+				
 			//removed by Mike, 20251104
 			//mainImageTileHeroBody.style.visibility="visible";
 
+			//edited by Mike, 20251106
+			mainImageTileHeroBody.style.objectPosition = "-" + iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+
+/*
 			if (bHasHeroHitMonster) {
 				mainImageTileHeroBody.style.objectPosition = "-" + iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 			
@@ -1686,6 +1727,7 @@ var bIsHeroFacingUp=false;
 			else {
 				mainImageTileHeroBody.style.objectPosition = "-" + 0 + "px -" + iFrameY + "px";
 			}
+*/
 
 /*
 		}
@@ -3101,19 +3143,38 @@ alert("iInputY: "+iInputY);
 		//edited by Mike, 20251105; from 20251104
 		mainImageTileHeroBody.style.visibility="visible";
 
-		if (iHeroAnimationDelayCount==0) {//iHeroAnimationDelayCountMax) {
-			iHeroAnimationCount=(iHeroAnimationCount+1)%4; //last hidden
+		if (iHeroAttackAnimationDelayCount==0) {//iHeroAnimationDelayCountMax) {
+			iHeroAttackAnimationCount=(iHeroAttackAnimationCount+1)%4; //last hidden
 
 			//alert(iHeroAnimationCount);
 
-			iHeroAnimationDelayCount=0;
+			iHeroAttackAnimationDelayCount=0;
 		}
 		else {
-			iHeroAnimationDelayCount++;
+			iHeroAttackAnimationDelayCount++;
 		}
 
 		var iFrameY=0;
 		var iFrameXOffset=0;
+
+		if (iHeroAttackComboCount>1) {
+			//alert(iHeroAttackComboCount);
+
+			if (!bIsHeroFacingUpOrDown) {
+			}
+			else {
+				//draw the horizontal flip;
+				if (bIsHeroFacingLeftPrev==bIsHeroFacingLeft) {
+					if (bIsHeroFacingLeft) {
+						bIsHeroFacingLeft=false;
+					}
+					else {
+						bIsHeroFacingLeft=true;
+					}
+				}
+			}
+		}
+		bIsHeroFacingLeftPrev=bIsHeroFacingLeft;
 				
 		if (bIsHeroFacingLeft) {
 			iFrameY=iImageFrameHeightLarge*1;
@@ -3139,6 +3200,8 @@ alert("iInputY: "+iInputY);
 				}
 			}
 		}
+		
+		
 
 		//if (bHasFired) {
 		//if (iHeroAttackEffectAnimationDelayCount<iHeroAttackEffectAnimationDelayCountMax) {
@@ -3149,18 +3212,18 @@ alert("iInputY: "+iInputY);
 		//alert("DITO!");
 		
 		//TODO: -add: constant 3; for last animation frame of four frames
-		if (iHeroAnimationCount>=3) {
+		if (iHeroAttackAnimationCount>=3) {
 
 			//alert("DITO! "+iHeroAnimationCount);
-			iHeroAnimationDelayCount=0;
-			iHeroAnimationCount=3;//-1;
+			iHeroAttackAnimationDelayCount=0;
+			iHeroAttackAnimationCount=0;//-1; //3;
 
 			bHasHeroHitMonster=false;
 
 			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*1 - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 		}
 		else {
-			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAttackAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 		}
 	}
 
@@ -4834,12 +4897,28 @@ alert("iInputY: "+iInputY);
 				//if (mainImageTilePosY>wraithMonsterImageTilePosY) {//+iImageFrameHeightLarge/4) {
 				if (mainImageTilePosY>wraithMonsterImageTilePosY) {				
 					mainImageTileHeroBody.style.zIndex=zIndexValue+1;
+					
+					bIsHeroFacingUp=true;
+					bIsHeroFacingUpOrDown=true;					
 				}
-				else {
-					mainImageTileHeroBody.style.zIndex=zIndexValue; //put on top; same index
+				else { //hero is on top of wraith in y-axis;
+					//put hero above wraith; same index
+					mainImageTileHeroBody.style.zIndex=zIndexValue;
+					
+					bIsHeroFacingUp=false;
+					//due to when attacking left or not; while not diagonal;
+					//bIsHeroFacingUpOrDown=false;//true;			
+
+					if (bIsHeroFacingUpOrDown) {
+					}				
+					//hero facing only left or right
+					else {
+						bIsHeroFacingUpOrDown=false;//true;			
+					}
 				}
-				//---------------------------------------
 				
+				
+				//---------------------------------------				
 				
 				//verify if hero attacked
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
@@ -4847,8 +4926,10 @@ alert("iInputY: "+iInputY);
 					//TODO: -add: update hero animation frame to attack pose;
 									
 					bHasHeroHitMonster=true;
-					iHeroAnimationDelayCount=0;
-					iHeroAnimationCount=-1;
+					iHeroAttackAnimationDelayCount=0;
+					iHeroAttackAnimationCount=0;//-1;
+					
+					iHeroAttackComboCount++;
 
 					//alert("DITO!!!");
 				
@@ -8854,6 +8935,10 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 			if ((mainImageTilePosX==mainImageTileProjectilePosX) && (mainImageTilePosY==mainImageTileProjectilePosY)) {
 				//alert("DITO!!!");
 				
+				//added by Mike, 20251106
+				iHeroAttackComboCount=0;
+				//alert("DITO!");
+				
 				resetProjectile();
 				return;
 			}
@@ -10277,7 +10362,7 @@ opting to put assets folder in "html_application" folder instead
 	
 		<img id="mainImageTileImageTankBodyId" class="ImageTankFrame1" src="assets/images/inputImageLarge.png?lastmod=20241110">
 		
-		<img id="mainImageTileImageHeroBodyId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251102T1242">		
+		<img id="mainImageTileImageHeroBodyId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251106T1030">		
 
 		<img id="wraithMonsterImageId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251104T1007">
 
