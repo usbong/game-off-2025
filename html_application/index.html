@@ -3059,6 +3059,27 @@ alert("iInputY: "+iInputY);
 		}
 */
 
+		//added by Mike, 20251105
+		//------------------
+		if (iHeroAttackComboCount>0) {
+			//alert(iHeroAttackComboCount);
+			if (!bIsHeroFacingUpOrDown) {
+			}
+			else {
+				//draw the horizontal flip;
+				//if (bIsHeroFacingLeftPrev==bIsHeroFacingLeft) {
+					if (bIsHeroFacingLeft) {
+						bIsHeroFacingLeft=false;
+					}
+					else {
+						bIsHeroFacingLeft=true;
+					}
+				//}
+			}
+		}
+		iHeroAttackComboCount=0;
+		//------------------
+
 		if (iHeroAnimationDelayCount==iHeroAnimationDelayCountMax) {
 			iHeroAnimationCount=(iHeroAnimationCount+1)%4; //last hidden
 
@@ -3089,7 +3110,6 @@ alert("iInputY: "+iInputY);
 		}
 		else {
 */
-
 
 			if (bIsHeroFacingLeft) {
 				iFrameY=iImageFrameHeightLarge*1;
@@ -8936,7 +8956,7 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 				//alert("DITO!!!");
 				
 				//added by Mike, 20251106
-				iHeroAttackComboCount=0;
+				//iHeroAttackComboCount=0;
 				//alert("DITO!");
 				
 				resetProjectile();
@@ -8951,6 +8971,9 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 				executeTankWalkingAnimation();
 			}
 			else {
+				//added by Mike, 20251105
+				//iHeroAttackComboCount=0;
+			
 				executeHeroWalkingAnimation();
 			}
 		}
@@ -9086,6 +9109,9 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 					executeHeroAttackingAnimation();
 				}
 				else {
+					//added by Mike, 20251105
+					//iHeroAttackComboCount=0;
+
 					executeHeroIdleAnimation();
 				}
 			}
