@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251106; from 20251105
+' @date updated: 20251107; from 20251106
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1011,7 +1011,7 @@ var iShakeOffsetWidth=iShakeOffsetWidthMax;
 var iShakeOffsetHeight=iShakeOffsetHeightMax;
 
 var iHeroInvincibileCount=0;
-var iHeroInvincibileCountMax=100;//50;
+var iHeroInvincibileCountMax=200;//100;//50;
 
 var iCurrHeroLifeMax=10;
 var iCurrHeroLife=iCurrHeroLifeMax;
@@ -1442,7 +1442,7 @@ var bIsHeroFacingUp=false;
 	var wraithMonsterTileStepX=2;
 	var wraithMonsterTileStepY=2;
 	var wraithMonsterTileStepDelay=0;	
-	var wraithMonsterTileStepDelayMax=10;//0;//1;	
+	var wraithMonsterTileStepDelayMax=15;//10;//0;//1;	
 	var isWraithMonsterTileActive=false;
 	var iWraithMonsterHPMax=99;//3;
 	var iWraithMonsterHP=iWraithMonsterHPMax;
@@ -1452,6 +1452,7 @@ var bIsHeroFacingUp=false;
 	const HIT_STATE=2;
 	const DYING_STATE=3;
 	const DEATH_STATE=4;
+	const IDLE_STATE=5;
 	var currWraithMonsterTileState=0;
 	
 
@@ -3177,6 +3178,7 @@ alert("iInputY: "+iInputY);
 		var iFrameY=0;
 		var iFrameXOffset=0;
 
+/*		//removed by Mike, 20251106; update animation sprites instead
 		if (iHeroAttackComboCount>1) {
 			//alert(iHeroAttackComboCount);
 
@@ -3195,6 +3197,8 @@ alert("iInputY: "+iInputY);
 			}
 		}
 		bIsHeroFacingLeftPrev=bIsHeroFacingLeft;
+*/
+
 				
 		if (bIsHeroFacingLeft) {
 			iFrameY=iImageFrameHeightLarge*1;
@@ -3366,7 +3370,8 @@ alert("iInputY: "+iInputY);
 				wraithMonsterTileStepDelay=0;
 				
 				if (currWraithMonsterTileState==WALKING_STATE) {
-					currWraithMonsterTileState=ATTACKING_STATE;
+					//currWraithMonsterTileState=ATTACKING_STATE;
+					currWraithMonsterTileState=IDLE_STATE;
 				}
 				else {
 					currWraithMonsterTileState=WALKING_STATE;
@@ -4975,6 +4980,18 @@ alert("iInputY: "+iInputY);
 				}
 				else {
 					if (!bHasHeroHitMonster) {
+						//decide if will attack; 
+						//TODO; update: this
+/*
+						let iRandAttackValue=window.parseInt(Math.random() * 10)%10;
+						
+						if (iRandAttackValue<=3) {
+							alert(iRandAttackValue);
+						
+							currWraithMonsterTileState=ATTACKING_STATE;
+						}
+*/
+
 						if (currWraithMonsterTileState==ATTACKING_STATE) {
 							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iMonsterAttackDamageDefault);
 
