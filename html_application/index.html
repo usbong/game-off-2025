@@ -1419,13 +1419,16 @@ var bHasFireballReachedDestinationX=false;
 	
 var iPrevMouseXPos=-1;
 var iPrevMouseYPos=-1;
-	
+
+//added by Mike, 20251107
+var bIsHeroFacingLeftOrRight=false;	
 var bIsHeroFacingLeft=false;
 var bIsHeroFacingLeftPrev=false;
 
 //added by Mike, 20251102
 var bIsHeroFacingUpOrDown=false;
 var bIsHeroFacingUp=false;
+
 	
 	//added by Mike, 20241111
 	var batMonsterImageTilePosX=0;
@@ -1689,31 +1692,43 @@ var bIsHeroFacingUp=false;
 				}
 */				
 
-			if (bIsHeroFacingLeft) {
-				iFrameY=iImageFrameHeightLarge*1;
-				
-				if (bIsHeroFacingUpOrDown) {
-					if (!bIsHeroFacingUp) {
-						iFrameY=iImageFrameHeightLarge*2;
+			if (bIsHeroFacingLeftOrRight) {
+				if (bIsHeroFacingLeft) {
+					iFrameY=iImageFrameHeightLarge*1;
+					
+					if (bIsHeroFacingUpOrDown) {
+						if (!bIsHeroFacingUp) {
+							iFrameY=iImageFrameHeightLarge*2;
+						}
+						else {
+							iFrameY=iImageFrameHeightLarge*4;
+						}				
 					}
-					else {
-						iFrameY=iImageFrameHeightLarge*4;
-					}				
+				}
+				else {
+					iFrameY=iImageFrameHeightLarge*0;
+
+					if (bIsHeroFacingUpOrDown) {
+						if (!bIsHeroFacingUp) {
+							iFrameY=iImageFrameHeightLarge*3;
+						}
+						else {
+							iFrameY=iImageFrameHeightLarge*5;
+						}
+					}
 				}
 			}
 			else {
-				iFrameY=iImageFrameHeightLarge*0;
-
 				if (bIsHeroFacingUpOrDown) {
 					if (!bIsHeroFacingUp) {
-						iFrameY=iImageFrameHeightLarge*3;
+						iFrameY=iImageFrameHeightLarge*6;
 					}
 					else {
-						iFrameY=iImageFrameHeightLarge*5;
+						iFrameY=iImageFrameHeightLarge*7;
 					}
 				}
 			}
-				
+			
 			//removed by Mike, 20251104
 			//mainImageTileHeroBody.style.visibility="visible";
 
@@ -3112,30 +3127,45 @@ alert("iInputY: "+iInputY);
 		else {
 */
 
-			if (bIsHeroFacingLeft) {
-				iFrameY=iImageFrameHeightLarge*1;
-				
-				if (bIsHeroFacingUpOrDown) {
-					if (!bIsHeroFacingUp) {
-						iFrameY=iImageFrameHeightLarge*2;
+			if (bIsHeroFacingLeftOrRight) {
+				if (bIsHeroFacingLeft) {
+					iFrameY=iImageFrameHeightLarge*1;
+
+					if (bIsHeroFacingUpOrDown) {
+						if (!bIsHeroFacingUp) {
+							iFrameY=iImageFrameHeightLarge*2;
+						}
+						else {
+							iFrameY=iImageFrameHeightLarge*4;
+						}				
 					}
-					else {
-						iFrameY=iImageFrameHeightLarge*4;
-					}				
+				}
+				else {
+					iFrameY=iImageFrameHeightLarge*0;
+
+					if (bIsHeroFacingUpOrDown) {
+						if (!bIsHeroFacingUp) {
+							iFrameY=iImageFrameHeightLarge*3;
+						}
+						else {
+							iFrameY=iImageFrameHeightLarge*5;
+						}
+					}
 				}
 			}
 			else {
-				iFrameY=iImageFrameHeightLarge*0;
-
 				if (bIsHeroFacingUpOrDown) {
 					if (!bIsHeroFacingUp) {
-						iFrameY=iImageFrameHeightLarge*3;
+						iFrameY=iImageFrameHeightLarge*6;
 					}
 					else {
-						iFrameY=iImageFrameHeightLarge*5;
+						iFrameY=iImageFrameHeightLarge*7;
 					}
 				}
 			}
+
+			//iFrameY=iImageFrameHeightLarge*6;//7
+			
 /*
 			//if (bHasFired) {
 			//if (iHeroAttackEffectAnimationDelayCount<iHeroAttackEffectAnimationDelayCountMax) {
@@ -4919,7 +4949,6 @@ alert("iInputY: "+iInputY);
 */
 				//mainImageTileHeroBody.style.zIndex="99";
 			
-				//if (mainImageTilePosY>wraithMonsterImageTilePosY) {//+iImageFrameHeightLarge/4) {
 				if (mainImageTilePosY>wraithMonsterImageTilePosY) {				
 					mainImageTileHeroBody.style.zIndex=zIndexValue+1;
 					
@@ -4941,8 +4970,28 @@ alert("iInputY: "+iInputY);
 						bIsHeroFacingUpOrDown=false;//true;			
 					}
 				}
-				
-				
+/*				
+				//added by Mike, 20251107
+				if (mainImageTilePosX>wraithMonsterImageTilePosX) {				
+					bIsHeroFacingUp=true;
+					bIsHeroFacingUpOrDown=true;					
+				}
+				else { //hero is on top of wraith in y-axis;
+					//put hero above wraith; same index
+					mainImageTileHeroBody.style.zIndex=zIndexValue;
+					
+					bIsHeroFacingUp=false;
+					//due to when attacking left or not; while not diagonal;
+					//bIsHeroFacingUpOrDown=false;//true;			
+
+					if (bIsHeroFacingUpOrDown) {
+					}				
+					//hero facing only left or right
+					else {
+						bIsHeroFacingUpOrDown=false;//true;			
+					}
+				}
+*/				
 				//---------------------------------------				
 				
 				//verify if hero attacked
@@ -9541,13 +9590,26 @@ alert(Date.now()-iMouseClickStartTime);
 
 		//bIsHeroFacingUpOrDown=true;
 
+		//added by Mike, 20251102
+		bIsHeroFacingLeftOrRight=true;
+/*		
 		if (iDeltaX<0) {
 			bIsHeroFacingLeft=true;
 		}
 		else if (iDeltaX>0) {
 			bIsHeroFacingLeft=false;
 		}
-				
+*/
+		if (iDeltaX<0-iImageFrameWidthLarge/2) {
+			bIsHeroFacingLeft=true;
+		}
+		else if (iDeltaX>0+iImageFrameWidthLarge/2) {
+			bIsHeroFacingLeft=false;
+		}
+		else {
+			bIsHeroFacingLeftOrRight=false;
+		}
+			
 		//added by Mike, 20251102
 		bIsHeroFacingUpOrDown=true;
 
