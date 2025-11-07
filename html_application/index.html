@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251107; from 20251106
+' @date updated: 20251108; from 20251107
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -3093,6 +3093,7 @@ alert("iInputY: "+iInputY);
 				//}
 			}
 		}
+		
 		iHeroAttackComboCount=0;
 		//------------------
 
@@ -4933,6 +4934,7 @@ alert("iInputY: "+iInputY);
 			//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge)) {
 			
 			if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {
+			//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge*0.25, iImageFrameHeightLarge*0.25, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {
 
 				//added by Mike, 20251105
 				//TODO: -set this to be reusable
@@ -4970,32 +4972,23 @@ alert("iInputY: "+iInputY);
 						bIsHeroFacingUpOrDown=false;//true;			
 					}
 				}
-/*				
-				//added by Mike, 20251107
-				if (mainImageTilePosX>wraithMonsterImageTilePosX) {				
-					bIsHeroFacingUp=true;
-					bIsHeroFacingUpOrDown=true;					
-				}
-				else { //hero is on top of wraith in y-axis;
-					//put hero above wraith; same index
-					mainImageTileHeroBody.style.zIndex=zIndexValue;
-					
-					bIsHeroFacingUp=false;
-					//due to when attacking left or not; while not diagonal;
-					//bIsHeroFacingUpOrDown=false;//true;			
-
-					if (bIsHeroFacingUpOrDown) {
-					}				
-					//hero facing only left or right
-					else {
-						bIsHeroFacingUpOrDown=false;//true;			
+				
+				//added by Mike, 20251108
+				if (!bIsHeroFacingUpOrDown) {
+					if (mainImageTilePosX>wraithMonsterImageTilePosX) {				
+						bIsHeroFacingLeft=true;
+						bIsHeroFacingLeftOrRight=true;					
+					}
+					else { //hero is on top of wraith in y-axis;
+						bIsHeroFacingLeft=false;
+						bIsHeroFacingLeftOrRight=true;					
 					}
 				}
-*/				
 				//---------------------------------------				
 				
 				//verify if hero attacked
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
+				//if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, wraithMonsterImageTilePosX,wraithMonsterImageTilePosY, iImageFrameWidthLarge*0.25, iImageFrameHeightLarge*0.25, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75))) {
 				
 					//TODO: -add: update hero animation frame to attack pose;
 									
