@@ -20,8 +20,9 @@ This is a work of fiction created for Game Off 2025 with the theme WAVES.
 
 2) https://masarapmabuhay.itch.io/game-off-2025-prototype1
 
+3) https://masarapmabuhay.itch.io/game-off-2025-prototype2
+
 <!--
-3) https://masarapmabuhay.itch.io/game-off-2024-prototype2
 
 4) https://masarapmabuhay.itch.io/game-off-2024-prototype3
 
