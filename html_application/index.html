@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251110; from 20251109
+' @date updated: 20251111; from 20251110
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1013,12 +1013,12 @@ var iShakeOffsetHeight=iShakeOffsetHeightMax;
 var iHeroInvincibileCount=0;
 var iHeroInvincibileCountMax=200;//100;//50;
 
-var iCurrHeroLifeMax=10;
+var iCurrHeroLifeMax=20;//10;
 var iCurrHeroLife=iCurrHeroLifeMax;
 var iCurrHeroLifeAnimationDelayCount=0;
 var iCurrHeroLifeAnimationDelayCountMax=5;
 
-var iCurrHeroManaMax=10;
+const iCurrHeroManaMax=20;//10;
 var iCurrHeroMana=iCurrHeroManaMax;
 var iCurrHeroManaAnimationDelayCount=0;
 var iCurrHeroManaAnimationDelayCountMax=5;
@@ -2541,7 +2541,7 @@ var bIsHeroFacingUp=false;
 			arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_COUNT_MAX]=4;//5;		
 
 			arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY]=0;		
-			arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY_MAX]=15;
+			arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY_MAX]=15*(iCount+1);
 			arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=IDLE_STATE;
 			arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_HP]=WRAITH_MONSTER_HP_MAX;
 			
@@ -5393,7 +5393,7 @@ alert("iInputY: "+iInputY);
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 
 					//added by Mike, 20251108
-					//iCurrHeroMana-=3;
+					iCurrHeroMana-=3;
 					iCurrHeroProjectileManaAnimationDelayCount=0;
 					
 					if (iCurrHeroMana<=0) {
@@ -5957,6 +5957,7 @@ alert("iInputY: "+iInputY);
 
 			//alert(arraySnakeMonsterCountId[iCount][MONSTER_IS_ACTIVE]);
 
+
 			if (!inputArrayWraithMonsterWithIdCount[MONSTER_IS_ACTIVE]) {
 				return;
 			}		
@@ -6020,7 +6021,7 @@ alert("iInputY: "+iInputY);
 					//verify if hero attacked
 					if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 					
-						//iCurrHeroMana-=3;
+						iCurrHeroMana-=3;
 						iCurrHeroProjectileManaAnimationDelayCount=0;
 						
 						if (iCurrHeroMana<=0) {
@@ -6690,7 +6691,7 @@ alert("iInputY: "+iInputY);
 
 	//added by Mike, 20251103
 	//drawChar(iImageFrameWidthDefault*5,iImageFrameHeightDefault*0,"5");
-	drawString(iImageFrameWidthDefault*5,iImageFrameHeightDefault*0,"ABC123");
+	drawString(iImageFrameWidthDefault*7,iImageFrameHeightDefault*0,"ABC123");
 
 	//edited by Mike, 20241114	
 	//iCurrSnowFlakeCountMax
@@ -7583,7 +7584,8 @@ alert("iInputY: "+iInputY);
 				}
 				
 
-
+				var bHasWraithMonsterWalking=false;
+				
 				for (iCount=0; iCount<iWraithMonsterCountMax; iCount++) {
 					if (arrayWraithMonsterCountId[iCount][MONSTER_IS_ACTIVE]) {
 						arrayWraithMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="visible";
@@ -7592,9 +7594,18 @@ alert("iInputY: "+iInputY);
 
 						arrayWraithMonsterCountId[iCount][MONSTER_OBJECT].style.top = 0+arrayWraithMonsterCountId[iCount][MONSTER_POSY]+"px"; //iInnerVerticalOffset
 						arrayWraithMonsterCountId[iCount][MONSTER_OBJECT].style.left = 0+arrayWraithMonsterCountId[iCount][MONSTER_POSX]+"px"; //iInnerHorizontalOffset
-				
 									
 						if (arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]!=ATTACKING_STATE) {
+							if (!bHasWraithMonsterWalking) {
+								//already set to WALKING_STATE
+							//arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=WALKING_STATE_STATE;								
+
+								bHasWraithMonsterWalking=true;
+							}
+							else {
+								arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=IDLE_STATE;								
+							}
+
 							executeWraithMonsterWalkingAnimation(arrayWraithMonsterCountId[iCount]);
 						}
 						else {
