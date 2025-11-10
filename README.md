@@ -24,12 +24,15 @@ This is a work of fiction created for Game Off 2025 with the theme WAVES.
 
 ・・・・・・勝負だ！！！
 
-5) https://masarapmabuhay.itch.io/game-off-2025-prototype3
+4) https://masarapmabuhay.itch.io/game-off-2025-prototype3
 
 auto-sorted z-index using what I remembered about Quicksort
 
 [PhilNITS](https://philnits.org/) review!
 
+5) https://masarapmabuhay.itch.io/game-off-2025-prototype4
+
+improved enemy AI though initial conditions could still be improved
 
 <!--
 
