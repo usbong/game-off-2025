@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251111; from 20251110
+' @date updated: 20251112; from 20251111
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1013,7 +1013,7 @@ var iShakeOffsetHeight=iShakeOffsetHeightMax;
 var iHeroInvincibileCount=0;
 var iHeroInvincibileCountMax=200;//100;//50;
 
-var iCurrHeroLifeMax=20;//10;
+var iCurrHeroLifeMax=20;//20;//10;
 var iCurrHeroLife=iCurrHeroLifeMax;
 var iCurrHeroLifeAnimationDelayCount=0;
 var iCurrHeroLifeAnimationDelayCountMax=5;
@@ -1022,11 +1022,17 @@ const iCurrHeroManaMax=20;//10;
 var iCurrHeroMana=iCurrHeroManaMax;
 
 var iCurrHeroManaToBeDeducted=0;
+var iCurrHeroManaToBeDeductedAnimation=0;
+var iCurrHeroManaToBeDeductedAnimationMain=0;
 
 var iCurrHeroManaAnimationDelayCount=0;
 var iCurrHeroManaAnimationDelayCountMax=5;
 var iCurrHeroProjectileManaAnimationDelayCount=0;
-var iCurrHeroProjectileManaAnimationDelayCountMax=5;//125;//5;
+var iCurrHeroProjectileManaAnimationDelayCountMax=6;//5;//125;//5;
+
+var iCurrHeroManaToBeDeductedAnimationDelayCount=0;
+var iCurrHeroManaToBeDeductedAnimationDelayCountMax=5;//5;//125;//5;
+
 
 //added by Mike, 20251108
 var bIsHeroWalking=false;
@@ -1338,7 +1344,9 @@ var iImageFrameHeightDefault=32;
 var iMouseInputImageWidth=64;
 var iMouseInputImageHeight=64;
 
-var iMonsterAttackDamageDefault=1;
+//edited by Mike, 20251112
+//TODO: -update: this based on monster; 
+var iMonsterAttackDamageDefault=2; //1
 var iMonsterAttackDamageBoss=2;//3;
 
 var iCurrTextCharacterCount=0;
@@ -1911,13 +1919,18 @@ var bIsHeroFacingUp=false;
 		myCanvasContext.fillStyle = "#2d2622"; //"#736157"; //#ffffff; //"#ff0000";	
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight);
 
-		if (iCurrHeroLife>=5) {
+		if (iCurrHeroLife>=10) { //5) {
 			myCanvasContext.fillStyle = "#00c7ff"; //sky blue
 		}
-		else if (iCurrHeroLife>=2) {
+		else if (iCurrHeroLife>=3) {//2) {
 			myCanvasContext.fillStyle = "#ff6b00"; //orange
 		}
 		else {
+			//due to min damage is 2;
+			if (iCurrHeroLife==2) {
+				iCurrHeroLife=1;
+			}
+		
 /*		
 			//myCanvasContext.fillStyle = "#ff0000"; //red
 			iCurrHeroLifeAnimationDelayCount=(iCurrHeroLifeAnimationDelayCount+1)%iCurrHeroLifeAnimationDelayCountMax;
@@ -1945,10 +1958,39 @@ var bIsHeroFacingUp=false;
 		//myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
 		
 		//textLifeBarDiv.clientWidth
+		//min damage is now 2
+		var iXPosOffset=2*iHeroLifeBarWidth;
 		
-		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
+		myCanvasContext.fillRect(0+iXPos-iXPosOffset, 0+iYPos, iXPosOffset+iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
 	}	
 	
+
+	//edited by Mike, 20251112
+	function reduceHeroMana(iAmount) {
+		//iCurrHeroMana-=3;
+		iCurrHeroManaToBeDeducted+=iAmount;
+		
+		if (iCurrHeroManaToBeDeducted>iCurrHeroManaMax) {
+			iCurrHeroManaToBeDeducted=iCurrHeroManaMax;
+		}
+		
+		//TODO: -update: to use function; with iCurrHeroManaToBeDeducted as parameter
+		if (iCurrHeroMana-iCurrHeroManaToBeDeducted<=0) {
+			iCurrHeroMana=0;
+			iCurrHeroManaToBeDeducted=0;
+			iCurrHeroManaToBeDeductedAnimationMain=0;
+			return false;
+		}
+		
+		iCurrHeroProjectileManaAnimationDelayCount=0;
+		iCurrHeroManaToBeDeductedAnimation+=iCurrHeroManaToBeDeducted;
+		
+		iCurrHeroManaToBeDeductedAnimationMain=iCurrHeroManaMax-iCurrHeroManaToBeDeductedAnimation;
+
+		
+		
+		return true;
+	}
 
 	function drawHeroManaBar(myCanvasContext, iXPos, iYPos) {	
 
@@ -1995,12 +2037,12 @@ var bIsHeroFacingUp=false;
 		//removed by Mike, 20251108
 		//if (mainImageTileFireballProjectile.style.visibility=="hidden") {
 
-			
 		
 			if (iCurrHeroProjectileManaAnimationDelayCount==iCurrHeroProjectileManaAnimationDelayCountMax) {
 				if (iCurrHeroMana<iCurrHeroManaMax) {
 					iCurrHeroMana++;
 				}			
+				
 				iCurrHeroProjectileManaAnimationDelayCount=0;
 			}
 			else {
@@ -2008,23 +2050,40 @@ var bIsHeroFacingUp=false;
 			}
 		//}
 
-/*
+			if (iCurrHeroManaToBeDeductedAnimationDelayCount==iCurrHeroManaToBeDeductedAnimationDelayCountMax) {
+				if (iCurrHeroManaToBeDeductedAnimation>0) {
+					//alert(iCurrHeroManaToBeDeductedAnimation);
+					iCurrHeroManaToBeDeductedAnimation--;
+				}
+				
+				iCurrHeroManaToBeDeductedAnimationDelayCount=0;
+			}
+			else {
+				iCurrHeroManaToBeDeductedAnimationDelayCount++;
+			}
+
+
+
 			//added by Mike, 20251111
 			//TODO: -update: this
 			if (iCurrHeroManaToBeDeducted>0) {
+/*
 				if (iCurrHeroManaToBeDeducted>iCurrHeroManaMax) {
 					iCurrHeroManaToBeDeducted=iCurrHeroManaMax;
 				}
 			
+*/
 				iCurrHeroMana-=iCurrHeroManaToBeDeducted;
-				
+				//iCurrHeroManaToBeDeductedAnimationMain-=iCurrHeroManaToBeDeducted;
+
+/*				
 				if (iCurrHeroMana<0) {
 					iCurrHeroMana=0;
 				}
-				
+*/				
 				iCurrHeroManaToBeDeducted=0;
 			}
-*/
+
 
 		//added by Mike, 20251111
 		if (iCurrHeroMana<=0) {
@@ -2037,6 +2096,11 @@ var bIsHeroFacingUp=false;
 			myCanvasContext.lineWidth = 0.2; 
 			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
 		}
+
+		myCanvasContext.fillStyle = 'yellow';
+
+		//myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*(iCurrHeroMana+ iCurrHeroManaToBeDeductedAnimation), iHeroManaBarHeight);
+		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*(iCurrHeroManaToBeDeductedAnimationMain+iCurrHeroManaToBeDeductedAnimation), iHeroManaBarHeight);
 
 			
 /*
@@ -5426,7 +5490,14 @@ alert("iInputY: "+iInputY);
 				//verify if hero attacked
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 
-					//edited by Mike, 20251111; from 20251108
+					//edited by Mike, 20251112; from 20251111
+					var bReduceHeroManaOutput=reduceHeroMana(3);
+					
+					if (!bReduceHeroManaOutput) {
+						return;
+					}
+					
+/*	
 					iCurrHeroMana-=3;
 					//iCurrHeroManaToBeDeducted+=3;
 					
@@ -5437,6 +5508,7 @@ alert("iInputY: "+iInputY);
 						iCurrHeroMana=0;
 						return;
 					}
+*/
 									
 					bHasHeroHitMonster=true;
 					iHeroAttackAnimationDelayCount=0;
@@ -6058,17 +6130,26 @@ alert("iInputY: "+iInputY);
 
 					//verify if hero attacked
 					if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
-					
+
+						//edited by Mike, 20251112; from 20251111
+						var bReduceHeroManaOutput=reduceHeroMana(3);
+						
+						if (!bReduceHeroManaOutput) {
+							return;
+						}
+						
+	/*	
 						iCurrHeroMana-=3;
 						//iCurrHeroManaToBeDeducted+=3;
-
-						iCurrHeroProjectileManaAnimationDelayCount=0;
 						
+						iCurrHeroProjectileManaAnimationDelayCount=0;
+
 						//TODO: -update: to use function; with iCurrHeroManaToBeDeducted as parameter
 						if (iCurrHeroMana<=0) {
 							iCurrHeroMana=0;
 							return;
 						}
+	*/
 										
 						bHasHeroHitMonster=true;
 						iHeroAttackAnimationDelayCount=0;
