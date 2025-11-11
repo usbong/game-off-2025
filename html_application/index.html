@@ -1020,6 +1020,9 @@ var iCurrHeroLifeAnimationDelayCountMax=5;
 
 const iCurrHeroManaMax=20;//10;
 var iCurrHeroMana=iCurrHeroManaMax;
+
+var iCurrHeroManaToBeDeducted=0;
+
 var iCurrHeroManaAnimationDelayCount=0;
 var iCurrHeroManaAnimationDelayCountMax=5;
 var iCurrHeroProjectileManaAnimationDelayCount=0;
@@ -1985,11 +1988,14 @@ var bIsHeroFacingUp=false;
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight);
 
 
+
 //		if ((bHasFireballReachedDestinationX) && (bHasFireballReachedDestinationY)){
 			//iCurrHeroMana=iCurrHeroManaMax;
 		
 		//removed by Mike, 20251108
 		//if (mainImageTileFireballProjectile.style.visibility=="hidden") {
+
+			
 		
 			if (iCurrHeroProjectileManaAnimationDelayCount==iCurrHeroProjectileManaAnimationDelayCountMax) {
 				if (iCurrHeroMana<iCurrHeroManaMax) {
@@ -2001,6 +2007,37 @@ var bIsHeroFacingUp=false;
 				iCurrHeroProjectileManaAnimationDelayCount++;
 			}
 		//}
+
+/*
+			//added by Mike, 20251111
+			//TODO: -update: this
+			if (iCurrHeroManaToBeDeducted>0) {
+				if (iCurrHeroManaToBeDeducted>iCurrHeroManaMax) {
+					iCurrHeroManaToBeDeducted=iCurrHeroManaMax;
+				}
+			
+				iCurrHeroMana-=iCurrHeroManaToBeDeducted;
+				
+				if (iCurrHeroMana<0) {
+					iCurrHeroMana=0;
+				}
+				
+				iCurrHeroManaToBeDeducted=0;
+			}
+*/
+
+		//added by Mike, 20251111
+		if (iCurrHeroMana<=0) {
+			myCanvasContext.strokeStyle = 'red'; //white
+			myCanvasContext.lineWidth = 0.2; 
+			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
+		}
+		else {
+			myCanvasContext.strokeStyle = 'black'; 
+			myCanvasContext.lineWidth = 0.2; 
+			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
+		}
+
 			
 /*
 		myCanvasContext.fillStyle = "#ffffff"; //white		
@@ -2026,11 +2063,8 @@ var bIsHeroFacingUp=false;
 
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroMana, iHeroManaBarHeight);
 		
-		//*iCurrHeroManaMax
-		
 		//OK; goes up
 		//myCanvasContext.fillRect(0+iXPos+textManaBarDiv.innerHTML.length*4, 0+iYPos, iHeroManaBarWidth, -iHeroManaBarHeight/iCurrHeroManaMax*(iCurrHeroMana));
-
 	}		
 
 	function drawPearlStatus(myCanvasContext, iXPos, iYPos) {	
@@ -5392,10 +5426,13 @@ alert("iInputY: "+iInputY);
 				//verify if hero attacked
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 
-					//added by Mike, 20251108
+					//edited by Mike, 20251111; from 20251108
 					iCurrHeroMana-=3;
-					iCurrHeroProjectileManaAnimationDelayCount=0;
+					//iCurrHeroManaToBeDeducted+=3;
 					
+					iCurrHeroProjectileManaAnimationDelayCount=0;
+
+					//TODO: -update: to use function; with iCurrHeroManaToBeDeducted as parameter
 					if (iCurrHeroMana<=0) {
 						iCurrHeroMana=0;
 						return;
@@ -5921,7 +5958,8 @@ alert("iInputY: "+iInputY);
 									}
 								}
 								
-								if (!bHasHeroChangedFacingLeftOrRight) {
+								//removed by Mike, 20251111
+								//if (!bHasHeroChangedFacingLeftOrRight) {
 									if (!bIsHeroFacingUpOrDown) {
 										if (heroImageTilePosX>monsterImageTilePosX) {	
 											bIsHeroFacingLeft=true;
@@ -5932,8 +5970,8 @@ alert("iInputY: "+iInputY);
 											bIsHeroFacingLeftOrRight=true;					
 										}
 									}
-									bHasHeroChangedFacingLeftOrRight=true;
-								}
+									//bHasHeroChangedFacingLeftOrRight=true;
+								//}
 							}
 						}
 						
@@ -6022,8 +6060,11 @@ alert("iInputY: "+iInputY);
 					if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 					
 						iCurrHeroMana-=3;
+						//iCurrHeroManaToBeDeducted+=3;
+
 						iCurrHeroProjectileManaAnimationDelayCount=0;
 						
+						//TODO: -update: to use function; with iCurrHeroManaToBeDeducted as parameter
 						if (iCurrHeroMana<=0) {
 							iCurrHeroMana=0;
 							return;
