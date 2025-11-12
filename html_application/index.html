@@ -1092,6 +1092,9 @@ var iAnimationDelayCount=10; //0
 var iAnimationDelayCountMax=10;
 */
 
+var iTextTriangleAnimationCount=0;
+const iTextTriangleAnimationCountMax=5;
+
 var iRiverAnimationCount=-1;//0; start at -1
 var iRiverAnimationCountMax=5;
 var iRiverAnimationDelayCount=10; //bat; //0
@@ -1365,6 +1368,9 @@ var iCurrTextCharacterCount=0;
 var iCurrTextCharacterCountMax=0;
 var sCurrText="";
 var sText="";
+var iCurrTextCharacterCountEffectDelayCount=0;
+const iCurrTextCharacterCountEffectDelayCountMax=5;
+
 
 //added by Mike, 20231128
 var iTitlePressStartEffectDelayCount=0;
@@ -1903,7 +1909,34 @@ var bIsHeroFacingUp=false;
 			myCanvasContext.fillRect(0+iXPos+iColumnCount*iMiniMapRoomWidth+iMiniMapSpacing*iColumnCount, 0+iYPos+iRowCount*iMiniMapRoomHeight+iMiniMapSpacing*iRowCount, iMiniMapRoomWidth, iMiniMapRoomHeight);			
 		}		
 	}
-	
+
+	//z-index; text background covers it
+	function drawTextTriangle(myCanvasTwoContext, iXPos, iYPos) {
+		//reference Google AI Overview;
+		myCanvasTwoContext.beginPath(); // Start a new path
+/*
+		myCanvasTwoContext.moveTo(100, 100); // Move to the first point
+		myCanvasTwoContext.lineTo(300, 100); // Draw a line to the second point
+		myCanvasTwoContext.lineTo(200, 300); // Draw a line to the third point
+		myCanvasTwoContext.closePath(); // Close the path, connecting the third point back to the first
+*/
+		iSide=2;
+
+		myCanvasTwoContext.moveTo(iXPos, iYPos); // Move to the first point
+		myCanvasTwoContext.lineTo(iXPos+iSide, iYPos); // Draw a line to the second point
+		myCanvasTwoContext.lineTo(iXPos+1, iYPos+iSide); // Draw a line to the third point
+		myCanvasTwoContext.closePath(); // Close the path, connecting the third point back to the first
+
+		// Optional: Style the triangle
+		myCanvasTwoContext.fillStyle = 'red'; // Set fill color
+		myCanvasTwoContext.fill(); // Fill the triangle
+
+		myCanvasTwoContext.strokeStyle = 'white';//red'; // Set stroke color
+		myCanvasTwoContext.lineWidth = 2; // Set line width
+		myCanvasTwoContext.stroke(); // Draw the outline
+
+	}
+
 	function drawHeroLifeBar(myCanvasContext, iXPos, iYPos) {
 		var iHeroLifeBarWidth=4;
 		var iHeroLifeBarHeight=4;		
@@ -1929,6 +1962,12 @@ var bIsHeroFacingUp=false;
 		else {
 			iCurrHeroLifeToBeDeductedAnimationDelayCount++;
 		}
+
+
+		//added by Mike, 20251111
+		myCanvasContext.strokeStyle = 'black'; 
+		myCanvasContext.lineWidth = 0.2; 
+		myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight); 
 
 		//textLifeBarDiv.clientWidth
 /*
@@ -1989,7 +2028,7 @@ var bIsHeroFacingUp=false;
 				
 				//edited by Mike, 20251112
 				if (iCurrHeroLifeToBeDeductedAnimation==0) {
-					myCanvasContext.fillStyle = "#000000"; //black
+					myCanvasContext.fillStyle = "#2d2622"; //"#000000"; //black
 				}
 			}			
 			iCurrHeroLifeAnimationDelayCount++;			
@@ -2033,7 +2072,6 @@ var bIsHeroFacingUp=false;
 			//iCurrHeroLifeToBeDeducted=0;
 		}
 	
-		
 		iCurrHeroProjectileLifeAnimationDelayCount=0;
 		iCurrHeroLifeToBeDeductedAnimation+=iCurrHeroLifeToBeDeducted;
 		
@@ -2059,10 +2097,49 @@ var bIsHeroFacingUp=false;
 		}
 		
 		if (iCurrHeroMana-iCurrHeroManaToBeDeducted<=0) {
-			iCurrHeroMana=0;
 			iCurrHeroManaToBeDeducted=0;
+			iCurrHeroMana=0;
+			return false;
+		}
+		
+		//added by Mike, 20251112
+		if (iCurrHeroManaToBeDeducted>0) {
+			iCurrHeroMana-=iCurrHeroManaToBeDeducted;
+			//iCurrHeroManaToBeDeducted=0;
+		}
+
+/*		
+		iCurrHeroProjectileManaAnimationDelayCount=0;
+
+		//if (iCurrHeroManaToBeDeductedAnimation==0) {
+			iCurrHeroManaToBeDeductedAnimation+=iCurrHeroManaToBeDeducted;
+		//}
+		
+		iCurrHeroManaToBeDeductedAnimationMain=iCurrHeroManaMax-iCurrHeroManaToBeDeductedAnimation;
+*/
+		
+		return true;
+	}
+	
+	//edited by Mike, 20251112
+	function reduceHeroManaBuggy(iAmount) {
+		//iCurrHeroMana-=3;
+		iCurrHeroManaToBeDeducted+=iAmount;
+		
+		if (iCurrHeroManaToBeDeducted>iCurrHeroManaMax) {
+			iCurrHeroManaToBeDeducted=iCurrHeroManaMax;
+		}
+		
+		if (iCurrHeroMana-iCurrHeroManaToBeDeducted<=0) {
+			//iCurrHeroManaToBeDeducted=0;
+			iCurrHeroManaToBeDeducted=iCurrHeroMana;
+
+			iCurrHeroMana=0;
+			
+			
 			//iCurrHeroManaToBeDeductedAnimation=0;
 			iCurrHeroManaToBeDeductedAnimationMain=0;
+			
 			return false;
 		}
 		
@@ -2073,7 +2150,10 @@ var bIsHeroFacingUp=false;
 		}
 		
 		iCurrHeroProjectileManaAnimationDelayCount=0;
-		iCurrHeroManaToBeDeductedAnimation+=iCurrHeroManaToBeDeducted;
+
+		//if (iCurrHeroManaToBeDeductedAnimation==0) {
+			iCurrHeroManaToBeDeductedAnimation+=iCurrHeroManaToBeDeducted;
+		//}
 		
 		iCurrHeroManaToBeDeductedAnimationMain=iCurrHeroManaMax-iCurrHeroManaToBeDeductedAnimation;
 		
@@ -3251,26 +3331,59 @@ alert("iInputY: "+iInputY);
 		}
 */
 
+
 		//added by Mike, 20251105
 		//------------------
-		if (iHeroAttackComboCount>0) {
-			//alert(iHeroAttackComboCount);
-			if (!bIsHeroFacingUpOrDown) {
-			}
-			else {
-				//draw the horizontal flip;
-				//if (bIsHeroFacingLeftPrev==bIsHeroFacingLeft) {
-					if (bIsHeroFacingLeft) {
-						bIsHeroFacingLeft=false;
+/*		//BUGGY;
+		if ((actorLastAttackedByHero) &&
+			(actorLastAttackedByHero.style.visibility=="visible")) {
+				
+			//if ((bHasHeroHitMonster) && (iHeroAttackComboCount>0)) {
+			if (iHeroAttackComboCount>0) {
+			
+				if (heroImageTilePosY>monsterImageTilePosY) {
+				//if (heroImageTilePosY>monsterImageTilePosY+iImageFrameHeightLarge/2) {
+					bIsHeroFacingUp=true;
+					bIsHeroFacingUpOrDown=true;					
+				}
+				else { //hero is on top of monster in y-axis;
+				//else if (heroImageTilePosY+iImageFrameHeightLarge/2<monsterImageTilePosY) {
+
+					bIsHeroFacingUp=false;
+
+					if (bIsHeroFacingUpOrDown) {
+					}				
+					//hero facing only left or right
+					else {
+						bIsHeroFacingUpOrDown=false;//true;			
+					}
+				}
+								
+				//if (!bHasHeroChangedFacingLeftOrRight) {
+					if (!bIsHeroFacingUpOrDown) {
+						if (heroImageTilePosX>monsterImageTilePosX) {	
+							bIsHeroFacingLeft=true;
+							bIsHeroFacingLeftOrRight=true;					
+						}
+						else { //hero is on top of monster in y-axis;
+							bIsHeroFacingLeft=false;
+							bIsHeroFacingLeftOrRight=true;					
+						}
 					}
 					else {
-						bIsHeroFacingLeft=true;
+						if (bIsHeroFacingLeft) {
+							bIsHeroFacingLeft=false;
+							bIsHeroFacingLeftOrRight=true;
+						}
+						else {
+							bIsHeroFacingLeft=true;
+							bIsHeroFacingLeftOrRight=true;
+						}
 					}
-				//}
 			}
 		}
-		
 		iHeroAttackComboCount=0;
+*/
 		//------------------
 
 		if (iHeroAnimationDelayCount==iHeroAnimationDelayCountMax) {
@@ -5534,9 +5647,9 @@ alert("iInputY: "+iInputY);
 				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 
 					//edited by Mike, 20251112; from 20251111
-					var bReduceHeroManaOutput=reduceHeroMana(3);
+					var bHasReducedHeroManaOutput=reduceHeroMana(3);
 					
-					if (!bReduceHeroManaOutput) {
+					if (!bHasReducedHeroManaOutput) {
 						return;
 					}
 					
@@ -6175,9 +6288,9 @@ alert("iInputY: "+iInputY);
 					if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
 
 						//edited by Mike, 20251112; from 20251111
-						var bReduceHeroManaOutput=reduceHeroMana(3);
+						var bHasReducedHeroManaOutput=reduceHeroMana(3);
 						
-						if (!bReduceHeroManaOutput) {
+						if (!bHasReducedHeroManaOutput) {
 							return;
 						}
 						
@@ -7065,7 +7178,8 @@ alert("iInputY: "+iInputY);
 			//edited by Mike, 20251108
 			//sText = "The river underground<br/>hides 6 precious pearls.<br/><br/>But only those who can<br/>find its amulet would be<br/>granted the river's power.";
 			
-			sText = "・・・・・・勝負だ！！！";
+			//sText = "・・・・・・勝負だ！！！";
+			sText = "GAME & WATCH !?";
 
 			//var sCurrText="";
 			
@@ -7073,10 +7187,18 @@ alert("iInputY: "+iInputY);
 			
 			//include last character
 //			if (iCurrTextCharacterCount<iCurrTextCharacterCountMax) {
-			if (iCurrTextCharacterCount<=iCurrTextCharacterCountMax) {
-				sCurrText=sText.substring(0,iCurrTextCharacterCount);
+			if (iCurrTextCharacterCountEffectDelayCount>=iCurrTextCharacterCountEffectDelayCountMax) {
+
+				if (iCurrTextCharacterCount<=iCurrTextCharacterCountMax) {
+					sCurrText=sText.substring(0,iCurrTextCharacterCount);
+				}
+				iCurrTextCharacterCount++;
+				
+				iCurrTextCharacterCountEffectDelayCount=0;
 			}
-			iCurrTextCharacterCount++;
+			else {
+				iCurrTextCharacterCountEffectDelayCount++;
+			}
 
   			textStatusDiv.innerHTML = sCurrText;//sText;
 
@@ -7098,7 +7220,8 @@ alert("iInputY: "+iInputY);
   			//iOffsetHeight
   			//textStatusDiv.style.top = 0+iStageMaxHeight-iTextStatusDivHeight*1.5+"px";
   			//textStatusDiv.style.top = 0+"px";
-			textStatusDiv.style.top = 0+(iStageMaxHeight*0.10)+"px";
+			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.10)+"px";
+			textStatusDiv.style.top = 0+(iStageMaxHeight*0.15)+"px";
   			
   			textStatusDiv.style.visibility="visible";
 			mainImageTileProjectile.style.visibility="hidden";
@@ -7112,6 +7235,21 @@ alert("iInputY: "+iInputY);
 			textStatusBackgroundDiv.style.width=iStageMaxWidth*0.5;
 
 			textStatusBackgroundDiv.style.height=iStageMaxHeight*0.20;////iStageMaxHeight*0.5;	
+			
+			//added by Mike, 20251112
+			//-----
+/*			//buggy;
+			if (iTextTriangleAnimationCount>=iTextTriangleAnimationCountMax) {
+				//myCanvasTwoContext.clear();
+				iTextTriangleAnimationCount=0;
+			}
+			else {
+				drawTextTriangle(myCanvasTwoContext,0+iStageMaxWidth/2-textStatusBackgroundDiv.clientWidth/2,0+(iStageMaxHeight*0.15)); 
+
+				iTextTriangleAnimationCount++;
+			}
+*/			
+			//-----
 			
 			executeTimeDisplay();
 
@@ -7628,6 +7766,10 @@ alert("iInputY: "+iInputY);
 		//iCurrMapLocation=1;
 		//iCurrMapLocation=32;
 		//iCurrMapLocation=22;
+		
+		if (!bHasViewedMissionIntro) {
+			return;
+		}
 
 		switch(iCurrMapLocation) {
 			//OK; TOP DOOR; REST of the sides WALLS
@@ -7695,11 +7837,34 @@ alert("iInputY: "+iInputY);
 						
 						arrayActors[iArrayActorsCount]=arrayWraithMonsterCountId[iCount][MONSTER_OBJECT];
 
+						//-----
+/*						
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT]=10;
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT_MAX]=5;//6;	
+
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_COUNT]=-1;		
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_COUNT_MAX]=4;//5;		
+
+						arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY]=0;		
+						arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY_MAX]=15*(iCount+1);
+						arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=IDLE_STATE;
+*/
+						arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_HP]=WRAITH_MONSTER_HP_MAX;
+/*						
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY]=0;		
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY_MAX]=200;
+
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT]=-1;
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT_MAX]=4;
+*/
+						//-----
+
+
 						arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
 
 						iArrayActorsCount++;
 					}
-			
+
 					arrayWraithMonsterCountId[0][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2-iImageFrameWidthDefault*2;
 					arrayWraithMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4-iImageFrameHeightDefault/2;
 					
@@ -7713,6 +7878,22 @@ alert("iInputY: "+iInputY);
 					arrayWraithMonsterCountId[3][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*4;
 					
 					arrayWraithMonsterCountId[3][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+
+/*
+					arrayWraithMonsterCountId[0][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2-iImageFrameWidthDefault*2-iImageFrameWidthDefault*(window.parseInt(Math.random()*5)%10);
+					arrayWraithMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4-iImageFrameHeightDefault/2;
+					
+					arrayWraithMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2+iImageFrameWidthDefault+iImageFrameWidthDefault*(window.parseInt(Math.random()*5)%10);
+					arrayWraithMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4-iImageFrameHeightDefault/2;
+
+					arrayWraithMonsterCountId[2][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2-iImageFrameWidthDefault*(window.parseInt(Math.random()*5)%10);
+					
+					arrayWraithMonsterCountId[2][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+					
+					arrayWraithMonsterCountId[3][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*4+iImageFrameWidthDefault*(window.parseInt(Math.random()*5)%10);
+					
+					arrayWraithMonsterCountId[3][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+*/
 										
 					arrayWraithMonsterCountId[0][MONSTER_STEPX]=2;
 					arrayWraithMonsterCountId[0][MONSTER_STEPY]=2;
@@ -7898,13 +8079,21 @@ alert("iInputY: "+iInputY);
 				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault) {
 					//OK;
 					mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
-					resetProjectile();			
+					resetProjectile();	
+
+					//added by Mike, 20251112
+					iCurrMapLocation=53;
+					hasInitMapLocation=false;					
 				}
 				//left-most
 				else if (mainImageTilePosX<0+(iInnerHorizontalOffset)) {
 					//OK;
 					mainImageTilePosX=0+(iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthDefault-iImageFrameWidthDefault);
 					resetProjectile();
+
+					//added by Mike, 20251112
+					iCurrMapLocation=53;
+					hasInitMapLocation=false;					
 				}
 				break;		
 			//OK; TOP, LEFT, BOTTOM DOORS; REST of the sides WALLS
@@ -10141,7 +10330,7 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 			else {
 				//added by Mike, 20251105
 				//iHeroAttackComboCount=0;
-			
+
 				executeHeroWalkingAnimation();
 			}
 		}
