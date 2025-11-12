@@ -34,6 +34,10 @@ auto-sorted z-index using what I remembered about Quicksort
 
 improved enemy AI though initial conditions could still be improved
 
+6) https://masarapmabuhay.itch.io/game-off-2025-prototype5
+
+GAME & WATCH !? Improved Life and "Mana"
+
 <!--
 
 4) https://masarapmabuhay.itch.io/game-off-2024-prototype3
