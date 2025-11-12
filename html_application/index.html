@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251112; from 20251111
+' @date updated: 20251113; from 20251112
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -5644,7 +5644,9 @@ alert("iInputY: "+iInputY);
 				//---------------------------------------				
 				
 				//verify if hero attacked
-				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
+				//edited by Mike, 20251113
+				//if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
+				if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2))) {
 
 					//edited by Mike, 20251112; from 20251111
 					var bHasReducedHeroManaOutput=reduceHeroMana(3);
@@ -6238,8 +6240,9 @@ alert("iInputY: "+iInputY);
 
 			//+iImageFrameWidthDefault/2; iImageFrameHeightDefault/2
 				//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidth, iImageFrameHeight, iImageFrameWidthDefault, iImageFrameHeightDefault)) {			
-				
+				//edited by Mike, 20251113
 				if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {
+				//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2)) {
 				
 					//TODO: -add: auto-update z-index
 					//updateHeroZIndex(mainImageTileHeroBody,inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT]);
@@ -6285,7 +6288,9 @@ alert("iInputY: "+iInputY);
 					}
 
 					//verify if hero attacked
-					if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
+					//edited by Mike, 20251113
+					//if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge, iImageFrameHeightLarge, iImageFrameWidthLarge, iImageFrameHeightLarge))) {
+					if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2))) {
 
 						//edited by Mike, 20251112; from 20251111
 						var bHasReducedHeroManaOutput=reduceHeroMana(3);
@@ -10832,10 +10837,14 @@ alert("iDeltaY: "+iDeltaY);
 		//added by Mike, 20251102
 		bIsHeroFacingLeftOrRight=true;
 
-		if (iDeltaX<0-iImageFrameWidthLarge/2) {
+		//edited by Mike, 20251113
+		//causes the error; facing to right
+		//if (iDeltaX<0-iImageFrameWidthLarge/2) {
+		if (iDeltaX<0-iImageFrameWidthLarge/4) {
 			bIsHeroFacingLeft=true;
 		}
-		else if (iDeltaX>0+iImageFrameWidthLarge/2) {
+		//else if (iDeltaX>0+iImageFrameWidthLarge/2) {
+		else if (iDeltaX>0+iImageFrameWidthLarge/4) {
 			bIsHeroFacingLeft=false;
 		}
 		else {
