@@ -1018,6 +1018,18 @@ var iCurrHeroLife=iCurrHeroLifeMax;
 var iCurrHeroLifeAnimationDelayCount=0;
 var iCurrHeroLifeAnimationDelayCountMax=5;
 
+var iCurrHeroLifeToBeDeducted=0;
+var iCurrHeroLifeToBeDeductedAnimation=0;
+var iCurrHeroLifeToBeDeductedAnimationMain=iCurrHeroLifeMax;
+
+var iCurrHeroLifeAnimationDelayCount=0;
+var iCurrHeroLifeAnimationDelayCountMax=5;
+var iCurrHeroProjectileLifeAnimationDelayCount=0;
+var iCurrHeroProjectileLifeAnimationDelayCountMax=6;
+
+var iCurrHeroLifeToBeDeductedAnimationDelayCount=0;
+var iCurrHeroLifeToBeDeductedAnimationDelayCountMax=5;
+
 const iCurrHeroManaMax=20;//10;
 var iCurrHeroMana=iCurrHeroManaMax;
 
@@ -1893,23 +1905,6 @@ var bIsHeroFacingUp=false;
 	}
 	
 	function drawHeroLifeBar(myCanvasContext, iXPos, iYPos) {
-
-/*	
-		var textLifeBarDiv = document.getElementById("textLifeBarDivId");
-		
-		textLifeBarDiv.style.visibility="visible";
-		textLifeBarDiv.style.left=0+iXPos+"px"; //+iImageFrameWidthDefault
-		textLifeBarDiv.style.top=0+iYPos+"px"; //+iImageFrameHeightDefault*0.9
-				
-		textLifeBarDiv.innerHTML = "HP";
-*/			
-/*	
-		var heroLifeBarStatusImageTile = document.getElementById("heroLifeBarStatusImageTileId");
-
-		heroLifeBarStatusImageTile.style.visibility="visible";
-		heroLifeBarStatusImageTile.style.left=0+iXPos+"px"; 
-		heroLifeBarStatusImageTile.style.top=0+iYPos+"px";
-*/		
 		var iHeroLifeBarWidth=4;
 		var iHeroLifeBarHeight=4;		
 		var iHeroLifeBarSpacing=0;//1;
@@ -1919,6 +1914,45 @@ var bIsHeroFacingUp=false;
 		myCanvasContext.fillStyle = "#2d2622"; //"#736157"; //#ffffff; //"#ff0000";	
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight);
 
+		//added by Mike, 20251112
+		//---------------------------------		
+		if (iCurrHeroLifeToBeDeductedAnimationDelayCount==iCurrHeroLifeToBeDeductedAnimationDelayCountMax) {
+			if (iCurrHeroLifeToBeDeductedAnimation>0) {
+				
+				//alert(iCurrHeroLifeToBeDeductedAnimation);
+				
+				iCurrHeroLifeToBeDeductedAnimation--;
+			}
+			
+			iCurrHeroLifeToBeDeductedAnimationDelayCount=0;
+		}
+		else {
+			iCurrHeroLifeToBeDeductedAnimationDelayCount++;
+		}
+
+		//textLifeBarDiv.clientWidth
+/*
+		//blinking red 2 bar;
+		var iXPosOffset=0;
+		if (iCurrHeroLife<=3) {
+			iXPosOffset=2*iHeroLifeBarWidth;
+		}
+*/		
+		myCanvasContext.fillStyle = 'yellow';
+
+		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*(iCurrHeroLifeToBeDeductedAnimationMain+iCurrHeroLifeToBeDeductedAnimation), iHeroLifeBarHeight);
+		
+		//myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*(iCurrHeroLifeMax), iHeroLifeBarHeight);
+
+		//---------------------------------
+
+
+		if (iCurrHeroLifeToBeDeducted>0) {
+			//iCurrHeroLife-=iCurrHeroLifeToBeDeducted;
+			iCurrHeroLifeToBeDeducted=0;
+		}		
+
+
 		if (iCurrHeroLife>=10) { //5) {
 			myCanvasContext.fillStyle = "#00c7ff"; //sky blue
 		}
@@ -1926,10 +1960,12 @@ var bIsHeroFacingUp=false;
 			myCanvasContext.fillStyle = "#ff6b00"; //orange
 		}
 		else {
+/*		
 			//due to min damage is 2;
 			if (iCurrHeroLife==2) {
 				iCurrHeroLife=1;
 			}
+*/
 		
 /*		
 			//myCanvasContext.fillStyle = "#ff0000"; //red
@@ -1950,20 +1986,68 @@ var bIsHeroFacingUp=false;
 				if (iCurrHeroLifeAnimationDelayCount>20) {//10) {
 					iCurrHeroLifeAnimationDelayCount=0;
 				}
-				myCanvasContext.fillStyle = "#000000"; //black
+				
+				//edited by Mike, 20251112
+				if (iCurrHeroLifeToBeDeductedAnimation==0) {
+					myCanvasContext.fillStyle = "#000000"; //black
+				}
 			}			
 			iCurrHeroLifeAnimationDelayCount++;			
 		}
 		
 		//myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
 		
-		//textLifeBarDiv.clientWidth
-		//min damage is now 2
-		var iXPosOffset=2*iHeroLifeBarWidth;
-		
-		myCanvasContext.fillRect(0+iXPos-iXPosOffset, 0+iYPos, iXPosOffset+iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
+
+		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
 	}	
 	
+	//edited by Mike, 20251112
+	function reduceHeroLifeBar(iAmount) {
+/*	
+		iCurrHeroLife-=iAmount;
+		
+		if (iCurrHeroLife<0) {
+			iCurrHeroLife=0;
+			return;
+		}
+*/			
+			
+		//iCurrHeroMana-=3;
+		iCurrHeroLifeToBeDeducted+=iAmount*3;
+		
+		if (iCurrHeroLifeToBeDeducted>iCurrHeroLifeMax) {
+			iCurrHeroLifeToBeDeducted=iCurrHeroLifeMax;
+		}
+		
+		if (iCurrHeroLife-iCurrHeroLifeToBeDeducted<=0) {
+			iCurrHeroLife=0;
+			iCurrHeroLifeToBeDeducted=0;
+			//iCurrHeroManaToBeDeductedAnimation=0;
+			iCurrHeroLifeToBeDeductedAnimationMain=iCurrHeroLifeMax;
+			return false;
+		}
+
+
+		if (iCurrHeroLifeToBeDeducted>0) {
+			iCurrHeroLife-=iCurrHeroLifeToBeDeducted;
+			//iCurrHeroLifeToBeDeducted=0;
+		}
+	
+		
+		iCurrHeroProjectileLifeAnimationDelayCount=0;
+		iCurrHeroLifeToBeDeductedAnimation+=iCurrHeroLifeToBeDeducted;
+		
+		//iCurrHeroLifeToBeDeductedAnimationMain=iCurrHeroLifeMax-iCurrHeroLifeToBeDeductedAnimation;
+		
+		iCurrHeroLifeToBeDeductedAnimationMain=iCurrHeroLifeToBeDeductedAnimationMain-iCurrHeroLifeToBeDeductedAnimation;
+		
+/*		
+		alert("iCurrHeroLifeToBeDeductedAnimation: "+iCurrHeroLifeToBeDeductedAnimation);
+		alert("iCurrHeroLifeToBeDeductedAnimationMain: "+iCurrHeroLifeToBeDeductedAnimationMain);
+*/		
+		
+		return true;
+	}
 
 	//edited by Mike, 20251112
 	function reduceHeroMana(iAmount) {
@@ -1974,20 +2058,24 @@ var bIsHeroFacingUp=false;
 			iCurrHeroManaToBeDeducted=iCurrHeroManaMax;
 		}
 		
-		//TODO: -update: to use function; with iCurrHeroManaToBeDeducted as parameter
 		if (iCurrHeroMana-iCurrHeroManaToBeDeducted<=0) {
 			iCurrHeroMana=0;
 			iCurrHeroManaToBeDeducted=0;
+			//iCurrHeroManaToBeDeductedAnimation=0;
 			iCurrHeroManaToBeDeductedAnimationMain=0;
 			return false;
+		}
+		
+		//added by Mike, 20251112
+		if (iCurrHeroManaToBeDeducted>0) {
+			iCurrHeroMana-=iCurrHeroManaToBeDeducted;
+			//iCurrHeroManaToBeDeducted=0;
 		}
 		
 		iCurrHeroProjectileManaAnimationDelayCount=0;
 		iCurrHeroManaToBeDeductedAnimation+=iCurrHeroManaToBeDeducted;
 		
 		iCurrHeroManaToBeDeductedAnimationMain=iCurrHeroManaMax-iCurrHeroManaToBeDeductedAnimation;
-
-		
 		
 		return true;
 	}
@@ -1995,25 +2083,7 @@ var bIsHeroFacingUp=false;
 	function drawHeroManaBar(myCanvasContext, iXPos, iYPos) {	
 
 		var mainImageTileFireballProjectile = document.getElementById("mainImageTileFireballProjectileImageId");
-/*
-		var textManaBarDiv = document.getElementById("textManaBarDivId");
-				
-		//textManaBarDiv.style.visibility="visible";
-		textManaBarDiv.style.visibility="hidden";
 
-		textManaBarDiv.style.left=0+iXPos+"px"; //+iImageFrameWidthDefault
-		textManaBarDiv.style.top=0+iYPos+"px"; //+iImageFrameHeightDefault*0.9
-				
-		textManaBarDiv.innerHTML = "MP";
-*/
-/*
-		var heroLifeBarStatusImageTile = document.getElementById("heroLifeBarStatusImageTileId");
-*/
-
-/*		//goes up
-		var iHeroManaBarWidth=10;
-		var iHeroManaBarHeight=4*iCurrHeroManaMax;		
-*/
 		var iHeroManaBarWidth=4;
 		var iHeroManaBarHeight=4;		
 
@@ -2021,23 +2091,9 @@ var bIsHeroFacingUp=false;
 		var iHeroManaBarPaddingX=2;
 		var iHeroManaBarPaddingY=2;
 
-/*		
-		var iCurrHeroManaMax=10; //recharge
-		var iCurrHeroMana=iCurrHeroManaMax; 
-*/		
-
 		myCanvasContext.fillStyle = "#2d2622"; //"#736157"; //#ffffff; //"#ff0000";	
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight);
 
-
-
-//		if ((bHasFireballReachedDestinationX) && (bHasFireballReachedDestinationY)){
-			//iCurrHeroMana=iCurrHeroManaMax;
-		
-		//removed by Mike, 20251108
-		//if (mainImageTileFireballProjectile.style.visibility=="hidden") {
-
-		
 			if (iCurrHeroProjectileManaAnimationDelayCount==iCurrHeroProjectileManaAnimationDelayCountMax) {
 				if (iCurrHeroMana<iCurrHeroManaMax) {
 					iCurrHeroMana++;
@@ -2062,28 +2118,12 @@ var bIsHeroFacingUp=false;
 				iCurrHeroManaToBeDeductedAnimationDelayCount++;
 			}
 
-
-
-			//added by Mike, 20251111
-			//TODO: -update: this
-			if (iCurrHeroManaToBeDeducted>0) {
-/*
-				if (iCurrHeroManaToBeDeducted>iCurrHeroManaMax) {
-					iCurrHeroManaToBeDeducted=iCurrHeroManaMax;
-				}
-			
-*/
-				iCurrHeroMana-=iCurrHeroManaToBeDeducted;
-				//iCurrHeroManaToBeDeductedAnimationMain-=iCurrHeroManaToBeDeducted;
-
-/*				
-				if (iCurrHeroMana<0) {
-					iCurrHeroMana=0;
-				}
-*/				
-				iCurrHeroManaToBeDeducted=0;
-			}
-
+		//added by Mike, 20251111
+		//TODO: -update: this
+		if (iCurrHeroManaToBeDeducted>0) {
+			//iCurrHeroMana-=iCurrHeroManaToBeDeducted;
+			iCurrHeroManaToBeDeducted=0;
+		}
 
 		//added by Mike, 20251111
 		if (iCurrHeroMana<=0) {
@@ -5186,12 +5226,15 @@ alert("iInputY: "+iInputY);
 		bIsHeroAttacked=true;
 		bIsExecutingShake=true;
 
+/*		//edited by Mike, 20251112
 		//iCurrHeroLife--;
 		iCurrHeroLife-=iMonsterAttackDamage;
 		
 		if (iCurrHeroLife<0) {
 			iCurrHeroLife=0;
 		}
+*/		
+		reduceHeroLifeBar(iMonsterAttackDamage);
 				
 		iHeroInvincibileCount=0;
 				
