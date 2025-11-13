@@ -1235,6 +1235,13 @@ var iHeroAttackEffectAnimationCountMax=5;
 var iHeroAttackEffectAnimationDelayCount=0;
 var iHeroAttackEffectAnimationDelayCountMax=2;//2;//1;
 
+//added by Mike, 20251113
+var iWalkOnSnowEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
+const iWalkOnSnowEffectAnimationCountMax=1;//3;
+var iWalkOnSnowEffectAnimationDelayCount=0;
+var iWalkOnSnowEffectAnimationDelayCountMax=2;//2;//1;
+
+
 var iMonsterBossAttackDelayCount=0;
 var iMonsterBossAttackDelayCountMax=120;
 
@@ -1253,6 +1260,9 @@ var iImageDustEffectAnimationHeight=32;
 
 var iImageHeroAttackEffectAnimationWidth=32;
 var iImageHeroAttackEffectAnimationHeight=32;
+
+var iImageSnowEffectAnimationWidth=32;
+var iImageSnowEffectAnimationHeight=32;
 
 var iTransitionRotate=0;
 var iTransitionScale=0;//1;
@@ -3228,6 +3238,26 @@ alert("iInputY: "+iInputY);
 		heroAttackEffectImage.style.left = iInputX;
 		heroAttackEffectImage.style.top = iInputY;		
 	} 
+	
+	//added by Mike, 20251113
+	//TODO: -update: this
+	function setWalkOnSnowEffectPosition(iInputX, iInputY) {
+		var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+
+		if (walkOnSnowEffectImage.style.visibility=="visible") {
+		  return;
+		}
+
+		walkOnSnowEffectImage.style.objectPosition = "-" + 0 + "px -" + iImageFrameHeightDefault + "px";
+		walkOnSnowEffectImage.style.visibility="visible";
+
+		iWalkOnSnowEffectAnimationDelayCount=iWalkOnSnowEffectAnimationDelayCountMax;
+		iWalkOnSnowEffectAnimationCount=-1; //0;
+
+		//if facing right;
+		walkOnSnowEffectImage.style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2;
+		walkOnSnowEffectImage.style.top = iInputY+iImageFrameHeightLarge;		
+	} 
   
   	//added by Mike, 20231128
 	function executeEnterClickAnimation() {	
@@ -3492,11 +3522,17 @@ alert("iInputY: "+iInputY);
 		//mainImageTileHeroBody.style.visibility="visible";
 
 		if (iHeroAttackAnimationDelayCount==0) {//iHeroAnimationDelayCountMax) {
-			iHeroAttackAnimationCount=(iHeroAttackAnimationCount+1)%4; //last hidden
+			//iHeroAttackAnimationCount=(iHeroAttackAnimationCount+1)%4; //last hidden
+			if (iHeroAttackAnimationCount>3) {
+				//alert(iHeroAnimationCount);
+				iHeroAttackAnimationDelayCount=0;
+				iHeroAttackAnimationCount=0;
 
-			//alert(iHeroAnimationCount);
-
-			iHeroAttackAnimationDelayCount=0;
+				bHasHeroHitMonster=false;		
+			}
+			else {
+				iHeroAttackAnimationCount++
+			}
 		}
 		else {
 			iHeroAttackAnimationDelayCount++;
@@ -3561,7 +3597,7 @@ alert("iInputY: "+iInputY);
 		////mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 		
 		//alert("DITO!");
-		
+/*				
 		//TODO: -add: constant 3; for last animation frame of four frames
 		if (iHeroAttackAnimationCount>=3) {
 
@@ -3574,8 +3610,15 @@ alert("iInputY: "+iInputY);
 			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*1 - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 		}
 		else {
+*/		
+			
+			//alert(iHeroAttackAnimationCount);
+		
 			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAttackAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+/*			
+			//mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*(iHeroAttackAnimationCount-1) - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 		}
+*/		
 	}
 
 	//added by Mike, 20251105
@@ -3818,13 +3861,19 @@ alert("iInputY: "+iInputY);
 
 		//alert(iSkelMonsterAttackAnimationCount);
 
-		if (iSkelMonsterAnimationDelayCount>=iSkelMonsterAnimationDelayCountMax) {
-			iSkelMonsterAttackAnimationCount=(iSkelMonsterAttackAnimationCount+1);//%4; //last hidden
+		//if (iSkelMonsterAnimationDelayCount>=iSkelMonsterAnimationDelayCountMax) {
+		if (iSkelMonsterAnimationDelayCount>=0) { //iSkelMonsterAnimationDelayCountMax/2) {
+		
+			//iSkelMonsterAttackAnimationCount=(iSkelMonsterAttackAnimationCount+1);//%4; //last hidden
 
-			if (iSkelMonsterAttackAnimationCount>=iSkelMonsterAttackAnimationCountMax) {
+			//if (iSkelMonsterAttackAnimationCount>=iSkelMonsterAttackAnimationCountMax) {
+			if (iSkelMonsterAttackAnimationCount>iSkelMonsterAttackAnimationCountMax) {
 				iSkelMonsterAttackAnimationCount=0;
 				skelMonsterTileAttackDelay=0;
 				currSkelMonsterTileState=IDLE_STATE;
+			}
+			else {
+				iSkelMonsterAttackAnimationCount++;
 			}
 
 
@@ -4328,11 +4377,14 @@ alert("iInputY: "+iInputY);
 		inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.visibility="visible";
 	
 	
-		if (inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]>=inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT_MAX]) {
+		//if (inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]>=inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT_MAX]) {
+		
+		if (inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]>=0) {
 		
 			inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]=(inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]+1);//%4; //last hidden
 
-			if (inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]>=inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT_MAX]) {
+			//if (inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]>=inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT_MAX]) {
+			if (inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]>inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT_MAX]) {
 				
 				inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]=0;
 				
@@ -4347,11 +4399,11 @@ alert("iInputY: "+iInputY);
 		else {
 			//alert(inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]);
 		
-			inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]++;
+			inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]++;
 		}
 
 		var iFrameY=0;
-		var iFrameXOffset=iImageFrameWidthLarge*4;//0;
+		var iFrameXOffset=0;//iImageFrameWidthLarge*4;//0;
 		
 		if (inputArrayWraithMonsterWithIdCount[MONSTER_POSX]+iImageFrameWidthLarge/4<mainImageTilePosX) {
 			iFrameY=iImageFrameHeightLarge*0; //face right
@@ -4391,11 +4443,17 @@ alert("iInputY: "+iInputY);
 			}
 		}
 		
-		//alert(iSkelMonsterAnimationDelayCount);
+		//alert(inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]);
 		
-		inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT] + "px -" + iFrameY + "px";
+		//inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]
+		
+		//inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + (iFrameXOffset-iImageFrameWidthLarge*inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]) + "px -" + iFrameY + "px";
+		
+		//mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAttackAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+
+		inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT] - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";		
+		
 	}
-	
 	
 	
 	function executeSnakeMonsterWalkingAnimation(inputArraySnakeMonsterWithIdCount) {		
@@ -5199,11 +5257,13 @@ alert("iInputY: "+iInputY);
 	//added by Mike, 20241113
 	function executeHeroAttackEffect() {
 		var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");
-
+/*
 		if (heroAttackEffectImage.style.visibility=="hidden") {
 			return;
 		}
+*/
 
+/*
 		if (iHeroAttackEffectAnimationDelayCount==iHeroAttackEffectAnimationDelayCountMax) {
 			iHeroAttackEffectAnimationCount=(iHeroAttackEffectAnimationCount+1)%4;//5; //last hidden
 
@@ -5212,32 +5272,25 @@ alert("iInputY: "+iInputY);
 		else {
 			iHeroAttackEffectAnimationDelayCount++;
 		}
+*/
+
+		if (iHeroAttackEffectAnimationCount>iHeroAttackEffectAnimationCountMax) {
+			iHeroAttackEffectAnimationCount=0;
+			iHeroAttackEffectAnimationDelayCount=0;
+			
+			heroAttackEffectImage.style.visibility="hidden";
+		}
+		else {
+			iHeroAttackEffectAnimationCount++;
+		}
+		
+		iHeroAttackEffectAnimationDelayCount=0;
+		
 		
 		//dustEffectImage.style.objectPosition = "-" + 0 + "px -" + 256 + "px";
 
 		//alert("iDustEffectAnimationCount: "+iDustEffectAnimationCount);
-
 /*
-		//heroAttackEffectImage is 32px below dustEffectImage
-		if (iHeroAttackEffectAnimationCount==0) { //%2
-			heroAttackEffectImage.style.objectPosition = "-" + 0 + "px -" + (256+iImageDustEffectAnimationHeight) + "px";
-		}
-		else if (iHeroAttackEffectAnimationCount==1) {
-			heroAttackEffectImage.style.objectPosition = "-" + iImageHeroAttackEffectAnimationWidth + "px -" + (256+iImageDustEffectAnimationHeight) + "px";
-			//alert(">>>>");
-		}
-		else if (iHeroAttackEffectAnimationCount==2) {
-			heroAttackEffectImage.style.objectPosition = "-" + iImageHeroAttackEffectAnimationWidth*2 + "px -" + (256+iImageDustEffectAnimationHeight) + "px";
-			//alert(">>>>");
-		}
-////		else if (iExplosionEffectAnimationCount==3) {
-////			explosionEffectImage.style.objectPosition = "-" + 128*3 + "px -" + 0 + "px";
-////			//alert(">>>>");
-////		}	
-		else {
-			heroAttackEffectImage.style.visibility="hidden";
-		}		
-*/
 		if (iHeroAttackEffectAnimationCount==0) { //%2
 			heroAttackEffectImage.style.objectPosition = "-" + 0 + "px -" + (0) + "px";
 		}
@@ -5252,7 +5305,34 @@ alert("iInputY: "+iInputY);
 		else {
 			heroAttackEffectImage.style.visibility="hidden";
 		}		
+*/
+		heroAttackEffectImage.style.objectPosition = "-" + iImageHeroAttackEffectAnimationWidth*iHeroAttackEffectAnimationCount + "px -" + (0) + "px";
 	}		
+	
+	//added by Mike, 20251113
+	function executeWalkOnSnowEffect() {
+		var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+
+		if (iWalkOnSnowEffectAnimationCount>=iWalkOnSnowEffectAnimationCountMax) {
+			iWalkOnSnowEffectAnimationCount=0;
+			iWalkOnSnowEffectAnimationDelayCount=0;
+			
+			walkOnSnowEffectImage.style.visibility="hidden";
+		}
+		else {
+			iWalkOnSnowEffectAnimationCount++;
+		}
+		
+		//iWalkOnSnowEffectAnimationDelayCount=0;
+		
+		//alert(iWalkOnSnowEffectAnimationCount);
+		
+		//walkOnSnowEffectImage.style.objectPosition = "-" + iImageHeroAttackEffectAnimationWidth*iWalkOnSnowEffectAnimationCount + "px -" + (iImageHeroAttackEffectAnimationHeight) + "px";
+	
+		//walkOnSnowEffectImage.style.objectPosition = "-" + iImageSnowEffectAnimationWidth*2 + "px -" + (iImageSnowEffectAnimationHeight) + "px";
+
+		walkOnSnowEffectImage.style.objectPosition = "-" + iImageSnowEffectAnimationWidth*iWalkOnSnowEffectAnimationCount + "px -" + (iImageSnowEffectAnimationHeight) + "px";
+	}
 
 	function isElapsedTimeUnderThreeMins() {	
 		return true;
@@ -6959,7 +7039,11 @@ alert("iInputY: "+iInputY);
     //added by Mike, 20231126
     var myCanvasTwo = document.getElementById("myCanvasTwoId");
     var myCanvasTwoContext = myCanvasTwo.getContext("2d");
-    //myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight)
+    
+	//added by Mike, 20251113
+	myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+	myCanvasTwoContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+
 
     //edited by Mike, 20231126
     /*myCanvasTwoContext.fillStyle = "#000000"; //"#ffffff"; //white background//stage
@@ -7460,6 +7544,9 @@ alert("iInputY: "+iInputY);
 		updateHeroFireballProjectileHoldPositions();
 
 	//executeExplosionEffectToMonsterBoss();
+	
+	//added by Mike, 20251113
+	//executeWalkOnSnowEffect();
 
 	executeDustEffect();
 	executeHeroAttackEffect();
@@ -10870,6 +10957,10 @@ alert("iDeltaY: "+iDeltaY);
 		//added by Mike, 20241105
 		setDustEffectPosition(mainImageTilePosX,mainImageTilePosY);
 		
+		//added by Mike, 20251113
+		//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY);
+
+		
 		
 //added by Mike, 20241113
 setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameWidthDefault/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightDefault/2); //mainImageTilePosX,mainImageTilePosY);
@@ -11709,7 +11800,7 @@ opting to put assets folder in "html_application" folder instead
 	
 		<img id="mainImageTileImageTankBodyId" class="ImageTankFrame1" src="assets/images/inputImageLarge.png?lastmod=20241110">
 		
-		<img id="mainImageTileImageHeroBodyId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251106T1030">		
+		<img id="mainImageTileImageHeroBodyId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251113T1113">		
 
 		<img id="skelMonsterImageId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251104T1007">
 
@@ -11799,6 +11890,8 @@ opting to put assets folder in "html_application" folder instead
 	<img id="initFireballEffectImageId" class="ImageInitFireball" src="assets/images/effectsSmall.png">
 
 	<img id="heroAttackEffectImageId" class="ImageHeroAttack" src="assets/images/heroEffectsSmall.png?lastmod=20241128T1010">
+
+	<img id="walkOnSnowEffectImageId" class="ImageHeroAttack" src="assets/images/heroEffectsSmall.png?lastmod=20251113">
 
  
 	<div id="divSnowEffectId0" class="myDivSnowEffect"></div>
