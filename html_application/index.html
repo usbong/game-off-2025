@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251113; from 20251112
+' @date updated: 20251114; from 20251113
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1116,7 +1116,7 @@ const iSkelMonsterAnimationCountMax=5;
 var iSkelMonsterAnimationDelayCount=10; //bat; //0
 const iSkelMonsterAnimationDelayCountMax=5;//6;
 
-var iSkelMonsterAttackAnimationCount=-1;//0; start at -1
+var iSkelMonsterAttackAnimationCount=0;//-1;//0; start at -1
 const iSkelMonsterAttackAnimationCountMax=4;
 
 
@@ -1285,7 +1285,7 @@ var iHeroAnimationCountMax=5;
 var iHeroAnimationDelayCount=0;
 var iHeroAnimationDelayCountMax=5;//2;//1; //TODO: -add: more dust effect if target walking distance is far
 
-var iHeroAttackAnimationCount=-1; //0; //due to immediately +1 in execution;
+var iHeroAttackAnimationCount=0;//-1; //0; //due to immediately +1 in execution;
 var iHeroAttackAnimationCountMax=5;
 var iHeroAttackAnimationDelayCount=0;
 var iHeroAttackAnimationDelayCountMax=5;//2;//1; //TODO: -add: more dust effect if target walking distance 
@@ -2776,7 +2776,7 @@ var bIsHeroFacingUp=false;
 			arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY]=0;		
 			arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY_MAX]=200;
 
-			arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT]=-1;
+			arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT]=0;//-1;
 			arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT_MAX]=4;
 			
 			arrayWraithMonsterCountId[iCount][MONSTER_IS_IN_RIVER]=false;
@@ -3256,7 +3256,7 @@ alert("iInputY: "+iInputY);
 
 		//if facing right;
 		walkOnSnowEffectImage.style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2;
-		walkOnSnowEffectImage.style.top = iInputY+iImageFrameHeightLarge;		
+		walkOnSnowEffectImage.style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;		
 	} 
   
   	//added by Mike, 20231128
@@ -3614,7 +3614,7 @@ alert("iInputY: "+iInputY);
 			
 			//alert(iHeroAttackAnimationCount);
 		
-			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAttackAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+			mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*(iHeroAttackAnimationCount-1) - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 /*			
 			//mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*(iHeroAttackAnimationCount-1) - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 		}
@@ -3949,7 +3949,7 @@ alert("iInputY: "+iInputY);
 		
 		//alert(iSkelMonsterAnimationDelayCount);
 		
-		skelMonsterImageTile.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iSkelMonsterAttackAnimationCount + "px -" + iFrameY + "px";
+		skelMonsterImageTile.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*(iSkelMonsterAttackAnimationCount-1) + "px -" + iFrameY + "px";
 	}
 
 
@@ -4451,7 +4451,7 @@ alert("iInputY: "+iInputY);
 		
 		//mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAttackAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
 
-		inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT] - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";		
+		inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*(inputArrayWraithMonsterWithIdCount[MONSTER_ATTACK_ANIMATION_COUNT]-1) - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";		
 		
 	}
 	
@@ -7546,7 +7546,7 @@ alert("iInputY: "+iInputY);
 	//executeExplosionEffectToMonsterBoss();
 	
 	//added by Mike, 20251113
-	//executeWalkOnSnowEffect();
+	executeWalkOnSnowEffect();
 
 	executeDustEffect();
 	executeHeroAttackEffect();
@@ -10460,13 +10460,15 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 
 
 //-----------------
-
+/*
 		if (bIsHeroInTank) {
 			iImageFrameWidth=iImageFrameWidthLarge;
 		}
 		else {
 			iImageFrameWidth=iImageFrameWidthDefault;
+			//iImageFrameWidth=iImageFrameWidthLarge;
 		}
+*/
 
 		//destination to the left of hero projectile
 		//if (!bHasReachedDestinationX) {
@@ -10499,6 +10501,7 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 				}				
 			}
 		//}
+
 		
 		//if (!bHasReachedDestinationY) {		
 			//destination to the top of hero projectile
@@ -10536,7 +10539,9 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 				resetProjectile();				
 			}				
 
-			if (mainImageTileProjectilePosX+iImageFrameWidth>iStageMaxWidth+iHorizontalOffset) {
+			//if (mainImageTileProjectilePosX+iImageFrameWidth>iStageMaxWidth+iHorizontalOffset) {
+			if (mainImageTileProjectilePosX+iImageFrameWidthLarge/2>iStageMaxWidth+iHorizontalOffset) {
+
 	//+iImageFrameWidth
 				resetProjectile();
 			}
@@ -10544,7 +10549,8 @@ mainImageTileProjectilePosY=parseInt(mainImageTileProjectilePosY)+newMainImageTi
 					resetProjectile();
 			}
 
-			if (mainImageTileProjectilePosY+iImageFrameHeight/2>iStageMaxHeight) {
+			//if (mainImageTileProjectilePosY+iImageFrameHeight/2>iStageMaxHeight) {
+			if (mainImageTileProjectilePosY+iImageFrameHeightLarge/2>iStageMaxHeight) {
 				resetProjectile();
 			}
 			else if (mainImageTileProjectilePosY<0) {
@@ -10939,6 +10945,25 @@ alert("iDeltaY: "+iDeltaY);
 		}
 			
 		//added by Mike, 20251102
+/*
+		bIsHeroFacingUpOrDown=false;
+
+		//if (iDeltaY<0-iImageFrameHeightLarge/2) {
+		if (iDeltaY<0-iImageFrameHeightLarge) {
+		//if (iDeltaY<0) {
+			bIsHeroFacingUp=false;
+			bIsHeroFacingUpOrDown=true;
+		}
+		//else if (iDeltaY>0+iImageFrameHeightLarge/2) {
+		else if (iDeltaY>0+iImageFrameHeightLarge) {
+		//else if (iDeltaY>0) {
+			bIsHeroFacingUp=true;
+			bIsHeroFacingUpOrDown=true;
+		}
+		else {
+			bIsHeroFacingUpOrDown=false;
+		}
+*/
 		bIsHeroFacingUpOrDown=true;
 
 		if (iDeltaY<0-iImageFrameHeightLarge/2) {
@@ -10951,14 +10976,13 @@ alert("iDeltaY: "+iDeltaY);
 			bIsHeroFacingUpOrDown=false;
 		}
 		
-		
 		//alert (iDeltaY);
 		
 		//added by Mike, 20241105
 		setDustEffectPosition(mainImageTilePosX,mainImageTilePosY);
 		
 		//added by Mike, 20251113
-		//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY);
+		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY);
 
 		
 		
