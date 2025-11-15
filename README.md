@@ -38,6 +38,10 @@ improved enemy AI though initial conditions could still be improved
 
 GAME & WATCH !? Improved Life and "Mana"
 
+7) https://masarapmabuhay.itch.io/game-off-2025-prototype6
+
+Snow
+
 <!--
 
 4) https://masarapmabuhay.itch.io/game-off-2024-prototype3
