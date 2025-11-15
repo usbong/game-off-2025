@@ -344,6 +344,16 @@
 
 			z-index: 10; /*4;*/
 		}
+
+		.ImageSnow {
+			position: absolute;
+
+			clip: rect(0px,32px,32px,0px);
+
+			visibility: hidden;
+
+			z-index: 10; /*4;*/
+		}
 		
 		.ImageHeroAttack {
 			position: absolute;
@@ -1021,7 +1031,7 @@ var iShakeOffsetWidth=iShakeOffsetWidthMax;
 var iShakeOffsetHeight=iShakeOffsetHeightMax;
 
 var iHeroInvincibileCount=0;
-var iHeroInvincibileCountMax=200;//100;//50;
+const iHeroInvincibileCountMax=200;//100;//50;
 
 var iCurrHeroLifeMax=20;//20;//10;
 var iCurrHeroLife=iCurrHeroLifeMax;
@@ -1054,6 +1064,9 @@ var iCurrHeroProjectileManaAnimationDelayCountMax=6;//5;//125;//5;
 
 var iCurrHeroManaToBeDeductedAnimationDelayCount=0;
 var iCurrHeroManaToBeDeductedAnimationDelayCountMax=5;//5;//125;//5;
+
+var iCurrHeroManaRechargeDelayCount=0;
+var iCurrHeroManaRechargeDelayCountMax=20;
 
 
 //added by Mike, 20251108
@@ -1234,6 +1247,16 @@ var iDustEffectAnimationCountMax=5;
 var iDustEffectAnimationDelayCount=0;
 var iDustEffectAnimationDelayCountMax=4;//1;
 
+//added by Mike, 20251115
+var iSnowEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
+const iSnowEffectAnimationCountMax=4;
+var iSnowEffectAnimationDelayCount=0;
+const iSnowEffectAnimationDelayCountMax=10;//1;
+
+var iCurrSnowEffectCount=0;
+const iCurrSnowEffectCountMax=16;
+
+
 var iInitFireballEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
 var iInitFireballEffectAnimationCountMax=5;
 var iInitFireballEffectAnimationDelayCount=0;
@@ -1251,9 +1274,9 @@ const iWalkOnSnowEffectAnimationCountMax=1;//3;
 var iWalkOnSnowEffectAnimationDelayCount=0;
 var iWalkOnSnowEffectAnimationDelayCountMax=2;//2;//1;
 
-var arrayWalkOnSnowEffect=[[],[]];
+var arrayWalkOnSnowEffect=[[],[],[],[]];
 var arrayWalkOnSnowEffectCount=0;
-const arrayWalkOnSnowEffectCountMax=2;
+const arrayWalkOnSnowEffectCountMax=4;
 
 
 var iMonsterBossAttackDelayCount=0;
@@ -1277,6 +1300,9 @@ var iImageHeroAttackEffectAnimationHeight=32;
 
 var iImageSnowEffectAnimationWidth=32;
 var iImageSnowEffectAnimationHeight=32;
+
+var iImageWalkOnSnowEffectAnimationWidth=32;
+var iImageWalkOnSnowEffectAnimationHeight=32;
 
 var iTransitionRotate=0;
 var iTransitionScale=0;//1;
@@ -2123,6 +2149,9 @@ var bIsHeroFacingUp=false;
 		if (iCurrHeroMana-iCurrHeroManaToBeDeducted<=0) {
 			iCurrHeroManaToBeDeducted=0;
 			iCurrHeroMana=0;
+			
+			iCurrHeroManaRechargeDelayCount=0;
+
 			return false;
 		}
 		
@@ -2200,7 +2229,14 @@ var bIsHeroFacingUp=false;
 
 			if (iCurrHeroProjectileManaAnimationDelayCount==iCurrHeroProjectileManaAnimationDelayCountMax) {
 				if (iCurrHeroMana<iCurrHeroManaMax) {
-					iCurrHeroMana++;
+					//iCurrHeroMana++;
+				
+					if (iCurrHeroManaRechargeDelayCount<iCurrHeroManaRechargeDelayCountMax) {
+						iCurrHeroManaRechargeDelayCount++;
+					}
+					else {
+						iCurrHeroMana++;
+					}
 				}			
 				
 				iCurrHeroProjectileManaAnimationDelayCount=0;
@@ -2229,8 +2265,10 @@ var bIsHeroFacingUp=false;
 			iCurrHeroManaToBeDeducted=0;
 		}
 
+/*
 		//added by Mike, 20251111
 		if (iCurrHeroMana<=0) {
+		
 			myCanvasContext.strokeStyle = 'red'; //white
 			myCanvasContext.lineWidth = 0.2; 
 			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
@@ -2240,12 +2278,14 @@ var bIsHeroFacingUp=false;
 			myCanvasContext.lineWidth = 0.2; 
 			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
 		}
-
+*/
+		
+/*
 		myCanvasContext.fillStyle = 'yellow';
 
 		//myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*(iCurrHeroMana+ iCurrHeroManaToBeDeductedAnimation), iHeroManaBarHeight);
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*(iCurrHeroManaToBeDeductedAnimationMain+iCurrHeroManaToBeDeductedAnimation), iHeroManaBarHeight);
-
+*/
 			
 /*
 		myCanvasContext.fillStyle = "#ffffff"; //white		
@@ -2255,6 +2295,28 @@ var bIsHeroFacingUp=false;
 		//myCanvasContext.fillStyle = "#000000"; //black		
 		//myCanvasContext.fillStyle = "#ff6b00"; //orange
 		//myCanvasContext.fillStyle = "#00dd00";
+
+
+		//added by Mike, 20251111
+		if (iCurrHeroMana<=0) {
+			//myCanvasContext.strokeStyle = 'red'; //white
+
+			if (iCurrHeroManaAnimationDelayCount<10) {//5) {
+				myCanvasContext.strokeStyle = "#cc0000";
+			}
+			else {
+				myCanvasContext.strokeStyle = "#ff0000"; //white
+			}
+
+			myCanvasContext.lineWidth = 0.5;//2; 
+			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
+		}
+		else {
+			myCanvasContext.strokeStyle = 'black'; 
+			myCanvasContext.lineWidth = 0.2; 
+			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
+		}
+
 
 		//Game Off 2021; TUGON
 		if (iCurrHeroManaAnimationDelayCount<10) {//5) {
@@ -3210,6 +3272,29 @@ alert("iInputY: "+iInputY);
 		dustEffectImage.style.top = iInputY+iImageDustEffectAnimationHeight/4; //near feet
 	}
 	
+	//added by Mike, 20251115
+	function setSnowEffectPosition(iInputX, iInputY, iCount) {
+		var snowEffectImage = document.getElementById("snowEffectImageId"+iCount);
+
+		if (snowEffectImage.style.visibility=="visible") {
+		  return;
+		}
+
+		snowEffectImage.style.objectPosition = "-" + 0 + "px -" + 0 + "px";
+
+		snowEffectImage.style.visibility="visible";
+
+		iSnowEffectAnimationDelayCount=iSnowEffectAnimationDelayCountMax;
+
+		iSnowEffectAnimationCount=-1; //0;
+/*
+alert("iInputX: "+iInputX);
+alert("iInputY: "+iInputY);
+*/
+		snowEffectImage.style.left = iInputX+"px";
+		snowEffectImage.style.top = iInputY+"px";
+	}	
+	
 	function setInitFireballEffectPosition(iInputX, iInputY) {
 		var initFireballEffectImage = document.getElementById("initFireballEffectImageId");
 
@@ -3260,7 +3345,12 @@ alert("iInputY: "+iInputY);
 		//var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
 		//var walkOnSnowEffectImage2 = document.getElementById("walkOnSnowEffectImageId2");
 
+		//alert("HALLO!!!");
+		
+		//alert(arrayWalkOnSnowEffectCount);
+
 		//for (arrayWalkOnSnowEffectCount=0; arrayWalkOnSnowEffectCount<arrayWalkOnSnowEffectCountMax; arrayWalkOnSnowEffectCount++) {
+		
 			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
 
 			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="visible") {
@@ -3270,17 +3360,51 @@ alert("iInputY: "+iInputY);
 			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + 0 + "px -" + iImageFrameHeightDefault + "px";
 			
 			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="visible";
+			
+			//alert("HALLO!"+arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility);
 
-			arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]=5;
+			arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]=10;//5;
 			arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]=arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX];
-			arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]=-1;
+			arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]=0;//-1;
 /*
 			iWalkOnSnowEffectAnimationDelayCount=iWalkOnSnowEffectAnimationDelayCountMax;
 			iWalkOnSnowEffectAnimationCount=-1; //0;
 */
-			//if facing right;
-			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2-(iImageFrameWidthDefault/4)*arrayWalkOnSnowEffectCount;
-			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;		
+/*
+				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2-(iImageFrameWidthDefault/4)*arrayWalkOnSnowEffectCount;
+				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;
+*/
+			if (bIsHeroFacingLeftOrRight) {
+				//if facing right;
+				if (!bIsHeroFacingLeft) {
+					//arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
+					//arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX;//-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
+
+
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;
+				}
+				//facing left
+				else {
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthLarge/2;//+(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
+
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;
+				}
+			}
+			
+			if (bIsHeroFacingUpOrDown) {
+				if (!bIsHeroFacingUp) {
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthDefault/2;//-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
+
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault;
+				}
+				//facing up
+				else {
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthDefault/2;
+
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameHeightDefault/2-iImageFrameHeightDefault/4;
+				}
+			}			
 		//}
 	} 
   
@@ -3340,111 +3464,24 @@ alert("iInputY: "+iInputY);
 	//added by Mike, 20241103
 	function executeHeroWalkingAnimation() {
 		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
-
+		
 		bIsHeroWalking=true;
-		
-		//edited by Mike, 20251108; from 20251105
-		//mainImageTileHeroBody.style.visibility="visible";
-
-		//error in output; always visible
-		//if (bIsHeroAttacked) {
-
-/*
-		if (iHeroInvincibileCount<iHeroInvincibileCountMax) {
-			if (iHeroInvincibileCount%2==0) {
-				mainImageTileHeroBody.style.visibility="visible";
-			}
-			else {
-				alert("DIT!@!!");
-				mainImageTileHeroBody.style.visibility="hidden";
-			}
-
-			//iHeroInvincibileCount++;
-		}
-		else {
-			mainImageTileHeroBody.style.visibility="visible";
-		}
-*/
-		
-/*		
-		if (iHeroInvincibileCount<iHeroInvincibileCountMax) {
-
-			////alert(iHeroInvincibileCount);
-			////alert(mainImageTileHeroBody.style.visibility);
-		
-			if (mainImageTileHeroBody.style.visibility=="hidden") {
-				mainImageTileHeroBody.style.visibility="visible";
-			}
-			else {
-				//alert("DITO!!!");
-
-				mainImageTileHeroBody.style.visibility="hidden";
-			}
-		}
-		else {
-			mainImageTileHeroBody.style.visibility="visible";
-		}
-*/
-
-
-		//added by Mike, 20251105
-		//------------------
-/*		//BUGGY;
-		if ((actorLastAttackedByHero) &&
-			(actorLastAttackedByHero.style.visibility=="visible")) {
-				
-			//if ((bHasHeroHitMonster) && (iHeroAttackComboCount>0)) {
-			if (iHeroAttackComboCount>0) {
-			
-				if (heroImageTilePosY>monsterImageTilePosY) {
-				//if (heroImageTilePosY>monsterImageTilePosY+iImageFrameHeightLarge/2) {
-					bIsHeroFacingUp=true;
-					bIsHeroFacingUpOrDown=true;					
-				}
-				else { //hero is on top of monster in y-axis;
-				//else if (heroImageTilePosY+iImageFrameHeightLarge/2<monsterImageTilePosY) {
-
-					bIsHeroFacingUp=false;
-
-					if (bIsHeroFacingUpOrDown) {
-					}				
-					//hero facing only left or right
-					else {
-						bIsHeroFacingUpOrDown=false;//true;			
-					}
-				}
-								
-				//if (!bHasHeroChangedFacingLeftOrRight) {
-					if (!bIsHeroFacingUpOrDown) {
-						if (heroImageTilePosX>monsterImageTilePosX) {	
-							bIsHeroFacingLeft=true;
-							bIsHeroFacingLeftOrRight=true;					
-						}
-						else { //hero is on top of monster in y-axis;
-							bIsHeroFacingLeft=false;
-							bIsHeroFacingLeftOrRight=true;					
-						}
-					}
-					else {
-						if (bIsHeroFacingLeft) {
-							bIsHeroFacingLeft=false;
-							bIsHeroFacingLeftOrRight=true;
-						}
-						else {
-							bIsHeroFacingLeft=true;
-							bIsHeroFacingLeftOrRight=true;
-						}
-					}
-			}
-		}
-		iHeroAttackComboCount=0;
-*/
-		//------------------
 
 		if (iHeroAnimationDelayCount==iHeroAnimationDelayCountMax) {
 			iHeroAnimationCount=(iHeroAnimationCount+1)%4; //last hidden
 
 			iHeroAnimationDelayCount=0;
+			
+			//-----------------------------
+			
+			//alert(iHeroAnimationCount);
+			
+			//there are four walk-in snow images with also four frames; 
+			//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,iHeroAnimationCount); 
+			setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0); 
+			
+			//-----------------------------
+		
 		}
 		else {
 			iHeroAnimationDelayCount++;
@@ -5230,6 +5267,61 @@ alert("iInputY: "+iInputY);
 			dustEffectImage.style.visibility="hidden";
 		}		
 	}
+
+	//added by Mike, 20251115
+	function executeSnowEffect(iCurrSnowEffectCount) {
+		var snowEffectImage = document.getElementById("snowEffectImageId"+iCurrSnowEffectCount);
+
+//alert("iCurrSnowEffectCount: "+iCurrSnowEffectCount)
+
+		if (snowEffectImage.style.visibility=="hidden") {
+			return;
+		}
+
+		if (iCurrSnowEffectCount==0) {
+			if (iSnowEffectAnimationDelayCount==iSnowEffectAnimationDelayCountMax) {
+				iSnowEffectAnimationCount=(iSnowEffectAnimationCount+1)%iSnowEffectAnimationCountMax;//5; //last hidden
+
+				iSnowEffectAnimationDelayCount=0;
+			}
+			else {
+				iSnowEffectAnimationDelayCount++;
+
+		//		alert("iExplosionEffectAnimationCount: "+iExplosionEffectAnimationCount);
+			}
+		}
+		
+		if (iSnowEffectAnimationCount<iSnowEffectAnimationCountMax) {
+			snowEffectImage.style.objectPosition = "-" + iImageSnowEffectAnimationWidth*iSnowEffectAnimationCount + "px -" + 0 + "px";
+		}
+		else {
+			//snowEffectImage.style.visibility="visible";
+			iSnowEffectAnimationCount=0;
+		}		
+		
+		//move the snow toward the bottom-left
+		iSnowEffectPosX=parseInt(snowEffectImage.style.left);
+		iSnowEffectPosY=parseInt(snowEffectImage.style.top);
+		
+		let iWrapOffsetX=iStageMaxWidth/2;
+		let iWrapOffsetY=iStageMaxHeight/4;
+		
+		if (iSnowEffectPosX<0) {
+			iSnowEffectPosX=iStageMaxWidth;
+		}
+		//add randomizing movement
+		//iSnowEffectPosX--;
+		//increase 5 to speed-up
+		iSnowEffectPosX-=window.parseInt(Math.random()*5)%5;
+		
+		if (iSnowEffectPosY>iStageMaxHeight-iWrapOffsetY) {
+			iSnowEffectPosY=0-iImageFrameHeightDefault-iWrapOffsetY;
+		}
+		iSnowEffectPosY++;
+		
+		snowEffectImage.style.left=iSnowEffectPosX+"px";
+		snowEffectImage.style.top=iSnowEffectPosY+"px";
+	}
 	
 	function executeInitFireballEffect() {
 		var initFireballEffectImage = document.getElementById("initFireballEffectImageId");
@@ -5348,11 +5440,13 @@ alert("iInputY: "+iInputY);
 			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
 
 			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="hidden") {
-				return;
+				//alert("arrayWalkOnSnowEffectCount!!!"+arrayWalkOnSnowEffectCount);
+					
+				continue;
+				//return;
 			}
 
-			if (arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]==arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]) {
-			
+			if (arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]==arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]) {			
 			
 				arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]=(arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]+1)%4;//5; //last hidden
 
@@ -5362,21 +5456,46 @@ alert("iInputY: "+iInputY);
 			}
 			else {
 				arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]++;
+/*				
+if (arrayWalkOnSnowEffectCount==0) {
+				alert("MONSTER_ANIMATION_DELAY_COUNT: "+arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]);
+}
+*/
 			}
 							
 			if (arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]<3) {
 				//arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="visible";
-			
-				//alert(arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]);
-			
-				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + iImageSnowEffectAnimationWidth*arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT] + "px -" + (iImageSnowEffectAnimationHeight) + "px";
+/*			
+if (arrayWalkOnSnowEffectCount==1) {
+	if (arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]==0) {
+				alert(arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]);
+	}
+}
+*/			
+
+
+//				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + iImageSnowEffectAnimationWidth*arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT] + "px -" + (iImageSnowEffectAnimationHeight) + "px";
+
+				if (bIsHeroFacingLeftOrRight) {
+					//if facing right;
+					if (!bIsHeroFacingLeft) {
+						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + iImageWalkOnSnowEffectAnimationWidth*arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT] + "px -" + (iImageWalkOnSnowEffectAnimationHeight) + "px";
+					}
+					else {					
+						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + iImageWalkOnSnowEffectAnimationWidth*arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT] + "px -" + (iImageWalkOnSnowEffectAnimationHeight*2) + "px";
+					}
+				}
+
+				if (bIsHeroFacingUpOrDown) {
+					if (!bIsHeroFacingUp) {
+						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + iImageWalkOnSnowEffectAnimationWidth*arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT] + "px -" + (iImageWalkOnSnowEffectAnimationHeight*4) + "px";
+					}
+					else {
+						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + iImageWalkOnSnowEffectAnimationWidth*arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT] + "px -" + (iImageWalkOnSnowEffectAnimationHeight*3) + "px";
+					}
+				}
 			}
 			else {
-				//TODO: -add: next
-				//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);
-	
-				//alert("DITO!!!");
-			
 				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
 			}
 		}
@@ -7144,6 +7263,9 @@ alert("iInputY: "+iInputY);
 		}
 */	
 	}
+	
+	
+	
 /*	
 	bossBattleBgImage.style.left=0+iHorizontalOffset+"px";
 	bossBattleBgImage.style.top=0+iVerticalOffsetInnerScreen+"px";	
@@ -7609,6 +7731,9 @@ alert("iInputY: "+iInputY);
 	executeDustEffect();
 	executeHeroAttackEffect();
 	executeInitFireballEffect();
+
+	//added by Mike, 20251115
+	//executeSnowEffect();
 	
 
 	//alert("mainImageTileProjectileVelocityY: "+mainImageTileProjectileVelocityY);
@@ -7703,16 +7828,32 @@ alert("iInputY: "+iInputY);
 	}
 */
 
-
+	//TODO: -update: this
 	if (iHeroInvincibileCount<iHeroInvincibileCountMax) {
 		if (iHeroInvincibileCount%2==0) {
-			mainImageTileHeroBody.style.visibility="visible";
+			mainImageTileHeroBody.style.visibility="hidden";
 		}
 		else {
-			mainImageTileHeroBody.style.visibility="hidden";
+			mainImageTileHeroBody.style.visibility="visible";
 		}
 
 		iHeroInvincibileCount++;
+
+
+/*
+			//Game Off 2021; TUGON
+			if (iHeroInvincibileCount<10) {
+				mainImageTileHeroBody.style.visibility="hidden";
+			}
+			else {
+				if (iHeroInvincibileCount>20/2) {//10) {
+					iHeroInvincibileCount=0;
+				}
+				mainImageTileHeroBody.style.visibility="visible";
+			}			
+			iHeroInvincibileCount++;	
+*/			
+			
 		bIsHeroAttacked=false;
 	}
 	else {
@@ -8057,7 +8198,23 @@ alert("iInputY: "+iInputY);
 					arrayWraithMonsterCountId[3][MONSTER_STEPX]=2;
 					arrayWraithMonsterCountId[3][MONSTER_STEPY]=2;
 
-
+					//for (iCurrSnowFlakeCount=0; iCurrSnowFlakeCount<10; iCurrSnowFlakeCount++) {
+					iCurrSnowEffectCount=0;
+					//4x4
+					for (iCurrSnowRow=0; iCurrSnowRow<4; iCurrSnowRow++) {
+						for (iCurrSnowColumn=0; iCurrSnowColumn<4; iCurrSnowColumn++) {
+						
+							let iOffsetX=iImageFrameWidthLarge*iCurrSnowEffectCount;
+							//let iOffsetY=iImageFrameHeightLarge*iCurrSnowEffectCount;
+							//setSnowEffectPosition(0+iCurrSnowColumn*64,0+iCurrSnowRow*64,iCurrSnowEffectCount);
+							
+							setSnowEffectPosition(0+iCurrSnowColumn*64+iOffsetX,0+iCurrSnowRow*64,iCurrSnowEffectCount);
+							
+							iCurrSnowEffectCount++;
+						}
+					}
+				
+	
 					hasInitMapLocation=true;					
 				}
 				
@@ -8120,6 +8277,12 @@ alert("iInputY: "+iInputY);
 				//added by Mike, 20251109
 				updateArrayActorsZIndex();
 				updateHeroFacingDirection();
+
+				//added by Mike, 20251115
+				for (iCurrSnowEffectCount=0; iCurrSnowEffectCount<iCurrSnowEffectCountMax; iCurrSnowEffectCount++) {
+					
+					executeSnowEffect(iCurrSnowEffectCount);
+				}
 
 
 /*
@@ -8226,7 +8389,8 @@ alert("iInputY: "+iInputY);
 				}
 */
 				//right-most
-				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault) {
+//				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault) {
+				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault*1.5) {
 					//OK;
 					mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
 					resetProjectile();	
@@ -8238,7 +8402,9 @@ alert("iInputY: "+iInputY);
 				//left-most
 				else if (mainImageTilePosX<0+(iInnerHorizontalOffset)) {
 					//OK;
-					mainImageTilePosX=0+(iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthDefault-iImageFrameWidthDefault);
+					//mainImageTilePosX=0+(iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthDefault-iImageFrameWidthDefault);
+					mainImageTilePosX=0+(iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthDefault-iImageFrameWidthDefault*1.5);
+
 					resetProjectile();
 
 					//added by Mike, 20251112
@@ -11045,8 +11211,8 @@ alert("iDeltaY: "+iDeltaY);
 		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,walkOnSnowEffectImage);
 		setWalkOnSnowEffectPosition(mainImageTilePosX-iImageFrameWidthDefault/2,mainImageTilePosY,walkOnSnowEffectImage2);
 */
-		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);
-		
+
+		//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);
 		
 //added by Mike, 20241113
 setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameWidthDefault/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightDefault/2); //mainImageTilePosX,mainImageTilePosY);
@@ -11973,12 +12139,35 @@ opting to put assets folder in "html_application" folder instead
 
 	<img id="dustEffectImageId" class="ImageDust" src="assets/images/effectsSmall.png">
 
+	<img id="snowEffectImageId0" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId1" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId2" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId3" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId4" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId5" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId6" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId7" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId8" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId9" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+
+	<img id="snowEffectImageId10" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId11" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId12" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId13" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId14" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId15" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+	<img id="snowEffectImageId16" class="ImageSnow" src="assets/images/miscEffects.png?lastmod=20251115T1643">
+
+
+
 	<img id="initFireballEffectImageId" class="ImageInitFireball" src="assets/images/effectsSmall.png">
 
 	<img id="heroAttackEffectImageId" class="ImageHeroAttack" src="assets/images/heroEffectsSmall.png?lastmod=20241128T1010">
 
 	<img id="walkOnSnowEffectImageId0" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
 	<img id="walkOnSnowEffectImageId1" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
+	<img id="walkOnSnowEffectImageId2" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
+	<img id="walkOnSnowEffectImageId3" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
 
  
 	<div id="divSnowEffectId0" class="myDivSnowEffect"></div>
