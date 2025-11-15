@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251114; from 20251113
+' @date updated: 20251115; from 20251114
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -354,6 +354,16 @@
 
 			z-index: 10; /*4;*/
 		}			
+
+		.ImageWalkOnSnowEffect {
+			position: absolute;
+
+			clip: rect(0px,32px,32px,0px);
+
+			visibility: hidden;
+
+			z-index: 3;
+		}
 		
 		.ImageHowToPlayGuide {
 			position: absolute;
@@ -1240,6 +1250,10 @@ var iWalkOnSnowEffectAnimationCount=-1; //0; //due to immediately +1 in executio
 const iWalkOnSnowEffectAnimationCountMax=1;//3;
 var iWalkOnSnowEffectAnimationDelayCount=0;
 var iWalkOnSnowEffectAnimationDelayCountMax=2;//2;//1;
+
+var arrayWalkOnSnowEffect=[[],[]];
+var arrayWalkOnSnowEffectCount=0;
+const arrayWalkOnSnowEffectCountMax=2;
 
 
 var iMonsterBossAttackDelayCount=0;
@@ -3241,22 +3255,33 @@ alert("iInputY: "+iInputY);
 	
 	//added by Mike, 20251113
 	//TODO: -update: this
-	function setWalkOnSnowEffectPosition(iInputX, iInputY) {
-		var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+	//function setWalkOnSnowEffectPosition(iInputX, iInputY) {
+	function setWalkOnSnowEffectPosition(iInputX, iInputY, arrayWalkOnSnowEffectCount) {	
+		//var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+		//var walkOnSnowEffectImage2 = document.getElementById("walkOnSnowEffectImageId2");
 
-		if (walkOnSnowEffectImage.style.visibility=="visible") {
-		  return;
-		}
+		//for (arrayWalkOnSnowEffectCount=0; arrayWalkOnSnowEffectCount<arrayWalkOnSnowEffectCountMax; arrayWalkOnSnowEffectCount++) {
+			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
 
-		walkOnSnowEffectImage.style.objectPosition = "-" + 0 + "px -" + iImageFrameHeightDefault + "px";
-		walkOnSnowEffectImage.style.visibility="visible";
+			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="visible") {
+			  return;
+			}
 
-		iWalkOnSnowEffectAnimationDelayCount=iWalkOnSnowEffectAnimationDelayCountMax;
-		iWalkOnSnowEffectAnimationCount=-1; //0;
+			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + 0 + "px -" + iImageFrameHeightDefault + "px";
+			
+			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="visible";
 
-		//if facing right;
-		walkOnSnowEffectImage.style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2;
-		walkOnSnowEffectImage.style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;		
+			arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]=5;
+			arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]=arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX];
+			arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]=-1;
+/*
+			iWalkOnSnowEffectAnimationDelayCount=iWalkOnSnowEffectAnimationDelayCountMax;
+			iWalkOnSnowEffectAnimationCount=-1; //0;
+*/
+			//if facing right;
+			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2-(iImageFrameWidthDefault/4)*arrayWalkOnSnowEffectCount;
+			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;		
+		//}
 	} 
   
   	//added by Mike, 20231128
@@ -5311,27 +5336,50 @@ alert("iInputY: "+iInputY);
 	
 	//added by Mike, 20251113
 	function executeWalkOnSnowEffect() {
-		var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+	//function executeWalkOnSnowEffect(walkOnSnowEffectImage) {
+		//var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+		//var walkOnSnowEffectImage2 = document.getElementById("walkOnSnowEffectImageId2");
 
-		if (iWalkOnSnowEffectAnimationCount>=iWalkOnSnowEffectAnimationCountMax) {
-			iWalkOnSnowEffectAnimationCount=0;
-			iWalkOnSnowEffectAnimationDelayCount=0;
+		for (arrayWalkOnSnowEffectCount=0; arrayWalkOnSnowEffectCount<arrayWalkOnSnowEffectCountMax; arrayWalkOnSnowEffectCount++) {
 			
-			walkOnSnowEffectImage.style.visibility="hidden";
-		}
-		else {
-			iWalkOnSnowEffectAnimationCount++;
-		}
-		
-		//iWalkOnSnowEffectAnimationDelayCount=0;
-		
-		//alert(iWalkOnSnowEffectAnimationCount);
-		
-		//walkOnSnowEffectImage.style.objectPosition = "-" + iImageHeroAttackEffectAnimationWidth*iWalkOnSnowEffectAnimationCount + "px -" + (iImageHeroAttackEffectAnimationHeight) + "px";
-	
-		//walkOnSnowEffectImage.style.objectPosition = "-" + iImageSnowEffectAnimationWidth*2 + "px -" + (iImageSnowEffectAnimationHeight) + "px";
+						//alert("DITO!!!");
 
-		walkOnSnowEffectImage.style.objectPosition = "-" + iImageSnowEffectAnimationWidth*iWalkOnSnowEffectAnimationCount + "px -" + (iImageSnowEffectAnimationHeight) + "px";
+			
+			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
+
+			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="hidden") {
+				return;
+			}
+
+			if (arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]==arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]) {
+			
+			
+				arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]=(arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]+1)%4;//5; //last hidden
+
+				arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]=0;
+				
+				//walkOnSnowEffectImage.style.visibility="hidden";
+			}
+			else {
+				arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]++;
+			}
+							
+			if (arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]<3) {
+				//arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="visible";
+			
+				//alert(arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]);
+			
+				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + iImageSnowEffectAnimationWidth*arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT] + "px -" + (iImageSnowEffectAnimationHeight) + "px";
+			}
+			else {
+				//TODO: -add: next
+				//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);
+	
+				//alert("DITO!!!");
+			
+				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
+			}
+		}
 	}
 
 	function isElapsedTimeUnderThreeMins() {	
@@ -6980,6 +7028,12 @@ alert("iInputY: "+iInputY);
 		//added by Mike, 20231126
 		var explosionEffectToMonsterImage = document.getElementById("explosionEffectToMonsterImageId");
 
+		//added by Mike, 20251115
+/*		
+		var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+		var walkOnSnowEffectImage2 = document.getElementById("walkOnSnowEffectImageId2");
+*/
+
 		//added by Mike, 20231121
 		var mouseInputImage = document.getElementById("mouseInputImageId");
 
@@ -7547,6 +7601,10 @@ alert("iInputY: "+iInputY);
 	
 	//added by Mike, 20251113
 	executeWalkOnSnowEffect();
+/*
+	executeWalkOnSnowEffect(walkOnSnowEffectImage);
+	executeWalkOnSnowEffect(walkOnSnowEffectImage2);
+*/
 
 	executeDustEffect();
 	executeHeroAttackEffect();
@@ -10610,7 +10668,7 @@ alert(Date.now()-iMouseClickStartTime);
 	var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
 	
 	//added by Mike, 20241113
-	var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");
+	var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");	
 	
 	//edited by Mike, 20241105; 20241103
 	bHasFiredTemp = bHasFired;
@@ -10982,8 +11040,12 @@ alert("iDeltaY: "+iDeltaY);
 		setDustEffectPosition(mainImageTilePosX,mainImageTilePosY);
 		
 		//added by Mike, 20251113
-		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY);
-
+		//var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
+/*		
+		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,walkOnSnowEffectImage);
+		setWalkOnSnowEffectPosition(mainImageTilePosX-iImageFrameWidthDefault/2,mainImageTilePosY,walkOnSnowEffectImage2);
+*/
+		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);
 		
 		
 //added by Mike, 20241113
@@ -11915,7 +11977,8 @@ opting to put assets folder in "html_application" folder instead
 
 	<img id="heroAttackEffectImageId" class="ImageHeroAttack" src="assets/images/heroEffectsSmall.png?lastmod=20241128T1010">
 
-	<img id="walkOnSnowEffectImageId" class="ImageHeroAttack" src="assets/images/heroEffectsSmall.png?lastmod=20251113">
+	<img id="walkOnSnowEffectImageId0" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
+	<img id="walkOnSnowEffectImageId1" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
 
  
 	<div id="divSnowEffectId0" class="myDivSnowEffect"></div>
