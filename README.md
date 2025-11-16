@@ -42,6 +42,10 @@ GAME & WATCH !? Improved Life and "Mana"
 
 Snow
 
+8) https://masarapmabuhay.itch.io/game-off-2025-prototype7
+
+Sniper Shot
+
 <!--
 
 4) https://masarapmabuhay.itch.io/game-off-2024-prototype3
