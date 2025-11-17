@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251115; from 20251114
+' @date updated: 20251117; from 20251115
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1108,9 +1108,16 @@ const sAudioEffectActionCannonFire ="assets/audio/usbongGameOff2023AudioEffectsC
 const sAudioBGM="assets/audio/usbongGameOff2023BGM.mp3";
 */
 
-const sAudioEffectActionCannonFire ="assets/audio/usbongGameOff2023AudioEffectsCannon.mp3";
+//const sAudioEffectActionCannonFire ="assets/audio/usbongGameOff2023AudioEffectsCannon.mp3";
 
-const sAudioEffectActionHitMetal ="assets/audio/usbongGameOff2025HitMetal.mp3";
+const sAudioEffectActionSwordSlice ="assets/audio/usbongGameOff2025SwordSlice.mp3";
+
+//OK; short
+//const sAudioEffectActionSwordSlice ="assets/audio/usbongGameOff2025Hit.mp3";
+
+//echoes;
+const sAudioEffectActionSwordOut ="assets/audio/usbongGameOff2025SwordOut.mp3";
+
 
 const sAudioEffectGrassCut ="assets/audio/usbongGameOff2023TapLoudEdited.mp3";
 
@@ -1853,10 +1860,62 @@ var bIsHeroFacingUp=false;
 			
 			//removed by Mike, 20251104
 			//mainImageTileHeroBody.style.visibility="visible";
+		
+			if (iHeroInvincibileCount<iHeroInvincibileCountMax/8) {
+				//mainImageTilePosX+=mainImageTileStepX*4;
+				//iFrameXOffset=iImageFrameWidthLarge*8;
 
+				iFrameXOffset=iImageFrameWidthLarge*9;
+
+/*				
+				if (bIsHeroFacingLeftOrRight) {
+					if (bIsHeroFacingLeft) {
+						mainImageTilePosX+=mainImageTileStepX*4;
+						
+						if (bIsHeroFacingUpOrDown) {
+							if (!bIsHeroFacingUp) {
+								mainImageTilePosY+=(-mainImageTileStepY*4);
+							}
+							else {
+								mainImageTilePosY+=(mainImageTileStepY*4);
+							}				
+						}
+					}
+					else {
+						mainImageTilePosX+=(-mainImageTileStepX*4);
+
+						if (bIsHeroFacingUpOrDown) {
+							if (!bIsHeroFacingUp) {
+								mainImageTilePosY+=(-mainImageTileStepY*4);
+							}
+							else {
+								mainImageTilePosY+=(mainImageTileStepY*4);
+							}
+						}
+					}
+				}
+				else {
+					if (bIsHeroFacingUpOrDown) {
+						if (!bIsHeroFacingUp) {
+							mainImageTilePosY+=(-mainImageTileStepY*4);
+						}
+						else {
+							mainImageTilePosY+=(mainImageTileStepY*4);
+						}
+					}
+				}	
+*/				
+				
+				mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset + "px -" + iFrameY + "px";
+			}
+			else {
+				mainImageTileHeroBody.style.objectPosition = "-" + iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
+			}
+
+/*
 			//edited by Mike, 20251106
 			mainImageTileHeroBody.style.objectPosition = "-" + iImageFrameWidthLarge*iHeroAnimationCount - 4*iImageFrameWidthLarge + "px -" + iFrameY + "px";
-
+*/
 	}
 	
 	function resetFireballProjectile() {
@@ -3595,6 +3654,7 @@ alert("iInputY: "+iInputY);
 
 		var iFrameY=0;
 		var iFrameXOffset=0;
+
 				
 		//added by Mike, 20251102
 /*
@@ -3676,10 +3736,8 @@ alert("iInputY: "+iInputY);
 			}
 			else {
 */			
-				mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount + "px -" + iFrameY + "px";
-/*				
-			}
-*/			
+
+		mainImageTileHeroBody.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*iHeroAnimationCount + "px -" + iFrameY + "px";
 	}
 	
 	//added by Mike, 20251105
@@ -5789,7 +5847,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 */		
 		
 		resetProjectile();
-		
+
+/*		
 		var myAudioEffectCannonFire = document.getElementById("myAudioEffectCannonFireId");
 
 		myAudioEffectCannonFire.setAttribute("src", sAudioEffectActionCannonFire);
@@ -5799,6 +5858,17 @@ if (arrayWalkOnSnowEffectCount==1) {
 		myAudioEffectCannonFire.volume=fMyAudioEffectCannonFireVolume;
 		myAudioEffectCannonFire.loop=false;
 		myAudioEffectCannonFire.play();		
+*/
+
+		var myAudioEffectSwordSlice = document.getElementById("myAudioEffectSwordSliceId");
+
+		myAudioEffectSwordSlice.setAttribute("src", sAudioEffectActionSwordSlice);
+
+		fMyAudioEffectSwordSliceVolume=1.0;
+		myAudioEffectSwordSlice.volume=fMyAudioEffectSwordSliceVolume;
+		myAudioEffectSwordSlice.loop=false;
+		myAudioEffectSwordSlice.play();				
+
 
 /*
 		//hero hit by monster
@@ -5902,6 +5972,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 	
 		resetProjectile();
 
+/*
 		var myAudioEffectCannonFire = document.getElementById("myAudioEffectCannonFireId");
 
 		myAudioEffectCannonFire.setAttribute("src", sAudioEffectActionCannonFire);
@@ -5911,17 +5982,17 @@ if (arrayWalkOnSnowEffectCount==1) {
 		myAudioEffectCannonFire.volume=fMyAudioEffectCannonFireVolume;
 		myAudioEffectCannonFire.loop=false;
 		myAudioEffectCannonFire.play();
+*/	
+		//TODO: -update: depending on monster type
 
-/*
-		var myAudioEffectHitMetal = document.getElementById("myAudioEffectHitMetalId");
+		var myAudioEffectSwordOut = document.getElementById("myAudioEffectSwordOutId");
 
-		myAudioEffectHitMetal.setAttribute("src", sAudioEffectActionHitMetal);
+		myAudioEffectSwordOut.setAttribute("src", sAudioEffectActionSwordOut);
 
-		fMyAudioEffectHitMetalVolume=1.0;
-		myAudioEffectHitMetal.volume=fMyAudioEffectHitMetalVolume;
-		myAudioEffectHitMetal.loop=false;
-		myAudioEffectHitMetal.play();		
-*/		
+		fMyAudioEffectSwordOutVolume=1.0;
+		myAudioEffectSwordOut.volume=fMyAudioEffectSwordOutVolume;
+		myAudioEffectSwordOut.loop=false;
+		myAudioEffectSwordOut.play();				
 	}
 
 	function grassMonsterHitByHero(mainImageTilePosX, mainImageTilePosY, iMonsterImageTilePosX, iMonsterImageTilePosY) {	
@@ -12602,7 +12673,11 @@ opting to put assets folder in "html_application" folder instead
 	  Your browser does not support the audio tag.
 	</audio><br/>
 
-	<audio id="myAudioEffectHitMetalId" class="myAudio" src="assets/audio/usbongGameOff2025HitMetal.mp3" type="audio/x-m4a">
+	<audio id="myAudioEffectSwordSliceId" class="myAudio" src="" type="audio/x-m4a">
+	  Your browser does not support the audio tag.
+	</audio><br/>
+
+	<audio id="myAudioEffectSwordOutId" class="myAudio" src="" type="audio/x-m4a">
 	  Your browser does not support the audio tag.
 	</audio><br/>
 	
