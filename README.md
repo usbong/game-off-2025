@@ -46,6 +46,10 @@ Snow
 
 Sniper Shot
 
+9) https://masarapmabuhay.itch.io/game-off-2025-prototype8
+
+Stages leading to the Giant Boss
+
 <!--
 
 4) https://masarapmabuhay.itch.io/game-off-2024-prototype3
