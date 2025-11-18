@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251118; from 20251117
+' @date updated: 20251119; from 20251118
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1063,7 +1063,8 @@ var iMonsterShakeOffsetHeight=iMonsterShakeOffsetHeightMax;
 var iHeroInvincibileCount=0;
 const iHeroInvincibileCountMax=200;//100;//50;
 
-var iCurrHeroLifeMax=20;//20;//10;
+//increase this per level-up
+var iCurrHeroLifeMax=15;//20;//10;
 var iCurrHeroLife=iCurrHeroLifeMax;
 var iCurrHeroLifeAnimationDelayCount=0;
 var iCurrHeroLifeAnimationDelayCountMax=5;
@@ -1495,8 +1496,12 @@ var iMouseInputImageHeight=64;
 
 //edited by Mike, 20251112
 //TODO: -update: this based on monster; 
-var iMonsterAttackDamageDefault=2; //1
-var iMonsterAttackDamageBoss=2;//3;
+const iMonsterAttackDamageDefault=1;
+const iMonsterAttackDamageBoss=2;
+const iMonsterAttackDamageSkel=1;
+const iMonsterAttackDamageSkelBoss=2;
+const iMonsterAttackDamageWraith=1;
+
 
 var iCurrTextCharacterCount=0;
 var iCurrTextCharacterCountMax=0;
@@ -3229,10 +3234,14 @@ var bIsHeroFacingUp=false;
 		iTransitionScale=1;
 		
 		textEnterDiv.style.transform = "scale("+iTransitionScale+","+iTransitionScale+")";	
-		
+
+/*		//removed by Mike, 20251119		
 		mouseInputImage.style.left = (iHorizontalOffset+iStageMaxWidth/2-iTextEnterDivWidth/2+iMouseInputImageWidth/2)+"px";
+		
 		mouseInputImage.style.top = (iVerticalOffsetInnerScreen+iStageMaxHeight+iTextEnterDivHeight/2)+"px";
 		mouseInputImage.style.objectPosition = "-" + 0 + "px -" + 192 + "px";
+*/
+
 
 /*
 		mainImageMonsterPosX=iHorizontalOffset+iStageMaxWidth/2-iMonsterTileWidth;
@@ -6347,6 +6356,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 			iCurrHeroLife=0;
 		}
 */		
+		//alert(iMonsterAttackDamage);
+
 		reduceHeroLifeBar(iMonsterAttackDamage);
 				
 		iHeroInvincibileCount=0;
@@ -6791,7 +6802,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 						}
 
 						if (currSkelMonsterTileState==ATTACKING_STATE) {
-							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iMonsterAttackDamageDefault);
+							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iMonsterAttackDamageSkel);
 							
 							setExplosionEffectPosition(mainImageTilePosX+iImageFrameWidthLarge/2,mainImageTilePosY+iImageFrameHeightLarge/2);
 							
@@ -6824,7 +6835,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 							currSkelMonsterTileState=ATTACKING_STATE;
 								
 							if (currSkelMonsterTileState==ATTACKING_STATE) {
-								heroHitByMonster(mainImageTilePosX,mainImageTilePosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iMonsterAttackDamageDefault);
+								heroHitByMonster(mainImageTilePosX,mainImageTilePosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iMonsterAttackDamageSkelBoss);
 									
 								setExplosionEffectPosition(mainImageTilePosX+iImageFrameWidthLarge/2,mainImageTilePosY+iImageFrameHeightLarge/2);
 							}		
@@ -7011,7 +7022,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 						}
 
 						if (currSkelMonsterTileState==ATTACKING_STATE) {
-							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iMonsterAttackDamageDefault);
+							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY, iMonsterAttackDamageSkel);
 							
 							setExplosionEffectPosition(mainImageTilePosX+iImageFrameWidthLarge/2,mainImageTilePosY+iImageFrameHeightLarge/2);
 							
@@ -7855,7 +7866,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 							if (inputArrayWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]==ATTACKING_STATE) {
 
-								heroHitByMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iMonsterAttackDamageDefault);
+								heroHitByMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iMonsterAttackDamageWraith);
 								
 								setExplosionEffectPosition(mainImageTilePosX+iImageFrameWidthLarge/2,mainImageTilePosY+iImageFrameHeightLarge/2);
 								
@@ -8530,6 +8541,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 
     iHorizontalOffset=myCanvas.getBoundingClientRect().x+iShakeOffsetWidth;
 
+
     myCanvasTwo.style.top = myCanvas.style.top;
     myCanvasTwo.style.left = myCanvas.style.left;
 
@@ -8983,7 +8995,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 		mainImageTileProjectileStepX+=mainImageTileProjectileVelocityX;//++;
 	}
 */
-	
+
+/*	
 	//AI; movement due to river
 	if (bIsHeroInRiver) {
 		//IF has reached bottom
@@ -8996,10 +9009,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 				bHasHeroReachedBottomOfRoomRiver=true;
 			}
 			else {
-/*			
-				mainImageTilePosY+=mainImageTileStepY;						
-				mainImageTileProjectilePosY=mainImageTilePosY;
-*/
+////				mainImageTilePosY+=mainImageTileStepY;						
+////				mainImageTileProjectilePosY=mainImageTilePosY;
 				if (mainImageTileFireballProjectile.style.visibility=="visible") {
 					mainImageTileProjectilePosY=mainImageTilePosY;
 					//newMainImageTileProjectilePosY=mainImageTileProjectilePosY;
@@ -9020,20 +9031,6 @@ if (arrayWalkOnSnowEffectCount==1) {
 				bHasHeroReachedBottomOfRoomRiver=true;
 			}
 		}
-/*
-		if (mainImageTilePosY+iImageFrameHeightDefault>0+iStageMaxHeight-iInnerVerticalOffset-iImageFrameHeightDefault/2) {
-			mainImageTileProjectilePosY=mainImageTilePosY;
-
-			//bHasHeroReachedTopOfRoomRiver=false;
-			bHasHeroReachedBottomOfRoomRiver=true;
-		}
-		else {
-			if (!bHasObtainedAmuletAtRoom32) {
-				mainImageTilePosY+=mainImageTileStepY;						
-				mainImageTileProjectilePosY=mainImageTilePosY;
-			}
-		}
-*/		
 
 		//IF has reached top
 		if (mainImageTilePosY<0+iInnerVerticalOffset+iImageFrameHeightDefault+iImageFrameHeightDefault/2) {		
@@ -9044,6 +9041,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//bHasHeroReachedBottomOfRoomRiver=false;
 		}		
 	}
+*/
 
 	if (mainImageTileProjectileStepY<mainImageTileProjectileStepYMax) {
 		mainImageTileProjectileStepY+=mainImageTileProjectileVelocityY;//++;
@@ -12858,7 +12856,6 @@ alert(Date.now()-iMouseClickStartTime);
     var iDeltaX=(iXPos-iHorizontalOffset)-mainImageTilePosX;
     var iDeltaY=(iYPos-iVerticalOffset)-mainImageTilePosY;
     */
-
 	var iDeltaX=(iXPos-iHorizontalOffset)-(mainImageTilePosX+iImageFrameWidthLarge/2);
 	var iDeltaY=(iYPos-iVerticalOffset)-(mainImageTilePosY+iImageFrameHeightLarge/2);
 
@@ -12870,8 +12867,8 @@ alert("iDeltaY: "+iDeltaY);
 	//if ((Math.abs(iDeltaX)<20) && (Math.abs(iDeltaY)<20)) {
 	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/2) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/2)) {
 	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/1.8) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/1.8)) {
+	
 	if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/2.3) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/2.3)) {
-
 		return;
 	}
 
@@ -12893,39 +12890,69 @@ alert("iDeltaY: "+iDeltaY);
     alert("iDeltaX: "+iDeltaX);
     */
 
+	//added by Mike, 20251119
+    //alert("iDeltaX: "+iDeltaX);
+	//adjust angle due to now using rect screen; not square;
+	//if (Math.abs(iDeltaX)>180) {
+	if (Math.abs(iDeltaX)>iStageMaxHeight/2) {
+	
+		//alert("iDeltaY: "+iDeltaY);
+	
+		//if still too far; just move forward;
+		let iDeltaYOffset=1;//Math.abs(iDeltaX)/180;
+	
+		//alert("iDeltaYOffset: "+iDeltaYOffset);
+	
+		if (iDeltaY<0) { //if negative
+			iDeltaY-=90*iDeltaYOffset;
+		}
+		if (iDeltaY>0) { //if positive
+			iDeltaY+=90*iDeltaYOffset;
+		}
+	}
 
     iDeltaY*=-1;
 
     var fMainImageTileStepAngleRad=Math.atan2(iDeltaX,iDeltaY);
 
+    //var fMainImageTileStepAngleRad=Math.atan2(iDeltaY,iDeltaX);
+
     iMainImageTileStepAngle=fMainImageTileStepAngleRad*(180/Math.PI);
+
+    //iMainImageTileStepAngle=fMainImageTileStepAngleRad*(360/Math.PI);
 
     //					newMainImageTileProjectilePosY*=-1;
 
     //clockwise
     iMainImageTileStepAngle=(iMainImageTileStepAngle)%360;
-    /*
-    alert(iMainImageTileStepAngle);
-    */
-
-    mainImageTile.style.transform = "rotate("+ (iMainImageTileStepAngle % 360) +"deg)";
+    
+    //alert(iMainImageTileStepAngle);
+    
+	
+	//removed by Mike, 20251119
+    //mainImageTile.style.transform = "rotate("+ (iMainImageTileStepAngle % 360) +"deg)";
 
 
 	
 		newMainImageTileProjectilePosY=mainImageTileProjectileStepY*Math.cos(fMainImageTileStepAngleRad).toFixed(3);
 
 		newMainImageTileProjectilePosY*=-1;
+		
 		newMainImageTileProjectilePosX=mainImageTileProjectileStepX*Math.sin(fMainImageTileStepAngleRad).toFixed(3);
 
 		//added by Mike, 20231125
-		mainImageTileProjectilePosX = mainImageTile.style.left;
-		mainImageTileProjectilePosY = mainImageTile.style.top;
+		mainImageTileProjectilePosX = parseInt(mainImageTile.style.left);
+		mainImageTileProjectilePosY = parseInt(mainImageTile.style.top);
 
 
 		//added by Mike, 20241103
 		mainImageTileProjectileStepDestinationX=iXPos;//iDeltaX;//newMainImageTileProjectilePosX;//.iDeltaX;
 		mainImageTileProjectileStepDestinationY=iYPos;//iDeltaY;//newMainImageTileProjectilePosY;//iDeltaY;
 
+/*
+alert("iYPos: "+iYPos);
+alert("iXPos: "+iXPos);
+*/
 
 	if (bIsActionKeyPressed) {
 /*	
@@ -13164,7 +13191,7 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			//reset; new game
 			dElapsedTimeInSeconds=0;
 
-			iCurrMapLocation=53;		
+			iCurrMapLocation=54;//53;		
 			iStartTimeInMilliseconds=Date.now();	
 
 			bHasObtainedPearlAtRoom42=false;
