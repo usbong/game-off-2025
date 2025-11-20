@@ -3288,6 +3288,10 @@ var bIsHeroFacingUp=false;
 		iCurrMonsterDeathCount=0;//998;//0;
 				
 		//resetProjectile()				
+		
+		//added by Mike, 20251120
+		setDustEffectPosition(mainImageTilePosX, mainImageTilePosY);
+		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);
 	}
 
   function setExplosionEffectPosition(iInputX, iInputY) {
@@ -3670,6 +3674,8 @@ alert("iInputY: "+iInputY);
 
 		//for (arrayWalkOnSnowEffectCount=0; arrayWalkOnSnowEffectCount<arrayWalkOnSnowEffectCountMax; arrayWalkOnSnowEffectCount++) {
 		
+			//arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
+
 			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
 
 			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="visible") {
@@ -3715,94 +3721,6 @@ alert("iInputY: "+iInputY);
 			}
 			
 			if (bIsHeroFacingUpOrDown) {
-				if (!bIsHeroFacingUp) {
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthDefault/2;//-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
-
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault;
-				}
-				//facing up
-				else {
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthDefault/2;
-
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameHeightDefault/2-iImageFrameHeightDefault/4;
-				}
-			}			
-		//}
-	} 
-
-	
-	//added by Mike, 20251113
-	//TODO: -update: this
-	//function setWalkOnSnowEffectPosition(iInputX, iInputY) {
-	function setWalkOnSnowEffectPositionBuggy(iInputX, iInputY, arrayWalkOnSnowEffectCount) {	
-		//var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
-		//var walkOnSnowEffectImage2 = document.getElementById("walkOnSnowEffectImageId2");
-
-		//alert("HALLO!!!");
-		
-		//alert(arrayWalkOnSnowEffectCount);
-
-		//for (arrayWalkOnSnowEffectCount=0; arrayWalkOnSnowEffectCount<arrayWalkOnSnowEffectCountMax; arrayWalkOnSnowEffectCount++) {
-		
-			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
-
-			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="visible") {
-			  return;
-			}
-
-			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.objectPosition = "-" + 0 + "px -" + iImageFrameHeightDefault + "px";
-			
-			arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="visible";
-			
-			//alert("HALLO!"+arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility);
-
-			arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]=10;//5;
-			arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]=arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX];
-			arrayWalkOnSnowEffect[MONSTER_ANIMATION_COUNT]=0;//-1;
-/*
-			iWalkOnSnowEffectAnimationDelayCount=iWalkOnSnowEffectAnimationDelayCountMax;
-			iWalkOnSnowEffectAnimationCount=-1; //0;
-*/
-/*
-				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2-(iImageFrameWidthDefault/4)*arrayWalkOnSnowEffectCount;
-				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;
-*/
-			if (bIsHeroFacingLeftOrRight) {
-				//if facing right;
-				if (!bIsHeroFacingLeft) {
-					//arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault+iImageFrameWidthLarge/2-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
-					//arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX-iImageFrameWidthDefault-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX;//-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
-
-
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;
-				}
-				//facing left
-				else {
-					//arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthLarge/2;
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthLarge/2-iImageFrameWidthDefault/2;
-
-					//+(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
-
-					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault/4;
-				}
-				
-				if (bIsHeroFacingUpOrDown) {
-					if (!bIsHeroFacingUp) {
-						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = parseInt(arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left)+iImageFrameWidthDefault/2;
-						
-						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameWidthDefault/2-iImageFrameWidthDefault;
-					}
-					//facing up
-					else {
-						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = parseInt(arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left)+iImageFrameWidthDefault/2;
-
-						arrayWalkOnSnowEffect[MONSTER_OBJECT].style.top = iInputY+iImageFrameHeightLarge-iImageFrameHeightDefault/2-iImageFrameHeightDefault/4;
-					}
-				}
-			}
-			//edited by Mike, 20251119
-			else if (bIsHeroFacingUpOrDown) {
 				if (!bIsHeroFacingUp) {
 					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.left = iInputX+iImageFrameWidthDefault/2;//-(iImageFrameWidthDefault)*(arrayWalkOnSnowEffectCount);
 
@@ -3888,7 +3806,9 @@ alert("iInputY: "+iInputY);
 			
 			//there are four walk-in snow images with also four frames; 
 			//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,iHeroAnimationCount); 
-			setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0); 
+			//edited by Mike, 20251120
+			//setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);			
+			setWalkOnSnowEffectPosition(parseInt(mainImageTileHeroBody.style.left),parseInt(mainImageTileHeroBody.style.top),0); 
 			
 			//-----------------------------
 		
@@ -6308,13 +6228,17 @@ alert("iInputY: "+iInputY);
 	}		
 	
 	//added by Mike, 20251113
-	function executeWalkOnSnowEffect() {
+	//function executeWalkOnSnowEffect(arrayWalkOnSnowEffectCount) {
 	//function executeWalkOnSnowEffect(walkOnSnowEffectImage) {
+	function executeWalkOnSnowEffect() {
 		//var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
 		//var walkOnSnowEffectImage2 = document.getElementById("walkOnSnowEffectImageId2");
 
+		arrayWalkOnSnowEffectCount=0;
+
+/*
 		for (arrayWalkOnSnowEffectCount=0; arrayWalkOnSnowEffectCount<arrayWalkOnSnowEffectCountMax; arrayWalkOnSnowEffectCount++) {
-			
+*/			
 						//alert("DITO!!!");
 			
 			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
@@ -6322,15 +6246,16 @@ alert("iInputY: "+iInputY);
 			//added by Mike, 20251118
 			if (bHasHeroHitMonster) {
 				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
-				continue;
+				//continue;
+				return;
 			}
 
 
 			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="hidden") {
 				//alert("arrayWalkOnSnowEffectCount!!!"+arrayWalkOnSnowEffectCount);
 					
-				continue;
-				//return;
+				//continue;
+				return;
 			}
 
 			if (arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT]==arrayWalkOnSnowEffect[MONSTER_ANIMATION_DELAY_COUNT_MAX]) {			
@@ -6385,7 +6310,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 			else {
 				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
 			}
+/*			
 		}
+*/		
 	}
 
 	function isElapsedTimeUnderThreeMins() {	
@@ -7821,7 +7748,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//bIsHeroAttacked=false;		
 
 			//+iImageFrameWidthDefault/2; iImageFrameHeightDefault/2
-				//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidth, iImageFrameHeight, iImageFrameWidthDefault, iImageFrameHeightDefault)) {			
+				//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidth, iImageFrameHeight, iImageFrameWidthDefault, iImageFrameHeightDefault)) {		
+				//removed by Mike, 20251120
+/*				
 				//edited by Mike, 20251113
 				if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2)) {	
 
@@ -7862,7 +7791,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 					//}					
 				}				
 				
-				else if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {
+				else */
+				/*if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {
+*/
+				if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2)) {	
 				
 				//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayWraithMonsterWithIdCount[MONSTER_POSX],inputArrayWraithMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2)) {
 				
@@ -7886,8 +7818,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 					}
 					else {
 */
-					//edited by Mike, 20251119
-					inputArrayWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]=ATTACKING_STATE;
+					//edited by Mike, 20251120; from 20251119
+					//inputArrayWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]=ATTACKING_STATE;
+					
+					
+					
 /*
 					if (bHasHeroChangedFacingLeftOrRight) {
 						//monster deals damage to hero; spinning hero;
@@ -9145,8 +9080,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 	
 	//executeExplosionEffectToMonsterBoss();
 	
-	//added by Mike, 20251113
-	executeWalkOnSnowEffect();
+	//edited by Mike, 20251120; from 20251113
+	executeWalkOnSnowEffect();//0);
 /*
 	executeWalkOnSnowEffect(walkOnSnowEffectImage);
 	executeWalkOnSnowEffect(walkOnSnowEffectImage2);
@@ -12981,9 +12916,14 @@ alert("iDeltaY: "+iDeltaY);
 	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/2) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/2)) {
 	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/1.8) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/1.8)) {
 	
+
+/*	//removed by Mike, 20251120
 	if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/2.3) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/2.3)) {
+	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/3) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/3)) {
+
 		return;
 	}
+*/
 
 
 /*
@@ -13136,6 +13076,7 @@ alert("iXPos: "+iXPos);
 		
 		//added by Mike, 20251102
 		bIsHeroFacingLeftOrRight=true;
+		
 
 		//edited by Mike, 20251113
 		//causes the error; facing to right
@@ -13146,12 +13087,14 @@ alert("iXPos: "+iXPos);
 		//else if (iDeltaX>0+iImageFrameWidthLarge/2) {
 		else if (iDeltaX>0+iImageFrameWidthLarge/4) {
 			bIsHeroFacingLeft=false;
+			
+			//alert("LEFT iDeltaX: "+iDeltaX);
 		}
 		else {
 			bIsHeroFacingLeftOrRight=false;
 		}
 			
-		//added by Mike, 20251102
+		//edited by Mike, 20251120; from 20251102
 /*
 		bIsHeroFacingUpOrDown=false;
 
@@ -13171,27 +13114,38 @@ alert("iXPos: "+iXPos);
 			bIsHeroFacingUpOrDown=false;
 		}
 */
-		bIsHeroFacingUpOrDown=true;
-		
-		//edited by Mike, 20251119
-		if (iDeltaY<0-iImageFrameHeightLarge/2) {
-		//if (iDeltaY<0-iImageFrameHeightLarge/4) {
-		//if (iDeltaY<mainImageTilePosY-iImageFrameHeightLarge/2) {
-			bIsHeroFacingUp=false;
-		}
-		else if (iDeltaY>0+iImageFrameHeightLarge/2) {
-		//else if (iDeltaY>0+iImageFrameHeightLarge/4) {
-		//else if (iDeltaY>mainImageTilePosY+iImageFrameHeightLarge/2) {
-			bIsHeroFacingUp=true;
+
+		if (Math.abs(iDeltaX)>iStageMaxHeight*0.75) {
+			bIsHeroFacingUpOrDown=false;
 		}
 		else {
-			bIsHeroFacingUpOrDown=false;
+			bIsHeroFacingUpOrDown=true;
+			
+			//edited by Mike, 20251119
+			if (iDeltaY<0-iImageFrameHeightLarge/2) {
+			//if (iDeltaY<0-iImageFrameHeightLarge/4) {
+			//if (iDeltaY<mainImageTilePosY-iImageFrameHeightLarge/2) {
+				bIsHeroFacingUp=false;
+			}
+			else if (iDeltaY>0+iImageFrameHeightLarge/2) {
+			//else if (iDeltaY>0+iImageFrameHeightLarge/4) {
+			//else if (iDeltaY>mainImageTilePosY+iImageFrameHeightLarge/2) {
+				bIsHeroFacingUp=true;
+			}
+			else {
+				bIsHeroFacingUpOrDown=false;
+			}
 		}
 		
 		//alert (iDeltaY);
 		
 		//added by Mike, 20241105
-		setDustEffectPosition(mainImageTilePosX,mainImageTilePosY);
+		//setDustEffectPosition(mainImageTilePosX,mainImageTilePosY);
+		//setDustEffectPosition(parseInt(mainImageTile.style.left),parseInt(mainImageTile.style.top));
+		setDustEffectPosition(mainImageTileProjectilePosX,mainImageTileProjectilePosY);
+
+		
+		
 		
 		//added by Mike, 20251113
 		//var walkOnSnowEffectImage = document.getElementById("walkOnSnowEffectImageId");
@@ -14092,11 +14046,11 @@ opting to put assets folder in "html_application" folder instead
 
 		<img id="batMonsterImageId" class="ImageTileFrame1" src="assets/images/monsters.png?lastmod=20241120">
 
-		<img id="wraithMonsterImageId0" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251108T0950">
-		<img id="wraithMonsterImageId1" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251108T0950">
+		<img id="wraithMonsterImageId0" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Wraith.png?lastmod=20251120T1420">
+		<img id="wraithMonsterImageId1" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Wraith.png?lastmod=20251120T1420">
 
-		<img id="wraithMonsterImageId2" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251108T0950">
-		<img id="wraithMonsterImageId3" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251108T0950">
+		<img id="wraithMonsterImageId2" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Wraith.png?lastmod=20251120T1420">
+		<img id="wraithMonsterImageId3" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Wraith.png?lastmod=20251120T1420">
 
 
 <!--
@@ -14203,10 +14157,12 @@ opting to put assets folder in "html_application" folder instead
 	<img id="heroAttackEffectImageId" class="ImageHeroAttack" src="assets/images/heroEffectsSmall.png?lastmod=20241128T1010">
 
 	<img id="walkOnSnowEffectImageId0" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
+	
+<!--	
 	<img id="walkOnSnowEffectImageId1" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
 	<img id="walkOnSnowEffectImageId2" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
 	<img id="walkOnSnowEffectImageId3" class="ImageWalkOnSnowEffect" src="assets/images/heroEffectsSmall.png?lastmod=20251115T0547">
-
+-->
  
 	<div id="divSnowEffectId0" class="myDivSnowEffect"></div>
 	<div id="divSnowEffectId1" class="myDivSnowEffect"></div>
