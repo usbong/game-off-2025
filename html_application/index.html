@@ -1404,7 +1404,7 @@ var bHasHeroShotSniper=false;
 var iHeroAnimationCount=-1; //0; //due to immediately +1 in execution;
 var iHeroAnimationCountMax=5;
 var iHeroAnimationDelayCount=0;
-var iHeroAnimationDelayCountMax=5;//2;//1; //TODO: -add: more dust effect if target walking distance is far
+var iHeroAnimationDelayCountMax=8;//10;//5;//2;//1; //TODO: -add: more dust effect if target walking distance is far
 
 var iHeroAttackAnimationCount=0;//-1; //0; //due to immediately +1 in execution;
 var iHeroAttackAnimationCountMax=5;
@@ -2478,13 +2478,13 @@ var bIsHeroFacingUp=false;
 			//myCanvasContext.strokeStyle = 'red'; //white
 
 			if (iCurrHeroManaAnimationDelayCount<10) {//5) {
-				myCanvasContext.strokeStyle = "#cc0000";
+				myCanvasContext.strokeStyle = "#000000"//"#cc0000";
 			}
 			else {
-				myCanvasContext.strokeStyle = "#ff0000"; //white
+				myCanvasContext.strokeStyle = "#ffffff"; //"#ff0000"; //white
 			}
 
-			myCanvasContext.lineWidth = 0.5;//2; 
+			myCanvasContext.lineWidth = 0.2;//5;//2; 
 			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
 		}
 		else {
@@ -2771,7 +2771,7 @@ var bIsHeroFacingUp=false;
 		
 		iHeroAnimationCountMax=5;
 		iHeroAnimationDelayCount=0;
-		iHeroAnimationDelayCountMax=5;//2;//1; //TODO: -add: more dust effect if target walking distance is far
+		iHeroAnimationDelayCountMax=8;//5;//2;//1; //TODO: -add: more dust effect if target walking distance is far
 
 		var mouseInputImage = document.getElementById("mouseInputImageId");
 		var titleImage = document.getElementById("titleImageId");
