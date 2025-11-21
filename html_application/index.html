@@ -1015,6 +1015,11 @@ var bIsGameOver=false;
 const iInputDelayAtGameOverCountMax=100;
 var iInputDelayAtGameOverCount=0;
 
+var bIsLevelUp=false;
+const iInputDelayAtLeveledUpCountMax=100;
+var iInputDelayAtLeveledUpCount=0;
+
+
 var bIsHeroInRiver=false;
 var bHasHeroReachedBottomOfRoomRiver=false;
 var bHasHeroReachedTopOfRoomRiver=false;
@@ -1441,11 +1446,11 @@ var iCurrSnowFlakeCountPosY=0;
 //note: acceleration
 //min 2; not 1
 //edited by Mike, 20251102
-var mainImageTileProjectileStepYMax=3;//5;//4;//3;
-var mainImageTileProjectileStepXMax=3;//5;//4;//3;
+var mainImageTileProjectileStepYMax=3;//3;//5;//4;//3;
+var mainImageTileProjectileStepXMax=3;//3;//5;//4;//3;
 
-var mainImageTileProjectileVelocityY=2;//4;//3;//2;
-var mainImageTileProjectileVelocityX=2;//4;//3;//2;
+var mainImageTileProjectileVelocityY=2;//2;//4;//3;//2;
+var mainImageTileProjectileVelocityX=2;//2;//4;//3;//2;
 
 var mainImageTileProjectileStepYMin=mainImageTileProjectileVelocityY;//4;//12;
 var mainImageTileProjectileStepXMin=mainImageTileProjectileVelocityX;//4;//12;
@@ -1645,6 +1650,10 @@ var bIsHeroFacingUp=false;
 	const DEATH_STATE=4;
 	const IDLE_STATE=5;
 	var currSkelMonsterTileState=0;
+	
+	const HP_STAT_ID=0;
+	const STAMINA_STAT_ID=1;
+	const SPEED_STAT_ID=2;
 	
 	
 
@@ -2677,7 +2686,9 @@ var bIsHeroFacingUp=false;
 	function init() {	
 		bIsGameOver=false;		
 		dElapsedTimeInSeconds=0;
-		
+
+		bIsLevelUp=false;		
+
 		iInputDelayAtGameOverCount=0;
 		
 		iHeroInvincibileCount=0;
@@ -2847,6 +2858,10 @@ var bIsHeroFacingUp=false;
 		var textNewGameDiv = document.getElementById("textNewGameDivId");
 		var textContinueGameDiv = document.getElementById("textContinueGameDivId");
 
+		var textLevelUpLifeDiv = document.getElementById("textLevelUpLifeDivId");
+		var textLevelUpStaminaDiv = document.getElementById("textLevelUpStaminaDivId");
+		var textLevelUpSpeedDiv = document.getElementById("textLevelUpSpeedDivId");
+
 		//--------------------
 		mouseInputImage.style.visibility="hidden";
 		titleImage.style.visibility="visible";
@@ -2913,6 +2928,10 @@ var bIsHeroFacingUp=false;
 		
 		textNewGameDiv.style.visibility="hidden";
 		textContinueGameDiv.style.visibility="hidden";
+
+		textLevelUpLifeDiv.style.visibility="hidden";
+		textLevelUpStaminaDiv.style.visibility="hidden";
+		textLevelUpSpeedDiv.style.visibility="hidden";
 				
 		//--------------------
 		myCanvasTwo.style.top = (iVerticalOffsetInnerScreen+0)+"px";
@@ -2944,6 +2963,21 @@ var bIsHeroFacingUp=false;
 		textContinueGameDiv.innerHTML = "CONTINUE";
 		textContinueGameDiv.style.left = iHorizontalOffset+iStageMaxWidth/2-textContinueGameDiv.clientWidth/2+"px";
 		textContinueGameDiv.style.top= iVerticalOffsetInnerScreen+textContinueGameDiv.clientHeight*4+"px";		
+
+		//added by Mike, 20251121
+		textLevelUpLifeDiv.innerHTML = "INCREASE HP";
+		textLevelUpLifeDiv.style.left = iHorizontalOffset+iStageMaxWidth/2-textLevelUpLifeDiv.clientWidth/2+"px";				
+		textLevelUpLifeDiv.style.top= iVerticalOffsetInnerScreen+textLevelUpLifeDiv.clientHeight*2+"px";						
+		
+		textLevelUpStaminaDiv.innerHTML = "INCREASE STAMINA";
+		textLevelUpStaminaDiv.style.left = iHorizontalOffset+iStageMaxWidth/2-textLevelUpStaminaDiv.clientWidth/2+"px";
+		textLevelUpStaminaDiv.style.top= iVerticalOffsetInnerScreen+textLevelUpStaminaDiv.clientHeight*4+"px";		
+/*
+		//TODO: -add: this
+		textLevelUpSpeedDiv.innerHTML = "INCREASE STAMINA";
+		textLevelUpSpeedDiv.style.left = iHorizontalOffset+iStageMaxWidth/2-textLevelUpSpeedDiv.clientWidth/2+"px";
+		textLevelUpSpeedDiv.style.top= iVerticalOffsetInnerScreen+textLevelUpSpeedDiv.clientHeight*4+"px";		
+*/
 
 		////var myCanvasTwo = document.getElementById("myCanvasTwoId");
 		////myCanvasTwo.style.visibility="hidden";
@@ -8415,6 +8449,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 		var textNewGameDiv = document.getElementById("textNewGameDivId");
 		var textContinueGameDiv = document.getElementById("textContinueGameDivId");
 
+		var textLevelUpLifeDiv = document.getElementById("textLevelUpLifeDivId");
+		var textLevelUpStaminaDiv = document.getElementById("textLevelUpStaminaDivId");
+		var textLevelUpSpeedDiv = document.getElementById("textLevelUpSpeedDivId");
+
 		var mainImageTile = document.getElementById("mainImageTileImageId");
 
 		//added by Mike, 20231124
@@ -9034,6 +9072,51 @@ if (arrayWalkOnSnowEffectCount==1) {
 			/*return;
 			*/
 		}
+		//added by Mike, 20251121
+		else if (bIsLevelUp) {
+			executeTimeDisplay();
+		
+			mainImageTile.style.visibility="hidden";
+			mainImageTileTankBody.style.visibility="hidden";
+			mainImageTileHeroBody.style.visibility="hidden";
+			
+			sText = "LEVEL UP!!!";
+			
+			//"The <font color='#4a50d9'>PEST</font> was destroyed.<br/>But not without heavy<br/> damage to the city...<br/>There is still a lot to learn<br/>and do. Thank you, and<br/> great work! Peace.";
+/* 			
+			bossBattleBgImage.style.opacity = "0.6";
+			bossBattleBgImage.style.filter  = 'alpha(opacity=60)'; // IE fallback
+*/
+			textStatusDiv.innerHTML = sText; //sCurrText
+
+			textStatusDiv.style.left=iInnerHorizontalOffset+iStageMaxHeight/2-textStatusDiv.clientWidth/2;
+			
+			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.30)+"px";
+			textStatusDiv.style.top = 0+iInnerVerticalOffset+textStatusDiv.clientHeight+"px";
+			
+  			//textStatusDiv.style.visibility="visible";
+  			textStatusDiv.style.visibility="hidden";
+
+			//red tint
+			myCanvasTwoContext.fillStyle = "#550000";
+			myCanvasTwoContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+
+			if (iInputDelayAtLeveledUpCount>=iInputDelayAtLeveledUpCountMax) {
+				textLevelUpLifeDiv.style.visibility="visible";
+				textLevelUpStaminaDiv.style.visibility="visible";
+			}
+			iInputDelayAtLeveledUpCount++;
+
+			if (iInputDelayAtLeveledUpCount>=iInputDelayAtLeveledUpCountMax*2) {
+				return;
+			}			
+			
+			//fire; cat and hat;
+			/*return;
+			*/
+		}
+		
+		
 /*	  
 	  	bossBattleBgImage.style.opacity = "1.0";
 		bossBattleBgImage.style.filter  = 'alpha(opacity=100)'; // IE fallback
@@ -9310,6 +9393,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 		if (!bHasViewedMissionIntro) {
 			return;
 		}
+
+		if (bIsLevelUp) {
+			return;
+		}
+
 
 		switch(iCurrMapLocation) {
 			//OK; TOP DOOR; REST of the sides WALLS
@@ -9871,6 +9959,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 					iCurrMapLocation=54;
 					hasInitMapLocation=false;					
+					
+					bIsLevelUp=true;
+					
 				}
 				//left-most
 				//wall
@@ -13203,7 +13294,10 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 		iCurrHeroMana=iCurrHeroManaMax;
 		bIsGameOver=false;
 		iInputDelayAtGameOverCount=0;
-		
+
+		bIsLevelUp=false;
+		iInputDelayAtLeveledUpCount=0;
+
 		iCurrHeroDeathCount++;
 
 		iHeroInvincibileCount=0;
@@ -13296,6 +13390,150 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			
 		}
 	}
+	
+	//added by Mike, 20251121
+	function executeHeroLeveledUp(iChosenStat) {
+		//max 2 level-ups only;
+		switch (iChosenStat) {
+			case HP_STAT_ID:
+				iCurrHeroLifeMax+=5;
+				iCurrHeroLife=iCurrHeroLifeMax;
+				break;
+			case STAMINA_STAT_ID:
+				iCurrHeroManaMax+=5;
+				iCurrHeroMana=iCurrHeroManaMax;
+				break;
+			case SPEED_STAT_ID:
+				//note max is only until 5;
+				mainImageTileProjectileStepYMax+=1;//3;//5;//4;//3;
+				mainImageTileProjectileStepXMax+=1;//3;//5;//4;//3;
+
+				mainImageTileProjectileVelocityY+=1;//2;//4;//3;//2;
+				mainImageTileProjectileVelocityX+=1;//2;//4;//3;//2;
+
+				mainImageTileProjectileStepYMin=mainImageTileProjectileVelocityY;
+				mainImageTileProjectileStepXMin=mainImageTileProjectileVelocityX;
+
+				mainImageTileProjectileStepY=mainImageTileProjectileStepYMin;
+				mainImageTileProjectileStepX=mainImageTileProjectileStepYMin;
+				break;
+		}
+		
+		//TODO: -add: audio has solved
+		
+		var textLevelUpLifeDiv = document.getElementById("textLevelUpLifeDivId");
+		var textLevelUpStaminaDiv = document.getElementById("textLevelUpStaminaDivId");
+		var textLevelUpSpeedDiv = document.getElementById("textLevelUpSpeedDivId");
+		
+		textLevelUpLifeDiv.style.visibility="hidden";
+		textLevelUpStaminaDiv.style.visibility="hidden";
+		textLevelUpSpeedDiv.style.visibility="hidden";
+		
+		bIsLevelUp=false;
+		
+/*	
+		//CONTINUE
+		iCurrHeroLife=iCurrHeroLifeMax;
+		iCurrHeroMana=iCurrHeroManaMax;
+		bIsGameOver=false;
+		iInputDelayAtGameOverCount=0;
+
+		bIsLevelUp=false;
+		iInputDelayAtLeveledUpCount=0;
+
+		iCurrHeroDeathCount++;
+
+		iHeroInvincibileCount=0;
+		bIsHeroAttacked=false;
+		bIsExecutingShake=false;
+		iDestroyHumanShakeDelayCount=0;
+		
+		var myFavicon = document.getElementById("faviconImageId");						
+		var textStatusDiv = document.getElementById("textStatusDivId");	
+		var textNewGameDiv = document.getElementById("textNewGameDivId");
+		var textContinueGameDiv = document.getElementById("textContinueGameDivId");
+		
+		var mainImageTile = document.getElementById("mainImageTileImageId");
+		var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
+		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
+		
+		explosionEffectImage = document.getElementById("explosionEffectImageId");
+		
+		var keyStatusImageTile = document.getElementById("keyStatusImageTileId");
+		var amuletStatusImageTile = document.getElementById("amuletStatusImageTileId"); 
+		
+		myFavicon.style.visibility="hidden";	
+		textStatusDiv.style.visibility="hidden";
+		textNewGameDiv.style.visibility="hidden";		
+		textContinueGameDiv.style.visibility="hidden";
+		explosionEffectImage.style.visibility="hidden";
+		
+		if (!bIsContinue) {		
+			//NEW GAME
+			iCurrBossMonsterLife=iCurrBossMonsterLifeMax;
+			
+			mainImageTilePosX=iStageMaxWidth/2-iImageFrameWidth/2;
+			mainImageTilePosY=iStageMaxHeight/2-iImageFrameHeight;
+			
+			mainImageTile.style.left = (iHorizontalOffset+mainImageTilePosX)+"px";
+			mainImageTile.style.top = (iVerticalOffsetInnerScreen+mainImageTilePosY)+"px";
+			
+			mainImageTileTankBody.style.left = mainImageTile.style.left;
+			mainImageTileTankBody.style.top = mainImageTile.style.top;
+
+			mainImageTileHeroBody.style.left = mainImageTile.style.left;
+			mainImageTileHeroBody.style.top = mainImageTile.style.top;
+
+			//start from the beginning;
+			//reset; new game
+			dElapsedTimeInSeconds=0;
+
+			iCurrMapLocation=53;		
+			iStartTimeInMilliseconds=Date.now();	
+
+			bHasObtainedPearlAtRoom42=false;
+			bHasObtainedPearlAtRoom41=false;
+			bHasObtainedPearlAtRoom33=false;
+			bHasObtainedPearlAtRoom43=false;			
+			bHasObtainedPearlAtRoom22=false;			
+			//bHasObtainedPearlAtRoom11=false; //KEY
+			bHasObtainedKeyAtRoom1=false;
+			bHasUsedKeyAtRoom11=false;
+			bHasObtainedAmuletAtRoom32=false;
+			bHasObtainedPearlAtRoom12=false;
+						
+			keyStatusImageTile.style.visibility="hidden";
+			amuletStatusImageTile.style.visibility="hidden";
+			
+			iInputDelayAtGameOverCount=0;
+			bHasFired=false;
+			bIsHeroAttacked=false;			
+			iCurrHeroDeathCount=0;
+			iCurrPearlCount=0;
+			iCurrMonsterDeathCount=0;
+			
+			//added by Mike, 20251119
+			iHeroInvincibileCount=iHeroInvincibileCountMax;
+
+			bIsHeroInRiver=false;
+			bHasHeroReachedBottomOfRoomRiver=false;
+			bHasHeroReachedTopOfRoomRiver=false;
+			bIsActionKeyPressed=false;
+			bHasPlayedSolvedTune=false;			
+			
+			myAudio.play();
+			myAudioPart2.pause();
+			myAudioPart3.pause();
+
+			for (iRowCount=0; iRowCount<iRowCountMax; iRowCount++) {				
+				for (iColumnCount=0; iColumnCount<iColumnCountMax; iColumnCount++) {
+					arrayHasVisitedRoom[iColumnCount][iRowCount]=0;
+				}
+			}			
+			
+		}
+*/		
+	}	
 
 	//added by Mike, 20231125
 	function initKeyboardInput() {
@@ -13488,6 +13726,11 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 					return;
 				}
 			}
+			else if (bIsLevelUp) {
+				if (iInputDelayAtLeveledUpCount<iInputDelayAtLeveledUpCountMax) {
+					return;
+				}
+			}
 
 			//reference: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType;
 			//last accessed: 20221122
@@ -13510,6 +13753,7 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
         alert("iXPos: "+iXPos);
         alert("iYPos: "+iYPos);
 */
+						
 						if (bIsGameOver) {
 							var textNewGameDiv = document.getElementById("textNewGameDivId");
 							var textContinueGameDiv = document.getElementById("textContinueGameDivId");
@@ -13540,6 +13784,43 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 
 							return;
 						}
+						//added by Mike, 20251121
+						else if (bIsLevelUp) {
+							var textLevelUpLifeDiv = document.getElementById("textLevelUpLifeDivId");
+							var textLevelUpStaminaDiv = document.getElementById("textLevelUpStaminaDivId");
+							var textLevelUpSpeedDiv = document.getElementById("textLevelUpSpeedDivId");
+
+							textLevelUpLifeDiv.style.visibility="visible";
+							textLevelUpStaminaDiv.style.visibility="visible";
+							textLevelUpSpeedDiv.style.visibility="visible";
+						
+							//init(); //note: error; iCurrMapLocation could not be set;
+							//restarts where hero died;						
+							//current working solution
+							//executeHeroContinue();
+							//return;
+							
+							//alert("iXPos"+iXPos);
+													
+							if (isPointsOfRectIntersectingPointsOfRectDoor(iXPos,iYPos, parseInt(textLevelUpLifeDiv.style.left),parseInt(textLevelUpLifeDiv.style.top),textLevelUpLifeDiv.clientWidth,textLevelUpLifeDiv.clientHeight)) {
+							
+								//executeHeroContinue(false);
+								executeHeroLeveledUp(HP_STAT_ID);
+							
+								return;
+							}
+							else if (isPointsOfRectIntersectingPointsOfRectDoor(iXPos,iYPos, parseInt(textLevelUpStaminaDiv.style.left),parseInt(textLevelUpStaminaDiv.style.top),textLevelUpStaminaDiv.clientWidth,textLevelUpStaminaDiv.clientHeight)) {
+							
+								//executeHeroContinue(true);
+								executeHeroLeveledUp(STAMINA_STAT_ID);
+							
+								return;
+							}
+							//TODO: -add: speed
+
+							return;
+						}
+						
 
 						//added by Mike, 20231122
 						if (bHasPressedStart) {
@@ -14199,6 +14480,10 @@ opting to put assets folder in "html_application" folder instead
 
 	<div id="textNewGameDivId" class="DivTextClickContinue">NEW GAME</div>
 	<div id="textContinueGameDivId" class="DivTextClickContinue">CONTINUE</div>
+
+	<div id="textLevelUpLifeDivId" class="DivTextClickContinue">INCREASE HP</div>
+	<div id="textLevelUpStaminaDivId" class="DivTextClickContinue">INCREASE STAMINA</div>
+	<div id="textLevelUpSpeedDivId" class="DivTextClickContinue">INCREASE SPEED</div>
 
 	<div id="textScoreShadowDivId" class="DivStepCountStatusShadow">0</div>
 
