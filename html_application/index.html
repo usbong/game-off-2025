@@ -9240,9 +9240,13 @@ if (arrayWalkOnSnowEffectCount==1) {
 			bIsGameOver=true;
 			
 			executeTimeDisplay();
-		
+/*		
 			myFavicon.style.left=parseInt(mainImageTile.style.left)+iImageFrameWidthLarge/2;
 			myFavicon.style.top=parseInt(mainImageTile.style.top)+iImageFrameHeightLarge/2;
+*/
+			myFavicon.style.left=parseInt(mainImageTile.style.left)+iImageFrameWidthLarge/2-iImageFrameWidthDefault/2;
+			myFavicon.style.top=parseInt(mainImageTile.style.top)+iImageFrameHeightLarge/2-iImageFrameHeightDefault/2;
+
 			myFavicon.style.visibility="visible";
 		
 			mainImageTile.style.visibility="hidden";
