@@ -765,24 +765,11 @@
 			div.DivTextStatus
 			{
 				position: absolute;
-
-/*	//edited by Mike, 20221213
-				background-color: #000000aa;
-*/
-/*
-				background-color: #00000099;
-				
-*/
 				background-color: transparent;
 
-				color: #eeeeee; /*#ffffff;*/ /*#ffbd00;*/ /* gold */
+				color: #eeeeee;
 
-				/*
-				border: 3px solid #ffffff;				
-				border-radius: 4px;
-*/
-
-				/*opacity: 50%;*/
+				width: 420px;
 
 				font-size: 24px; /*28; 16px;*/
 				font-weight: bold;
@@ -791,6 +778,8 @@
 				padding-top: 20px;
 
 				visibility: hidden;
+				
+				float: left;
 
 				/* added by Mike, 20230128;
 					put above tile images */
@@ -1030,6 +1019,9 @@ var bHasShotSniper=false;
 var bIsMissionDone=false;
 var bIsMissionStarted=false;
 var bHasViewedMissionIntro=false;
+//added by Mike, 20251122
+var iCurrMissionIntroPage=0;
+var iCurrMissionIntroPageMax=5;
 
 var bIsHeroInTank=false;
 var bIsHeroAttacked=false;
@@ -1532,7 +1524,7 @@ var sCurrText="";
 var sText="";
 var iCurrTextCharacterCountEffectDelayCount=0;
 const iCurrTextCharacterCountEffectDelayCountMax=5;
-
+var iTextStatusOffsetY=0;
 
 //added by Mike, 20231128
 var iTitlePressStartEffectDelayCount=0;
@@ -1754,7 +1746,7 @@ var bIsHeroFacingUp=false;
 
 	const WRAITH_MONSTER_HP_MAX=3;
 	
-	var iCurrMapLocation=63; //53;//12;//0;		
+	var iCurrMapLocation=51;//63; //53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -6239,7 +6231,8 @@ alert("iInputY: "+iInputY);
 		if (iSnowEffectPosY>iStageMaxHeight-iWrapOffsetY) {
 			iSnowEffectPosY=0-iImageFrameHeightDefault-iWrapOffsetY;
 		}
-		iSnowEffectPosY++;
+		iSnowEffectPosY+=window.parseInt(Math.random()*5)%5;
+		//iSnowEffectPosY++;
 		
 		snowEffectImage.style.left=iSnowEffectPosX+"px";
 		snowEffectImage.style.top=iSnowEffectPosY+"px";
@@ -8978,7 +8971,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 				bossBattleBgImagePart2.style.top = 0+iStageMaxHeight-bossBattleBgImagePart2.clientHeight+"px";
 				
 				//cave; default
-				bossBattleBgImagePart3.style.visibility = "visible";				
+				bossBattleBgImagePart3.style.visibility = "hidden";//visible";				
 				bossBattleBgImagePart3.style.left = 0+"px"; 			
 				bossBattleBgImagePart3.style.top = 0+iStageMaxHeight-bossBattleBgImagePart3.clientHeight+"px";
 
@@ -9024,12 +9017,36 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//sText = "・・・・・・勝負だ！！！";
 			//sText = "GAME & WATCH !?";
 			//sText = "Keyboard Press + Attack<br/>to do a sniper shot.";
-			sText = "HURRY! GO RIGHT!!!";
+			//sText = "HURRY! GO RIGHT!!!";
+
+			//sText = "The Empire's generosity hardly<br/> reaches the Outer Waves.<br/><br/> In this part of the galaxy, people<br/> have learned to survive, without<br/> any help from the Empire.<br/><br/> Meanwhile, the Undead continue<br/> to advance and attack...<br/><br/> What was that! An explosion!<br/><br/> Hurry! Take this message<br/> and bring it to the Emperor!";
+			
+			switch (iCurrMissionIntroPage) {
+				case 0:
+					sText = "The Empire's generosity hardly reaches the Outer Waves.";
+					break;
+				case 1:
+					sText = "In this part of the galaxy, people have learned to survive,";
+					break;
+				case 2:
+					sText = "without any help from the Empire.";
+					break;
+				case 3:
+					sText = "Meanwhile, the Undead continue to advance and attack...";
+					break;
+				case 4:
+					sText = "What was that! An explosion!";
+					break;
+				case 5:
+					sText = "Hurry! Take this message and bring it to the Emperor!"
+					break;
+			}
 
 			//var sCurrText="";
-			
+
+/*			
 			iCurrTextCharacterCountMax=sText.length;
-			
+	
 			//include last character
 //			if (iCurrTextCharacterCount<iCurrTextCharacterCountMax) {
 			if (iCurrTextCharacterCountEffectDelayCount>=iCurrTextCharacterCountEffectDelayCountMax) {
@@ -9044,8 +9061,34 @@ if (arrayWalkOnSnowEffectCount==1) {
 			else {
 				iCurrTextCharacterCountEffectDelayCount++;
 			}
-
+						
   			textStatusDiv.innerHTML = sCurrText;//sText;
+*/			
+
+/*			//scrolling
+			iCurrTextCharacterCountMax=sText.length;
+	
+			//include last character
+//			if (iCurrTextCharacterCount<iCurrTextCharacterCountMax) {
+			if (iCurrTextCharacterCountEffectDelayCount>=iCurrTextCharacterCountEffectDelayCountMax) {
+
+				if (iCurrTextCharacterCount<=iCurrTextCharacterCountMax) {
+					//sCurrText=sText.substring(0,iCurrTextCharacterCount);
+				}
+				//iCurrTextCharacterCount++;
+				iTextStatusOffsetY++;
+				
+				iCurrTextCharacterCountEffectDelayCount=0;
+			}
+			else {
+				iCurrTextCharacterCountEffectDelayCount++;
+			}
+						
+  			//textStatusDiv.innerHTML = sCurrText;//sText;
+  			textStatusDiv.innerHTML = sText;
+*/
+
+  			textStatusDiv.innerHTML = sText;
 
   			//alert(sText.length);
   			var iTextStatusDivWidth = (textStatusDiv.clientWidth);
@@ -9058,7 +9101,11 @@ if (arrayWalkOnSnowEffectCount==1) {
   			//TODO: -update: this
   			//iOffsetWidth
   			//textStatusDiv.style.left = 0+iHorizontalOffset+iStageMaxWidth/2 -iTextStatusDivWidth/2 +"px";
-			textStatusDiv.style.left=0+iStageMaxWidth/2-textStatusBackgroundDiv.clientWidth/2;
+			
+			//edited by Mike, 20251122
+		//textStatusDiv.style.left=0+iStageMaxWidth/2-textStatusBackgroundDiv.clientWidth/2;
+
+			textStatusDiv.style.left=0+iStageMaxWidth*0.1;
 
   				//textStatusDiv.style.left = 0+iHorizontalOffset+iOffsetWidth+"px";
 
@@ -9066,7 +9113,10 @@ if (arrayWalkOnSnowEffectCount==1) {
   			//textStatusDiv.style.top = 0+iStageMaxHeight-iTextStatusDivHeight*1.5+"px";
   			//textStatusDiv.style.top = 0+"px";
 			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.10)+"px";
-			textStatusDiv.style.top = 0+(iStageMaxHeight*0.15)+"px";
+			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.15)+"px";
+
+			textStatusDiv.style.top = 0+(iStageMaxHeight*0.15-iTextStatusOffsetY)+"px";
+
   			
   			textStatusDiv.style.visibility="visible";
 			mainImageTileProjectile.style.visibility="hidden";
@@ -9074,7 +9124,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 		
 			textStatusBackgroundDiv.style.left=0+iStageMaxWidth/2-textStatusBackgroundDiv.clientWidth/2;//textStatusDiv.style.left;//0;
 
-			textStatusBackgroundDiv.style.visibility="visible";
+			textStatusBackgroundDiv.style.visibility="hidden";//"visible";
 
 			//textStatusBackgroundDiv.style.width=iStageMaxWidth*0.65;
 			textStatusBackgroundDiv.style.width=iStageMaxWidth*0.5;
@@ -9636,6 +9686,86 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 
 		switch(iCurrMapLocation) {
+			case 51:
+			myAudio.play();
+
+				bossBattleBgImageBeach.style.visibility = "visible";
+				bossBattleBgImagePart2.style.visibility = "hidden";
+				bossBattleBgImagePart3.style.visibility = "hidden";	
+
+				if (!hasInitMapLocation) {
+					arrayActors=[];
+					iArrayActorsCount=0;
+
+					arrayActors[iArrayActorsCount]=mainImageTileHeroBody;//mainImageTile;
+					arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
+					iArrayActorsCount++;
+
+					//------------------------------------------------
+
+					iCurrSnowEffectCount=0;
+					//4x4
+					for (iCurrSnowRow=0; iCurrSnowRow<4; iCurrSnowRow++) {
+						for (iCurrSnowColumn=0; iCurrSnowColumn<4; iCurrSnowColumn++) {
+						
+							let iOffsetX=iImageFrameWidthLarge*iCurrSnowEffectCount;
+							//let iOffsetY=iImageFrameHeightLarge*iCurrSnowEffectCount;
+							//setSnowEffectPosition(0+iCurrSnowColumn*64,0+iCurrSnowRow*64,iCurrSnowEffectCount);
+							
+							setSnowEffectPosition(0+iCurrSnowColumn*64+iOffsetX,0+iCurrSnowRow*64,iCurrSnowEffectCount);
+							
+							iCurrSnowEffectCount++;
+						}
+					}
+	
+					hasInitMapLocation=true;					
+				}
+
+				updateArrayActorsZIndex();
+				updateHeroFacingDirection();
+				
+				updateHasHeroShotSniper();
+				executeMonsterDeathAnimation();
+
+				for (iCurrSnowEffectCount=0; iCurrSnowEffectCount<iCurrSnowEffectCountMax; iCurrSnowEffectCount++) {
+					executeSnowEffect(iCurrSnowEffectCount);
+				}
+
+				if (mainImageTilePosY<0+iInnerVerticalOffset+iImageFrameHeightLarge/2) {		
+					//OK
+					mainImageTilePosY=0+iInnerVerticalOffset+iImageFrameHeightLarge/2;
+					resetProjectile();
+				}					
+				//bottom wall
+				else if (mainImageTilePosY+iImageFrameHeightLarge>iInnerVerticalOffset+iStageMaxHeight-iImageFrameHeightLarge) {
+					//OK;
+					mainImageTilePosY=iInnerVerticalOffset+iStageMaxHeight-iImageFrameHeightLarge-iImageFrameHeightLarge;
+					
+					//alert("mainImageTilePosX: "+mainImageTilePosX);				
+					resetProjectile();
+				}
+							
+				//right-most
+				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault*1.5) {
+					//OK;
+					mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
+					resetProjectile();	
+
+					iCurrMapLocation=53;
+					hasInitMapLocation=false;					
+					
+					bIsLevelUp=false;
+					
+				}
+				//left-most
+				//wall
+				else if (mainImageTilePosX<0+(iInnerHorizontalOffset)) {
+					mainImageTilePosX=(0+iInnerHorizontalOffset);
+					resetProjectile();
+				}
+				break;			
+		
+		
 			//OK; TOP DOOR; REST of the sides WALLS
 			case 52: //orig
 			myAudio.play();
@@ -13864,7 +13994,7 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			//reset; new game
 			dElapsedTimeInSeconds=0;
 
-			iCurrMapLocation=53;		
+			iCurrMapLocation=51;//53;		
 			iStartTimeInMilliseconds=Date.now();	
 
 			bHasObtainedPearlAtRoom42=false;
@@ -13887,6 +14017,9 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			iCurrHeroDeathCount=0;
 			iCurrPearlCount=0;
 			iCurrMonsterDeathCount=0;
+			
+			//added by Mike, 20251122
+			iTextStatusOffsetY=0;
 			
 			//added by Mike, 20251119
 			iHeroInvincibileCount=iHeroInvincibileCountMax;
@@ -14397,8 +14530,15 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 						  }
 						  else {
 							  if (!bHasViewedMissionIntro) {
-								bHasViewedMissionIntro=true;
-								return;
+
+								if (iCurrMissionIntroPage<iCurrMissionIntroPageMax) {
+									iCurrMissionIntroPage++;
+									return;
+								}
+								else {
+									bHasViewedMissionIntro=true;
+									return;
+								}
 							  }
 						  }
 						}
