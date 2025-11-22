@@ -50,6 +50,12 @@ Sniper Shot
 
 Stages leading to the Giant Boss
 
+10) https://masarapmabuhay.itch.io/game-off-2025-prototype9
+
+New hero graphics;
+Basic level up mechanism;
+Basic story Intro;
+
 <!--
 
 4) https://masarapmabuhay.itch.io/game-off-2024-prototype3
