@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251121; from 20251120
+' @date updated: 20251122; from 20251121
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -13499,14 +13499,14 @@ alert("iDeltaY: "+iDeltaY);
 	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/1.8) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/1.8)) {
 	
 
-	//edited by Mike, 20251121; from 20251120
-	if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/2.3) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/2.3)) {
-	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/3) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/3)) {
+	//edited by Mike, 20251122; from 20251121
+	//if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/2.3) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/2.3)) {
+	if ((Math.abs(iDeltaX)<iImageFrameWidthLarge/3) && (Math.abs(iDeltaY)<iImageFrameHeightLarge/3)) {
 
 		dustEffectImage.style.visibility="hidden";
 
 		arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+0);
-		arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="visible";
+		arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
 
 /*
 		if (!bHasHeroHitMonster) {
