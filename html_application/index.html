@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251123; from 20251122
+' @date updated: 20251124; from 20251123
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -336,7 +336,7 @@
 			
 			visibility: hidden;
 
-			z-index: 2; /*4;*/
+			z-index: 3; /*2;*/
 		}		
 
 		.ImageProfileSmall {
@@ -1028,6 +1028,7 @@ var bIsLevelUp=false;
 const iInputDelayAtLeveledUpCountMax=100;
 var iInputDelayAtLeveledUpCount=0;
 
+var bIsBossBattle=false;
 
 var bIsHeroInRiver=false;
 var bHasHeroReachedBottomOfRoomRiver=false;
@@ -1570,6 +1571,7 @@ const iMonsterAttackDamageWraith=iMonsterAttackDamageDefault;
 const iMonsterAttackDamageBat=iMonsterAttackDamageDefault;
 
 const iSniperShotAttackDamage=10;
+const iFireballAttackDamage=1;
 
 
 var iCurrTextCharacterCount=0;
@@ -1826,7 +1828,7 @@ var bIsHeroFacingUp=false;
 	const RUNNING_WRAITH_MONSTER_HP_MAX=1;
 	const BOMB_MONSTER_HP_MAX=1;
 	
-	var iCurrMapLocation=75;//51;//63; //53;//12;//0;		
+	var iCurrMapLocation=51;//75;//51;//63; //53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -2381,16 +2383,19 @@ var bIsHeroFacingUp=false;
 		var iBossLifeBarWidth=2;//4;
 		var iBossLifeBarHeight=4;		
 		var iBossLifeBarSpacing=0;//1;
-			
-
+		
+		if (iCurrBossLife<=0) {
+			return;
+		}
+		
 		myCanvasContext.fillStyle = "#2d2622";	
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iBossLifeBarWidth*iCurrBossLifeMax, iBossLifeBarHeight);
-		
+				
 		if (bIsFrameOnly) {
 			return;
 		}
-
-
+		
+		
 		//---------------------------------		
 		if (iCurrBossLifeToBeDeductedAnimationDelayCount==iCurrBossLifeToBeDeductedAnimationDelayCountMax) {
 			if (iCurrBossLifeToBeDeductedAnimation>0) {
@@ -2505,6 +2510,9 @@ var bIsHeroFacingUp=false;
 			iCurrHeroLife-=iCurrHeroLifeToBeDeducted;
 			//iCurrHeroLifeToBeDeducted=0;
 		}
+		
+		//added by Mike, 20251124
+		iCurrHeroLifeToBeDeductedAnimationMain=iCurrHeroLife+iCurrHeroLifeToBeDeducted;
 	
 		iCurrHeroProjectileLifeAnimationDelayCount=0;
 		iCurrHeroLifeToBeDeductedAnimation+=iCurrHeroLifeToBeDeducted;
@@ -2545,6 +2553,7 @@ var bIsHeroFacingUp=false;
 			iCurrBossLifeToBeDeducted=0;
 			//iCurrHeroManaToBeDeductedAnimation=0;
 			iCurrBossLifeToBeDeductedAnimationMain=iCurrBossLifeMax;
+			
 			return false;
 		}
 
@@ -2553,6 +2562,9 @@ var bIsHeroFacingUp=false;
 			iCurrBossLife-=iCurrBossLifeToBeDeducted;
 			//iCurrHeroLifeToBeDeducted=0;
 		}
+		
+		//added by Mike, 20251124
+		iCurrBossLifeToBeDeductedAnimationMain=iCurrBossLife+iCurrBossLifeToBeDeducted;
 	
 		iCurrBossProjectileLifeAnimationDelayCount=0;
 		iCurrBossLifeToBeDeductedAnimation+=iCurrBossLifeToBeDeducted;
@@ -7723,8 +7735,12 @@ if (arrayWalkOnSnowEffectCount==1) {
 					setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
 	
 					actorLastAttackedByHero=skelMonsterImageTile;
-					iSkelMonsterHP--;
+					
+					//edited by Mike, 20251124
+					//iSkelMonsterHP--;
 
+					reduceBossLifeBar(1); //iMonsterAttackDamageBoss
+					iSkelMonsterHP=iCurrBossLife;
 	
 					if (iSkelMonsterHP<=0) {
 						skelMonsterImageTile.style.visibility="hidden";				
@@ -7732,7 +7748,6 @@ if (arrayWalkOnSnowEffectCount==1) {
 						iCurrMonsterDeathCount++;
 
 						setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
-
 					}
 /*
 					else {
@@ -8147,11 +8162,16 @@ if (arrayWalkOnSnowEffectCount==1) {
 					setExplosionEffectPosition(demonMonsterImageTilePosX+iImageFrameWidthLarge/2,demonMonsterImageTilePosY+iImageFrameHeightLarge/2);
 	
 					actorLastAttackedByHero=demonMonsterImageTile;
-					iDemonMonsterHP--;
+					//iDemonMonsterHP--;
 					//iCurrBossLife=iDemonMonsterHP;
 					reduceBossLifeBar(1); //iMonsterAttackDamageBoss
+					iDemonMonsterHP=iCurrBossLife;
 	
 					if (iDemonMonsterHP<=0) {
+					//if (iCurrBossLife<=0) {
+					
+						//alert("DONE!");
+					
 						demonMonsterImageTile.style.visibility="hidden";				
 						isDemonMonsterTileActive=false;
 						iCurrMonsterDeathCount++;
@@ -8413,9 +8433,16 @@ if (arrayWalkOnSnowEffectCount==1) {
 					
 					setFireballExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/4,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4);
 					
-					skelMonsterImageTile.style.visibility="hidden";				
-					isSkelMonsterTileActive=false;
-					iCurrMonsterDeathCount++;					
+					reduceBossLifeBar(iFireballAttackDamage);
+					iSkelMonsterHP=iCurrBossLife;
+	
+					if (iSkelMonsterHP<=0) {
+						skelMonsterImageTile.style.visibility="hidden";				
+						isSkelMonsterTileActive=false;
+						iCurrMonsterDeathCount++;
+
+						setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
+					}					
 				}
 			}
 		}
@@ -8528,9 +8555,16 @@ if (arrayWalkOnSnowEffectCount==1) {
 					
 					setFireballExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/4+iImageFrameWidthLarge/4,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4+iImageFrameHeightLarge/4);
 					
-					skelMonsterImageTile.style.visibility="hidden";				
-					isSkelMonsterTileActive=false;
-					iCurrMonsterDeathCount++;					
+					reduceBossLifeBar(iSniperShotAttackDamage);
+					iSkelMonsterHP=iCurrBossLife;
+	
+					if (iSkelMonsterHP<=0) {
+						skelMonsterImageTile.style.visibility="hidden";				
+						isSkelMonsterTileActive=false;
+						iCurrMonsterDeathCount++;
+
+						setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
+					}
 				}
 			}
 		}
@@ -8587,9 +8621,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 					setFireballExplosionEffectPosition(demonMonsterImageTilePosX+iImageFrameWidthLarge/4,demonMonsterImageTilePosY+iImageFrameHeightLarge/4);
 
 					actorLastAttackedByHero=demonMonsterImageTile;
-					iDemonMonsterHP-=iSniperShotAttackDamage;
+					//iDemonMonsterHP-=iSniperShotAttackDamage;
 					reduceBossLifeBar(iSniperShotAttackDamage); //iMonsterAttackDamageBoss
-	
+					iDemonMonsterHP=iCurrBossLife;
+					
 					if (iDemonMonsterHP<=0) {
 						demonMonsterImageTile.style.visibility="hidden";				
 						isDemonMonsterTileActive=false;
@@ -10626,8 +10661,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//iCurrHeroLife=iCurrHeroLifeMax;
 			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
 
-			drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
-			//drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+iStageMaxHeight*0.8,false); 
+			if (bIsBossBattle) {
+				drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
+			}
 
 			//iCurrHeroMana=iCurrHeroManaMax;		
 			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 			
@@ -10724,9 +10760,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//iCurrHeroLife=iCurrHeroLifeMax;
 			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
 
-			drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
-			//drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+iStageMaxHeight*0.8,false); 
-
+			if (bIsBossBattle) {
+				drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
+			}
+			
 			//iCurrHeroMana=iCurrHeroManaMax;		
 			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 			
 	
@@ -10854,8 +10891,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
 
-			drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
-			//drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+iStageMaxHeight*0.8,false); 
+			if (bIsBossBattle) {
+				drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
+			}
 
 			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);		
 			
@@ -10956,8 +10994,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 		
 		drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
 
-		drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
-		//drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+iStageMaxHeight*0.8,false); 
+		if (bIsBossBattle) {
+			drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
+		}
 
 		drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);	
 	}
@@ -10965,10 +11004,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 		drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,true); 
 
-		drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
-		//drawBossLifeBar(myCanvasTwoContext,(iStageMaxWidth-iStageMaxHeight)/4, 0+iStageMaxHeight*0.8,false); 
-		//drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+iStageMaxHeight*0.8,false); 
-
+		if (bIsBossBattle) {
+			drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
+		}
 
 		drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,true);	
 
@@ -11192,6 +11230,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 			return;
 		}
 
+		//added by Mike, 20251124
+		bIsBossBattle=false;
 
 		switch(iCurrMapLocation) {
 			case 51:
@@ -12245,6 +12285,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 				
 			case 55:
 			myAudio.play();
+			
+			bIsBossBattle=true;
 /*			
 		//debug
 		//------------
@@ -12261,9 +12303,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 */
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "visible";	
+				bossBattleBgImagePart3.style.visibility = "hidden";	
 
 				if (!hasInitMapLocation) {
+					iCurrBossLife=iCurrBossLifeMax;
+				
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
 					arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+0);
@@ -12671,6 +12715,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 		
 		//last boss; demonic tutor
 		case 75:
+			bIsBossBattle=true;
+
 			myAudio.play();
 /*
 				break;
@@ -15858,7 +15904,7 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			//reset; new game
 			dElapsedTimeInSeconds=0;
 
-			iCurrMapLocation=75;//51;//53;		
+			iCurrMapLocation=51;//75;//51;//53;		
 			iStartTimeInMilliseconds=Date.now();	
 
 			bHasObtainedPearlAtRoom42=false;
