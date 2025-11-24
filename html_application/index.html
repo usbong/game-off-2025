@@ -1054,6 +1054,7 @@ var bIsMiniBossMonsterHit=false;
 //var iBossLife=3;
 
 var bIsActionKeyPressed=false;
+var bIsActionKeyFireballPressed=false;
 
 var iInputDelayCountMax=100;//1000;//3;
 var iInputDelayCount=iInputDelayCountMax;
@@ -2082,6 +2083,7 @@ var bIsHeroFacingUp=false;
 				
 		bHasFired=false;
 		//bIsActionKeyPressed=false;
+
 		bHasHeroShotFireball=false;
 
 		iMainImageTileStepAngle=0;
@@ -2770,9 +2772,12 @@ var bIsHeroFacingUp=false;
 		textPearlStatusDiv.style.left=0+iXPos+iImageFrameWidthDefault+"px";
 		//note: pearl position centered within image file vertically
 		textPearlStatusDiv.style.top=0+iYPos+iImageFrameHeightDefault*0.9+"px";
-				
-		textPearlStatusDiv.innerHTML = "x"+iCurrPearlCount;
-		
+			
+		//edited by Mike, 20251124
+		//textPearlStatusDiv.innerHTML = "x"+iCurrPearlCount;
+		//textPearlStatusDiv.innerHTML = "x"+iCurrHeroDeathCount;
+		textPearlStatusDiv.innerHTML = "";
+
 		
 /*	
 		var iHeroLifeBarWidth=4;
@@ -5738,7 +5743,9 @@ alert("iInputY: "+iInputY);
 				if (inputArrayBombMonsterWithIdCount[MONSTER_CURRENT_HP]<=0) {
 					inputArrayBombMonsterWithIdCount[MONSTER_OBJECT].style.visibility="hidden";				
 					inputArrayBombMonsterWithIdCount[MONSTER_IS_ACTIVE]=false;
-					iCurrMonsterDeathCount++;
+					
+					//removed by Mike, 20251124
+					//iCurrMonsterDeathCount++;
 
 					setExplosionEffectPosition(inputArrayBombMonsterWithIdCount[MONSTER_POSX]+iImageFrameWidthDefault/2,inputArrayBombMonsterWithIdCount[MONSTER_POSY]+iImageFrameHeightDefault/2);
 				}
@@ -9603,7 +9610,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 						if (inputArrayBombMonsterWithIdCount[MONSTER_CURRENT_HP]<=0) {
 							inputArrayBombMonsterWithIdCount[MONSTER_OBJECT].style.visibility="hidden";				
 							inputArrayBombMonsterWithIdCount[MONSTER_IS_ACTIVE]=false;
-							iCurrMonsterDeathCount++;
+							
+							//removed by Mike, 20251124
+							//iCurrMonsterDeathCount++;
 
 							setExplosionEffectPosition(inputArrayBombMonsterWithIdCount[MONSTER_POSX]+iImageFrameWidthDefault/2,inputArrayBombMonsterWithIdCount[MONSTER_POSY]+iImageFrameHeightDefault/2);
 						}
@@ -9643,7 +9652,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 							if (inputArrayBombMonsterWithIdCount[MONSTER_CURRENT_HP]<=0) {
 								inputArrayBombMonsterWithIdCount[MONSTER_OBJECT].style.visibility="hidden";				
 								inputArrayBombMonsterWithIdCount[MONSTER_IS_ACTIVE]=false;
-								iCurrMonsterDeathCount++;
+								
+								//removed by Mike, 20251124
+								//iCurrMonsterDeathCount++;
 
 								setExplosionEffectPosition(inputArrayBombMonsterWithIdCount[MONSTER_POSX]+iImageFrameWidthDefault/2,inputArrayBombMonsterWithIdCount[MONSTER_POSY]+iImageFrameHeightDefault/2);
 							}
@@ -10683,6 +10694,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//note: using "textTimeDiv.style.top", instead of "bottom"
 			//edited by Mike, 20251120
 			//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 					
+			
+			//edited by Mike, 20251124
+			//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top));
 			drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 					
 		}
 		else {
@@ -10781,12 +10795,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 	//drawMonsterDeathStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60+iImageFrameHeightDefault*2); 
 	
 	//note: using "textTimeDiv.style.top", instead of "bottom"
-	//edited by Mike, 20251120
-	//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 			
-			
-			drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 			
 
-		
+			//edited by Mike, 20251124; from 20251120
+			//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 			
+			drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 			
 	  }
       else {
 	  
@@ -10929,7 +10941,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 		executeGrassCutEffect();
 
-		executePearlAnimation();
+		//removed by Mike, 20251124
+		//executePearlAnimation();
 
 		executePearlStatusAnimation();
 
@@ -11033,9 +11046,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 	//drawMonsterDeathStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60+iImageFrameHeightDefault*2); 
 	
 	//note: using "textTimeDiv.style.top", instead of "bottom"
-	//edited by Mike, 20251120
-	//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); //+iImageFrameHeightDefault/2 
-
+	//edited by Mike, 20251124; from 20251120
+	//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 
 	drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top));
 		
 	//alert(iHorizontalOffset);
@@ -15634,38 +15646,9 @@ alert("iXPos: "+iXPos);
 */
 
 	if (bIsActionKeyPressed) {
-/*	
-		if (iCurrHeroMana!=iCurrHeroManaMax) {	//if no mana
-			resetProjectile();	
-		}
-		else {
-*/		
-			if (!bHasHeroShotSniper) {
-				//edited by Mike, 20251116			
-				//resetProjectile();
-				//----------------				
-				//keep hero in-place
-				mainImageTileProjectileStepDestinationY=mainImageTilePosY+iImageFrameHeightLarge/2;
-				mainImageTileProjectileStepDestinationX=mainImageTilePosX+iImageFrameWidthLarge/2;
-				//----------------
 
-				iMouseClickStartTime=iMouseClickMaxElapsedTime+1;	
-				bHasHeroShotSniper=true;		
-				
-				//iCurrHeroMana=0;//set to empty
-				//reduceHeroMana(6);
-				if (iCurrHeroMana==iCurrHeroManaMax) {
-					reduceHeroMana(iCurrHeroManaMax);
-				}
-				
-				mainImageTileSniperShotPosX=iXPos;
-				mainImageTileSniperShotPosY=iYPos;
-
-				setSpiralStrokeEffectPosition(iXPos,iYPos);
-				
-				playShortLightningBlast();
-			}
-			else if (!bHasHeroShotFireball) {
+		if (bIsActionKeyFireballPressed) {
+			if (!bHasHeroShotFireball) {
 				//edited by Mike, 20251116			
 				//part of command to create fireball
 				//-----------
@@ -15691,6 +15674,34 @@ alert("iXPos: "+iXPos);
 				mainImageTileFireballProjectileStepDestinationY=iYPos;
 				
 				setInitFireballEffectPosition(mainImageTilePosX+iImageFrameWidthDefault/2,mainImageTilePosY+iImageFrameHeightDefault/2);				
+			}
+		}
+
+
+			if (!bHasHeroShotSniper) {
+				//edited by Mike, 20251116			
+				//resetProjectile();
+				//----------------				
+				//keep hero in-place
+				mainImageTileProjectileStepDestinationY=mainImageTilePosY+iImageFrameHeightLarge/2;
+				mainImageTileProjectileStepDestinationX=mainImageTilePosX+iImageFrameWidthLarge/2;
+				//----------------
+
+				iMouseClickStartTime=iMouseClickMaxElapsedTime+1;	
+				bHasHeroShotSniper=true;		
+				
+				//iCurrHeroMana=0;//set to empty
+				//reduceHeroMana(6);
+				if (iCurrHeroMana==iCurrHeroManaMax) {
+					reduceHeroMana(iCurrHeroManaMax);
+				}
+				
+				mainImageTileSniperShotPosX=iXPos;
+				mainImageTileSniperShotPosY=iYPos;
+
+				setSpiralStrokeEffectPosition(iXPos,iYPos);
+				
+				playShortLightningBlast();
 			}
 	}
 	
@@ -15938,6 +15949,8 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			bHasHeroReachedBottomOfRoomRiver=false;
 			bHasHeroReachedTopOfRoomRiver=false;
 			bIsActionKeyPressed=false;
+			bIsActionKeyFireballPressed=false;
+
 			bHasPlayedSolvedTune=false;			
 			
 			myAudio.play();
@@ -16142,10 +16155,18 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			}
 */
 			bIsActionKeyPressed=true;
-
-			if ((!bIsGameOver) && (bHasPressedStart)) {
-				executeHeroFireballProjectileHoldAnimation();
+			
+			//alert(e.keyCode);
+			
+			if (e.keyCode==70) { //key f
+				bIsActionKeyFireballPressed=true;
+				
+				if ((!bIsGameOver) && (bHasPressedStart)) {
+					executeHeroFireballProjectileHoldAnimation();
+				}
 			}
+
+			
 /*
 				//added by Mike, 20221121
 				bIsActionKeyPressed=false;
@@ -16224,6 +16245,9 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 				//alert("KEYUP; e.keyCode: "+e.keyCode);
 				
 				bIsActionKeyPressed=false;
+
+				bIsActionKeyFireballPressed=false;
+
 				
 				mainImageTileFireballProjectileHold.style.visibility="hidden";
 				iHeroFireballProjectileHoldAnimationDelayCount=0;
