@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251124; from 20251123
+' @date updated: 20251125; from 20251124
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1028,6 +1028,11 @@ var bIsLevelUp=false;
 const iInputDelayAtLeveledUpCountMax=100;
 var iInputDelayAtLeveledUpCount=0;
 
+const iInputDelayAtStageTransitionCountMax=100;
+var iInputDelayAtStageTransitionCount=0;
+
+var bHasHeroGottenSniperShot=false;
+
 var bIsBossBattle=false;
 
 var bIsHeroInRiver=false;
@@ -1045,6 +1050,11 @@ var bHasViewedMissionIntro=false;
 //added by Mike, 20251122
 var iCurrMissionIntroPage=0;
 var iCurrMissionIntroPageMax=5;
+
+
+var bIsShowingStage1End=false;
+var bIsShowingStage2End=false;
+
 
 var bIsHeroInTank=false;
 var bIsHeroAttacked=false;
@@ -1327,6 +1337,12 @@ var iPearlStatusAnimationCount=-1; //0; //due to immediately +1 in execution;
 var iPearlStatusAnimationCountMax=5;
 var iPearlStatusAnimationDelayCount=0;
 var iPearlStatusAnimationDelayCountMax=2;
+
+var iSniperShotStatusAnimationCount=-1; //0; //due to immediately +1 in execution;
+var iSniperShotStatusAnimationCountMax=5;
+var iSniperShotStatusAnimationDelayCount=0;
+var iSniperShotStatusAnimationDelayCountMax=40;
+
 
 var iAmuletStatusAnimationCount=-1; //0; //due to immediately +1 in execution;
 var iAmuletStatusAnimationCountMax=5;
@@ -1837,7 +1853,7 @@ var bIsHeroFacingUp=false;
 	const MONSTER_TYPE_VAL_RUNNING_WRAITH=3;
 	const MONSTER_TYPE_VAL_BOMB=4;
 
-	const WRAITH_MONSTER_HP_MAX=2;//3;
+	const WRAITH_MONSTER_HP_MAX=1;//2;//3;
 	const RUNNING_WRAITH_MONSTER_HP_MAX=1;
 	const BOMB_MONSTER_HP_MAX=1;
 	
@@ -2772,6 +2788,61 @@ var bIsHeroFacingUp=false;
 		//myCanvasContext.fillRect(0+iXPos+textManaBarDiv.innerHTML.length*4, 0+iYPos, iHeroManaBarWidth, -iHeroManaBarHeight/iCurrHeroManaMax*(iCurrHeroMana));
 	}		
 
+	function drawSniperShotStatus(myCanvasContext, iXPos, iYPos) {	
+
+		if (!bHasHeroGottenSniperShot) {
+			return;
+		}
+
+		var sniperShotStatusImageTile = document.getElementById("sniperShotStatusImageTileId");
+		//var textSniperShotStatusDiv = document.getElementById("textSniperShotlStatusDivId");
+/*				
+		var iFrameY=iImageFrameHeightDefault*1;		
+		sniperShotStatusImageTile.style.objectPosition = "-" + iImageFrameWidthDefault*1 + "px -" + iFrameY + "px";
+*/
+
+		sniperShotStatusImageTile.style.visibility="visible";				
+		sniperShotStatusImageTile.style.left=0+iXPos+"px";
+		sniperShotStatusImageTile.style.top=0+iYPos+iImageFrameHeightDefault*1+"px";
+	
+
+	
+/*		
+		textPearlStatusDiv.style.visibility="visible";
+		textPearlStatusDiv.style.left=0+iXPos+iImageFrameWidthDefault+"px";
+		//note: pearl position centered within image file vertically
+		textPearlStatusDiv.style.top=0+iYPos+iImageFrameHeightDefault*0.9+"px";
+			
+		//edited by Mike, 20251124
+		//textPearlStatusDiv.innerHTML = "x"+iCurrPearlCount;
+		//textPearlStatusDiv.innerHTML = "x"+iCurrHeroDeathCount;
+		textPearlStatusDiv.innerHTML = "";
+*/
+		
+/*	
+		var iHeroLifeBarWidth=4;
+		var iHeroLifeBarHeight=4;		
+		var iHeroLifeBarSpacing=0;//1;
+			
+		//var iCurrHeroLife=10;
+
+		//myCanvasContext.fillStyle = "#00c7ff"; //00d9ff; //"#ff0000";
+
+		if (iCurrHeroLife>=5) {
+			myCanvasContext.fillStyle = "#00c7ff";		
+		}
+		else if (iCurrHeroLife>=2) {
+			myCanvasContext.fillStyle = "#ff6b00"; //orange
+		}
+		else {
+			myCanvasContext.fillStyle = "#ff0000"; //red
+		}
+		
+		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
+*/		
+	}	
+
+
 	function drawPearlStatus(myCanvasContext, iXPos, iYPos) {	
 		var pearlStatusImageTile = document.getElementById("pearlStatusImageTileId");
 		var textPearlStatusDiv = document.getElementById("textPearlStatusDivId");
@@ -2937,7 +3008,8 @@ var bIsHeroFacingUp=false;
 		dElapsedTimeInSeconds=0;
 
 		bIsLevelUp=false;		
-
+		bHasHeroGottenSniperShot=false;
+			
 		iInputDelayAtGameOverCount=0;
 		
 		iHeroInvincibileCount=0;
@@ -2951,6 +3023,10 @@ var bIsHeroFacingUp=false;
 		bIsMissionDone=false;
 		bIsMissionStarted=false;	
 		bHasViewedMissionIntro=false;
+		bIsShowingStage1End=false;
+		bIsShowingStage2End=false;
+
+
 		bIsHeroInTank=false;
 		bIsHeroDash=false;
 		bHasHeroShotFireball=false;
@@ -3084,6 +3160,9 @@ var bIsHeroFacingUp=false;
 		var pearlImageTile = document.getElementById("pearlImageTileId");
 		var pearlStatusImageTile = document.getElementById("pearlStatusImageTileId");
 
+		var sniperShotStatusImageTile = document.getElementById("sniperShotStatusImageTileId");
+
+
 		var textMonsterDeathStatusDiv = document.getElementById("textMonsterDeathStatusDivId");
 		var textHeroDeathStatusDiv = document.getElementById("textHeroDeathStatusDivId");
 
@@ -3162,6 +3241,9 @@ var bIsHeroFacingUp=false;
 		grassCutEffectImage.style.visibility="hidden";
 		pearlImageTile.style.visibility="hidden";
 		pearlStatusImageTile.style.visibility="hidden";
+
+		sniperShotStatusImageTile.style.visibility="hidden";
+
 
 		keyImageTile.style.visibility="hidden";
 		keyStatusImageTile.style.visibility="hidden";
@@ -6387,6 +6469,31 @@ alert("iInputY: "+iInputY);
 		pearlStatusImageTile.style.objectPosition = "-" + iImageFrameWidthDefault*iPearlStatusAnimationCount + "px -" + iFrameY + "px";
 	}	
 
+
+	function executeSniperShotStatusAnimation() {
+		var sniperShotStatusImageTile = document.getElementById("sniperShotStatusImageTileId");
+
+		if (sniperShotStatusImageTile.style.visibility=="hidden") {
+			return;
+		}
+
+		//alert("DITO");
+
+		//var iFrameY=0;
+		var iFrameY=iImageFrameHeightDefault*1;		
+		
+		if (iSniperShotStatusAnimationDelayCount>=iSniperShotStatusAnimationDelayCountMax) {			
+			iSniperShotStatusAnimationCount=(iSniperShotStatusAnimationCount+1)%2;
+
+			iSniperShotStatusAnimationDelayCount=0;
+		}
+		else {
+			iSniperShotStatusAnimationDelayCount++;
+		}
+		
+		sniperShotStatusImageTile.style.objectPosition = "-" + iImageFrameWidthDefault*iSniperShotStatusAnimationCount + "px -" + iFrameY + "px";
+	}	
+
 	function executeKeyStatusAnimation() {
 		var keyStatusImageTile = document.getElementById("keyStatusImageTileId");
 
@@ -7018,8 +7125,9 @@ alert("iInputY: "+iInputY);
 	function executeSnowEffect(iCurrSnowEffectCount) {
 		var snowEffectImage = document.getElementById("snowEffectImageId"+iCurrSnowEffectCount);
 
-		//edited by Mike, 20251121; from 20251119
-		if ((bIsGameOver) || (bIsLevelUp)) {
+		//edited by Mike, 20251125; from 20251121
+		//if ((bIsGameOver) || (bIsLevelUp)) {
+		if ((bIsGameOver) || (bIsLevelUp) || (bIsShowingStage1End) || (bIsShowingStage2End)) {
 			snowEffectImage.style.visibility="hidden";
 			return;
 		}
@@ -10363,7 +10471,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 	//added by Mike, 20251103
 	//drawChar(iImageFrameWidthDefault*5,iImageFrameHeightDefault*0,"5");
-	drawString(iImageFrameWidthDefault*7,iImageFrameHeightDefault*0,"ABC123");
+	
+	//removed by Mike, 20251125
+	//drawString(iImageFrameWidthDefault*7,iImageFrameHeightDefault*0,"ABC123");
 
 	//edited by Mike, 20241114	
 	//iCurrSnowFlakeCountMax
@@ -10573,6 +10683,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 */					
       if (bIsMissionStarted) {
 		if (!bHasViewedMissionIntro) {
+		
+			bossBattleBgImageBeach.style.visibility = "hidden";
+			bossBattleBgImagePart2.style.visibility = "hidden";
+			bossBattleBgImagePart3.style.visibility = "hidden";	
+		
 			//edited by Mike, 20251108
 			//sText = "The river underground<br/>hides 6 precious pearls.<br/><br/>But only those who can<br/>find its amulet would be<br/>granted the river's power.";
 			
@@ -10733,8 +10848,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 			//iCurrHeroMana=iCurrHeroManaMax;		
 			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 			
-	
-			drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+			//drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+			drawSniperShotStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+
 
 			if (bHasObtainedKeyAtRoom1) {
 				drawKeyStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60+iImageFrameHeightDefault); 
@@ -10754,6 +10870,84 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top));
 			drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 					
 		}
+		else if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
+
+			bossBattleBgImageBeach.style.visibility = "hidden";
+			bossBattleBgImagePart2.style.visibility = "hidden";
+			bossBattleBgImagePart3.style.visibility = "hidden";	
+			
+			bHasHeroGottenSniperShot=true;
+		
+			//sText = "<span style='text-align:center'>Let me help you too!<br/><br/>You got Sniper Shot of the Wolf!<br/><br/>Keyboard Press + Attack</span>";
+
+			sText = "<span>Let me help you too!<br/><br/>You got Sniper Shot of the Wolf!<br/><br/>Keyboard Press + Attack</span>";
+		
+		
+			textStatusDiv.innerHTML = sText;
+
+  			//alert(sText.length);
+  			var iTextStatusDivWidth = (textStatusDiv.clientWidth);
+  			var iTextStatusDivHeight = (textStatusDiv.clientHeight);
+
+			
+			var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+
+
+			textStatusDiv.style.left=0+iStageMaxWidth*0.1;
+
+			textStatusDiv.style.top = 0+(iStageMaxHeight*0.15-iTextStatusOffsetY)+"px";
+
+  			
+  			textStatusDiv.style.visibility="visible";
+			mainImageTileProjectile.style.visibility="hidden";
+
+/*
+			textStatusBackgroundDiv.style.top=textStatusDiv.style.top;
+			textStatusBackgroundDiv.style.left=0+iStageMaxWidth/2-textStatusBackgroundDiv.clientWidth/2;//textStatusDiv.style.left;//0;
+
+			textStatusBackgroundDiv.style.visibility="hidden";//"visible";
+
+			textStatusBackgroundDiv.style.width=iStageMaxWidth*0.5;
+			textStatusBackgroundDiv.style.height=iStageMaxHeight*0.20;////iStageMaxHeight*0.5;	
+*/			
+			
+			executeTimeDisplay();
+
+			//removed by Mike, 20251102
+			//drawMiniMap(myCanvasTwoContext,iStageMaxHeight-iInnerHorizontalOffset*0.85, 0+iStageMaxHeight/10);
+	
+/*	
+			heroLifeBarStatusImageTile.style.visibility="visible";
+
+	
+			//iCurrHeroLife=iCurrHeroLifeMax;
+			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
+
+			if (bIsBossBattle) {
+				drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
+			}
+
+			//iCurrHeroMana=iCurrHeroManaMax;		
+			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 			
+	
+			drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+
+			if (bHasObtainedKeyAtRoom1) {
+				drawKeyStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60+iImageFrameHeightDefault); 
+			}
+
+			if (bHasObtainedAmuletAtRoom32) {
+				drawAmuletStatus(myCanvasTwoContext,iInnerHorizontalOffset/6+iImageFrameWidthDefault, 0+iStageMaxHeight/60+iImageFrameHeightDefault); 
+			}
+
+			drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 		
+*/			
+
+			iInputDelayAtStageTransitionCount++;
+		
+		}
+		else if ((iCurrMapLocation==71) && (bIsShowingStage2End)) {
+		}		
 		else {
 			textStatusBackgroundDiv.style.visibility="hidden";
 			textStatusDiv.style.visibility="hidden";
@@ -10835,8 +11029,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 			
 			//iCurrHeroMana=iCurrHeroManaMax;		
 			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 			
-	
-			drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+			//drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+			drawSniperShotStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
 
 			if (bHasObtainedKeyAtRoom1) {
 				drawKeyStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60+iImageFrameHeightDefault); 
@@ -10999,7 +11193,13 @@ if (arrayWalkOnSnowEffectCount==1) {
 		//removed by Mike, 20251124
 		//executePearlAnimation();
 
-		executePearlStatusAnimation();
+		//executePearlStatusAnimation();
+
+		
+		if (bHasHeroGottenSniperShot) {
+			executeSniperShotStatusAnimation();
+		}
+
 
 		executeKeyAnimation();
 		//executeKeyStatusAnimation();
@@ -11084,8 +11284,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 	//removed by Mike, 20251102
 	//drawMiniMap(myCanvasTwoContext,iStageMaxHeight-iInnerHorizontalOffset*0.85, 0+iStageMaxHeight/10);
 
-	
-	drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+	//drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
+	drawSniperShotStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
 
 	if (bHasObtainedKeyAtRoom1) {
 		drawKeyStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60+iImageFrameHeightDefault); 
@@ -11288,6 +11488,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 		//iCurrMapLocation=1;
 		//iCurrMapLocation=32;
 		//iCurrMapLocation=22;
+
+		//edited by Mike, 20251125; from 20251124
+		//put this here;
+		bIsBossBattle=false;
 		
 		if (!bHasViewedMissionIntro) {
 			return;
@@ -11296,9 +11500,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 		if (bIsLevelUp) {
 			return;
 		}
+		
+		if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
+			return;
+		}		
 
-		//added by Mike, 20251124
-		bIsBossBattle=false;
 
 		switch(iCurrMapLocation) {
 			case 51:
@@ -12486,14 +12692,15 @@ if (arrayWalkOnSnowEffectCount==1) {
 					iCurrMapLocation=54;
 					hasInitMapLocation=false;					
 */					
-					
+					//allow boss skip
+/*					
 					if (isSkelMonsterTileActive) {
 						mainImageTilePosX=(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault*1.5-iImageFrameWidthDefault;
 						resetProjectile();	
 					}
 					else {
 						//TODO: -add: GO; winning; state;
-						
+*/						
 						//OK;
 						mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
 						resetProjectile();	
@@ -12502,7 +12709,14 @@ if (arrayWalkOnSnowEffectCount==1) {
 						hasInitMapLocation=false;
 
 						verifyIfHeroLeveledUp();
+						
+						bIsShowingStage1End=true;
+						iInputDelayAtStageTransitionCount=0;
+						
+						
+/*						
 					}
+*/					
 				}
 				//left-most
 				//wall
@@ -16355,31 +16569,33 @@ alert("iXPos: "+iXPos);
 				setInitFireballEffectPosition(mainImageTilePosX+iImageFrameWidthLarge/2,mainImageTilePosY+iImageFrameHeightLarge/2);				
 			}
 		}
-		else {
-			if (!bHasHeroShotSniper) {
-				//edited by Mike, 20251116			
-				//resetProjectile();
-				//----------------				
-				//keep hero in-place
-				mainImageTileProjectileStepDestinationY=mainImageTilePosY+iImageFrameHeightLarge/2;
-				mainImageTileProjectileStepDestinationX=mainImageTilePosX+iImageFrameWidthLarge/2;
-				//----------------
+		else {		
+			if (bHasHeroGottenSniperShot) {
+				if (!bHasHeroShotSniper) {
+					//edited by Mike, 20251116			
+					//resetProjectile();
+					//----------------				
+					//keep hero in-place
+					mainImageTileProjectileStepDestinationY=mainImageTilePosY+iImageFrameHeightLarge/2;
+					mainImageTileProjectileStepDestinationX=mainImageTilePosX+iImageFrameWidthLarge/2;
+					//----------------
 
-				iMouseClickStartTime=iMouseClickMaxElapsedTime+1;	
-				bHasHeroShotSniper=true;		
-				
-				//iCurrHeroMana=0;//set to empty
-				//reduceHeroMana(6);
-				if (iCurrHeroMana==iCurrHeroManaMax) {
-					reduceHeroMana(iCurrHeroManaMax);
+					iMouseClickStartTime=iMouseClickMaxElapsedTime+1;	
+					bHasHeroShotSniper=true;		
+					
+					//iCurrHeroMana=0;//set to empty
+					//reduceHeroMana(6);
+					if (iCurrHeroMana==iCurrHeroManaMax) {
+						reduceHeroMana(iCurrHeroManaMax);
+					}
+					
+					mainImageTileSniperShotPosX=iXPos;
+					mainImageTileSniperShotPosY=iYPos;
+
+					setSpiralStrokeEffectPosition(iXPos,iYPos);
+					
+					playShortLightningBlast();
 				}
-				
-				mainImageTileSniperShotPosX=iXPos;
-				mainImageTileSniperShotPosY=iYPos;
-
-				setSpiralStrokeEffectPosition(iXPos,iYPos);
-				
-				playShortLightningBlast();
 			}
 		}
 	}
@@ -16540,12 +16756,13 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 		iCurrHeroManaToBeDeductedAnimation=0;
 		iCurrHeroManaToBeDeductedAnimationMain=0;
 		
-		
 		bIsGameOver=false;
 		iInputDelayAtGameOverCount=0;
 
 		bIsLevelUp=false;
 		iInputDelayAtLeveledUpCount=0;
+
+		iInputDelayAtStageTransitionCount=0;
 
 		iCurrHeroDeathCount++;
 
@@ -16610,6 +16827,8 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 						
 			keyStatusImageTile.style.visibility="hidden";
 			amuletStatusImageTile.style.visibility="hidden";
+			
+			bHasHeroGottenSniperShot=false;
 			
 			iInputDelayAtGameOverCount=0;
 			bHasFired=false;
@@ -17032,6 +17251,11 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 					return;
 				}
 			}
+			else if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
+				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
+					return;
+				}
+			}
 
 			//reference: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType;
 			//last accessed: 20221122
@@ -17156,6 +17380,10 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 									bHasViewedMissionIntro=true;
 									return;
 								}
+							  }
+							  else if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
+									bIsShowingStage1End=false;
+									return;
 							  }
 						  }
 						}
@@ -17688,6 +17916,8 @@ opting to put assets folder in "html_application" folder instead
 
 	<img id="bombMonsterImageId0" class="ImageBombSmall" src="assets/images/items.png?lastmod=20251123T1422">
 	<img id="bombMonsterImageId1" class="ImageBombSmall" src="assets/images/items.png?lastmod=20251123T1422">
+
+	<img id="sniperShotStatusImageTileId" class="ImageBombSmall" src="assets/images/itemsTwo.png?lastmod=20251125T0547">
 
 
 	<img id="pearlImageTileId" class="ImagePearlSmall" src="assets/images/items.png?lastmod=20241130T1432">
