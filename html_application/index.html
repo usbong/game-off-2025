@@ -1944,6 +1944,7 @@ var bIsHeroFacingUp=false;
 		
 		//bIsShowingStage1End=true;
 		iInputDelayAtStageTransitionCount=0;
+		iInputDelayAtLeveledUpCount=0;
 		
 		setAllActorsToHidden();
 	}
@@ -1957,6 +1958,11 @@ var bIsHeroFacingUp=false;
 
 		var explosionEffectMonsterImage = document.getElementById("explosionEffectToMonsterImageId");
 		explosionEffectMonsterImage.style.visibility="hidden";
+		
+		var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");
+		heroAttackEffectImage.style.visibility="hidden";
+		
+		
 /*
 		iExplosionEffectAnimationDelayCount=iExplosionEffectAnimationDelayCountMax;
 		iExplosionEffectAnimationCount=-1; //0;
@@ -1964,6 +1970,11 @@ var bIsHeroFacingUp=false;
 		iMonsterExplosionEffectAnimationDelayCount=iMonsterExplosionEffectAnimationDelayCountMax;
 		iMonsterExplosionEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
 */		
+				
+		for (iCount=0; iCount<iBombMonsterCountMax; iCount++) {
+			arrayBombMonsterCountId[iCount][MONSTER_IS_ACTIVE]=false;
+			arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="hidden";
+		}
 		
 		for (iCount=0; iCount<iArrayActorsCount; iCount++) {
 			arrayActors[iCount].style.visibility="hidden";
@@ -4362,14 +4373,22 @@ alert("iInputY: "+iInputY);
 	//added by Mike, 20241103
 	function drawInjuredWolf() {
 		var wolfImageTile = document.getElementById("wolfImageTileId");
-		
+
+/*		
 		if ((bHasBeatenStage1Boss)||(iCurrMapLocation!=55)) {
 			wolfImageTile.style.visibility="hidden";
 		}
 		else {
 			wolfImageTile.style.visibility="visible";
 		}
-		
+*/
+		if (bHasBeatenStage1Boss) {
+			wolfImageTile.style.visibility="hidden";
+		}
+		else {
+			wolfImageTile.style.visibility="visible";
+		}
+	
 		var iFrameY=0;
 		var iFrameXOffset=0;
 
@@ -7921,6 +7940,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 			if (iCurrMonsterDeathCount>=iMonsterDeathCountToLevel2Min) {
 				bIsLevelUp=true;
 				iCurrHeroLevel++;
+				setAllActorsToHidden();	
 			}					
 		}
 	}
@@ -8104,13 +8124,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 						bHasBeatenStage1Boss=true;
 						//bIsBossBattle=false;
+						//wolfImageTile.style.visibility="hidden";
 						
 						if (iCurrMapLocation==55) {
 							executeStageTransition(61);
-						}/*
-						else if (iCurrMapLocation==65) {
-							executeStageTransition(71);
-						}*/
+						}
 						
 						setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
 /*						
@@ -10926,10 +10944,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 */					
 			switch (iCurrMissionIntroPage) {
 				case 0:
-					sText = "The Empire's generosity hardly extends to the far reaches of the galaxy. <br/><br/>Distant from Imperial affairs, the people of the Outer Waves have learned to survive, without relying on any help from the Empire.";
+					sText = "The Empire's generosity hardly extends to the far reaches of the galaxy. <br/><br/>Distant from Imperial affairs, the people of the Outer Waves have learned to survive without relying on any help from the Empire.";
 					break;
 				case 1:
-					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death in the service of their Dark Lord...";
+					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death to their victims in the service of their malevolent Lord...";
 					break;
 				case 2:
 					sText = "What was that!";
@@ -11007,6 +11025,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.15)+"px";
 
 			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.15-iTextStatusOffsetY)+"px";
+
 
 			if (iCurrMissionIntroPage>1) {
 			
@@ -11145,6 +11164,78 @@ iCurrTextCharacterCountMax=sText.length;
 			
 			return;
 		}
+
+//added by Mike, 20251121
+		else if (bIsLevelUp) {
+			executeTimeDisplay();
+		
+			mainImageTile.style.visibility="hidden";
+			mainImageTileTankBody.style.visibility="hidden";
+			mainImageTileHeroBody.style.visibility="hidden";
+
+			wolfImageTile.style.visibility="hidden";
+
+			setAllActorsToHidden();				
+
+			
+			sText = "LEVEL UP!!!";
+			textStatusDiv.innerHTML = sText; //sCurrText
+
+			//textStatusDiv.style.left=iInnerHorizontalOffset+iStageMaxHeight/2-textStatusDiv.clientWidth/2;
+			
+			textStatusDiv.style.left=iInnerHorizontalOffset+iImageFrameWidthLarge/8;
+
+			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.30)+"px";
+			textStatusDiv.style.top = 0+iInnerVerticalOffset+textStatusDiv.clientHeight+"px";
+			
+  			////textStatusDiv.style.visibility="visible";
+  			//textStatusDiv.style.visibility="hidden";
+			mainImageTileHeroBody.style.left=parseInt(textStatusDiv.style.left)+(iImageFrameWidthLarge*0.8)+"px";
+			mainImageTileHeroBody.style.top=parseInt(textStatusDiv.style.top)+iImageFrameHeightLarge+"px";
+/*
+			bIsHeroFacingLeftOrRight=true;
+			bIsHeroFacingLeft=false;
+			bIsHeroFacingUpOrDown=false;
+*/
+			//black tint
+			myCanvasTwoContext.fillStyle = "#111111"; //"#000000"; //"#000077";//"#550000";//red tint
+			myCanvasTwoContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+
+			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
+
+/*
+			if (bIsBossBattle) {
+				drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
+			}
+*/
+
+			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);		
+			
+			//mainImageTileHeroBody.style.visibility="visible";
+		
+			if (iInputDelayAtLeveledUpCount>=iInputDelayAtLeveledUpCountMax) {
+				textLevelUpLifeDiv.style.visibility="visible";
+				textLevelUpStaminaDiv.style.visibility="visible";
+				textLevelUpSpeedDiv.style.visibility="visible";
+				
+				textStatusDiv.style.visibility="visible";
+			}
+			iInputDelayAtLeveledUpCount++;
+
+/*
+			if (iInputDelayAtLeveledUpCount>=iInputDelayAtLeveledUpCountMax*2) {
+				return;
+			}			
+*/			
+			
+			return;
+
+			
+			//fire; cat and hat;
+			/*return;
+			*/
+		}		
+		
 		//else if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
 		else if (iCurrMapLocation==61) {
 
@@ -11161,8 +11252,11 @@ iCurrTextCharacterCountMax=sText.length;
 			//sText="";
 			
 			if (!bHasBeatenStage1Boss) {
+				iInputDelayAtStageTransitionCount++;
+/*
 				bIsShowingStage1End=false;
 				bIsShowingStage2Start=true;
+*/				
 				return;
 			}
 
@@ -11174,6 +11268,9 @@ iCurrTextCharacterCountMax=sText.length;
 			iCurrHeroManaToBeDeducted=0;
 			
 			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 	
+			
+			
+			wolfImageTile.style.visibility="visible";
 			
 			drawSavedWolf();
 
@@ -11475,74 +11572,7 @@ iCurrTextCharacterCountMax=sText.length;
 			/*return;
 			*/
 		}
-		//added by Mike, 20251121
-		else if (bIsLevelUp) {
-			executeTimeDisplay();
 		
-			mainImageTile.style.visibility="hidden";
-			mainImageTileTankBody.style.visibility="hidden";
-			mainImageTileHeroBody.style.visibility="hidden";
-
-			setAllActorsToHidden();				
-
-			
-			sText = "LEVEL UP!!!";
-			textStatusDiv.innerHTML = sText; //sCurrText
-
-			//textStatusDiv.style.left=iInnerHorizontalOffset+iStageMaxHeight/2-textStatusDiv.clientWidth/2;
-			
-			textStatusDiv.style.left=iInnerHorizontalOffset+iImageFrameWidthLarge/8;
-
-			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.30)+"px";
-			textStatusDiv.style.top = 0+iInnerVerticalOffset+textStatusDiv.clientHeight+"px";
-			
-  			////textStatusDiv.style.visibility="visible";
-  			//textStatusDiv.style.visibility="hidden";
-			mainImageTileHeroBody.style.left=parseInt(textStatusDiv.style.left)+(iImageFrameWidthLarge*0.8)+"px";
-			mainImageTileHeroBody.style.top=parseInt(textStatusDiv.style.top)+iImageFrameHeightLarge+"px";
-/*
-			bIsHeroFacingLeftOrRight=true;
-			bIsHeroFacingLeft=false;
-			bIsHeroFacingUpOrDown=false;
-*/
-			//black tint
-			myCanvasTwoContext.fillStyle = "#111111"; //"#000000"; //"#000077";//"#550000";//red tint
-			myCanvasTwoContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
-
-			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
-
-/*
-			if (bIsBossBattle) {
-				drawBossLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+50, 00+iStageMaxHeight*0.35,false); 
-			}
-*/
-
-			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);		
-			
-			//mainImageTileHeroBody.style.visibility="visible";
-		
-			if (iInputDelayAtLeveledUpCount>=iInputDelayAtLeveledUpCountMax) {
-				textLevelUpLifeDiv.style.visibility="visible";
-				textLevelUpStaminaDiv.style.visibility="visible";
-				textLevelUpSpeedDiv.style.visibility="visible";
-				
-				textStatusDiv.style.visibility="visible";
-			}
-			iInputDelayAtLeveledUpCount++;
-
-/*
-			if (iInputDelayAtLeveledUpCount>=iInputDelayAtLeveledUpCountMax*2) {
-				return;
-			}			
-*/			
-			
-			return;
-
-			
-			//fire; cat and hat;
-			/*return;
-			*/
-		}
 		
 		
 /*	  
@@ -11870,15 +11900,18 @@ iCurrTextCharacterCountMax=sText.length;
 		if (bIsLevelUp) {
 			return;
 		}
-		
+/*		
 		if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
 			return;
 		}		
+*/		
 /*
 		if ((iCurrMapLocation==61) && (bIsShowingStage2Start)) {
 			return;
 		}		
 */
+
+/*
 		if ((iCurrMapLocation==71) && (bIsShowingStage2End)) {
 			return;
 		}		
@@ -11886,7 +11919,7 @@ iCurrTextCharacterCountMax=sText.length;
 		if ((iCurrMapLocation==71) && (bIsShowingStage3Start)) {
 			return;
 		}		
-
+*/
 
 		switch(iCurrMapLocation) {
 			case 51:
@@ -11957,7 +11990,7 @@ iCurrTextCharacterCountMax=sText.length;
 					iCurrMapLocation=53;
 					hasInitMapLocation=false;					
 					
-					bIsLevelUp=false;
+					//bIsLevelUp=false;
 					
 				}
 				//left-most
@@ -13078,6 +13111,7 @@ iCurrTextCharacterCountMax=sText.length;
 					iCurrMapLocation=54;
 					hasInitMapLocation=false;					
 */					
+
 					//allow boss skip
 /*					
 					if (isSkelMonsterTileActive) {
@@ -13142,6 +13176,8 @@ iCurrTextCharacterCountMax=sText.length;
 				bossBattleBgImagePart3.style.visibility = "hidden";	
 
 				if (!hasInitMapLocation) {
+					iInputDelayAtStageTransitionCount=0;
+
 					arrayActors=[];
 					iArrayActorsCount=0;
 
@@ -13168,7 +13204,7 @@ iCurrTextCharacterCountMax=sText.length;
 	
 					hasInitMapLocation=true;					
 				}
-
+				
 				updateArrayActorsZIndex();
 				updateHeroFacingDirection();
 				
@@ -13199,7 +13235,7 @@ iCurrTextCharacterCountMax=sText.length;
 					mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
 					resetProjectile();	
 
-					iCurrMapLocation=63;
+					iCurrMapLocation=62;
 					hasInitMapLocation=false;	
 					
 					verifyIfHeroLeveledUp();
@@ -13214,6 +13250,8 @@ iCurrTextCharacterCountMax=sText.length;
 
 			case 62:
 				myAudio.play();
+				
+				//alert("DITO!!");
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -13466,6 +13504,8 @@ iCurrTextCharacterCountMax=sText.length;
 				bossBattleBgImagePart3.style.visibility = "visible";	
 
 				if (!hasInitMapLocation) {
+					iInputDelayAtStageTransitionCount=0;
+				
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
 					arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+0);
@@ -17587,12 +17627,12 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 		
 		bIsLevelUp=false;
 		
-		
+/*		
 		//added by Mike, 20251125
 		if (iCurrMapLocation==61) {
 			bIsShowingStage1End=true;
 		}		
-
+*/
 
 		
 /*	
@@ -17906,6 +17946,19 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 					return;
 				}
 			}
+			else if (iCurrMapLocation==61) {
+				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
+					return;
+				}
+			}
+			//note error; screen only quickly shown;
+			else if (iCurrMapLocation==63) {
+				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
+					return;
+				}
+			}
+			
+			/*
 			else if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
 				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
 					return;
@@ -17915,7 +17968,7 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
 					return;
 				}
-			}
+			}*/
 
 
 			//reference: https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType;
@@ -18044,7 +18097,19 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 									bHasViewedMissionIntro=true;
 									return;
 								}
-							  }/*
+							  }
+							  else if (iCurrMapLocation==61) {
+									iCurrMapLocation=62;
+									
+									return;
+							  }
+							  else if (iCurrMapLocation==63) {
+									iCurrMapLocation=64;
+									
+									return;
+							  }
+							  
+							  /*
 							  else if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
 							  //else if (iCurrMapLocation==61) {
 
