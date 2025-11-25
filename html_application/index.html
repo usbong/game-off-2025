@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251125; from 20251124
+' @date updated: 20251126; from 20251125
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -6450,6 +6450,13 @@ alert("iInputY: "+iInputY);
 		}
 		else {
 			explosionEffectImage.style.visibility="hidden";
+
+			//special case; boss stage;
+			if (iCurrMapLocation==55) { //boss 1
+				if (bHasBeatenStage1Boss) {
+					executeStageTransition(61);
+				}
+			}
 			
 			//alert("HALLO");
 		}
@@ -8125,11 +8132,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 						bHasBeatenStage1Boss=true;
 						//bIsBossBattle=false;
 						//wolfImageTile.style.visibility="hidden";
-						
+/*						
 						if (iCurrMapLocation==55) {
 							executeStageTransition(61);
 						}
-						
+*/						
 						setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
 /*						
 					}
@@ -11183,10 +11190,18 @@ iCurrTextCharacterCountMax=sText.length;
 
 			//textStatusDiv.style.left=iInnerHorizontalOffset+iStageMaxHeight/2-textStatusDiv.clientWidth/2;
 			
-			textStatusDiv.style.left=iInnerHorizontalOffset+iImageFrameWidthLarge/8;
+			//textStatusDiv.style.left=iInnerHorizontalOffset+iImageFrameWidthLarge/8;
+
+			//textStatusDiv.style.left=iStageMaxHeight/2-textStatusDiv.clientWidth/2;
+
+			//textStatusDiv.style.left=iStageMaxHeight/2;//-textStatusDiv.clientWidth/2;
+
+			textStatusDiv.style.left=0;
 
 			//textStatusDiv.style.top = 0+(iStageMaxHeight*0.30)+"px";
-			textStatusDiv.style.top = 0+iInnerVerticalOffset+textStatusDiv.clientHeight+"px";
+			//textStatusDiv.style.top = 0+iInnerVerticalOffset+textStatusDiv.clientHeight+"px";
+			
+			textStatusDiv.style.top = 0+iStageMaxHeight*0.1;
 			
   			////textStatusDiv.style.visibility="visible";
   			//textStatusDiv.style.visibility="hidden";
