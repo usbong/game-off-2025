@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251126; from 20251125
+' @date updated: 20251127; from 20251126
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -1812,7 +1812,7 @@ var bIsHeroFacingUp=false;
 	var demonMonsterTileStepDelay=0;	
 	var demonMonsterTileStepDelayMax=15;//10;//0;//1;	
 	var demonMonsterTileAttackDelay=0;	
-	const demonMonsterTileAttackDelayMax=200;//15;	
+	const demonMonsterTileAttackDelayMax=50;//100;//200;	
 	var isDemonMonsterTileActive=false;
 	var iDemonMonsterHP=99;//3;
 	var iDemonMonsterHP=iSkelMonsterHP;
@@ -1914,7 +1914,7 @@ var bIsHeroFacingUp=false;
 	const ZOMBIE_MONSTER_HP_MAX=2;//3;//2;
 
 	
-	var iCurrMapLocation=72;//51;//75;//51;//63; //53;//12;//0;		
+	var iCurrMapLocation=75;//72;//51;//75;//51;//63; //53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -4148,19 +4148,19 @@ var bIsHeroFacingUp=false;
 	}
 
 	//added by Mike, 20251123
-	function setBombMonsterPosition(iInputX, iInputY, iRunningWraithCount) {
+	function setBombMonsterPosition(iInputX, iInputY, iBombCount) {
 		//for (iCount=0; iCount<iBombMonsterCountMax; iCount++) {
-			arrayBombMonsterCountId[iRunningWraithCount][MONSTER_OBJECT]=document.getElementById("bombMonsterImageId"+iRunningWraithCount);
+			arrayBombMonsterCountId[iBombCount][MONSTER_OBJECT]=document.getElementById("bombMonsterImageId"+iBombCount);
 
-			if (arrayBombMonsterCountId[iRunningWraithCount][MONSTER_IS_ACTIVE]) {
+			if (arrayBombMonsterCountId[iBombCount][MONSTER_IS_ACTIVE]) {
 				//alert(arrayBombMonsterCountId[iCount][MONSTER_IS_ACTIVE]);
 				return;
 			}
 			else {
-				arrayBombMonsterCountId[iRunningWraithCount][MONSTER_POSX]=iInputX;
-				arrayBombMonsterCountId[iRunningWraithCount][MONSTER_POSY]=iInputY;
-				arrayBombMonsterCountId[iRunningWraithCount][MONSTER_IS_ACTIVE]=true;
-				arrayBombMonsterCountId[iRunningWraithCount][MONSTER_OBJECT].style.visibility="visible";
+				arrayBombMonsterCountId[iBombCount][MONSTER_POSX]=iInputX;
+				arrayBombMonsterCountId[iBombCount][MONSTER_POSY]=iInputY;
+				arrayBombMonsterCountId[iBombCount][MONSTER_IS_ACTIVE]=true;
+				arrayBombMonsterCountId[iBombCount][MONSTER_OBJECT].style.visibility="visible";
 			}
 	}
 
@@ -4168,6 +4168,11 @@ var bIsHeroFacingUp=false;
 	//added by Mike, 20240511
 	function setDustEffectPosition(iInputX, iInputY) {
 		var dustEffectImage = document.getElementById("dustEffectImageId");
+
+		if (iCurrMapLocation>61) { //after the portal
+			dustEffectImage.style.visibility="hidden";
+			return;
+		}
 
 		if (dustEffectImage.style.visibility=="visible") {
 		  return;
@@ -4284,6 +4289,11 @@ alert("iInputY: "+iInputY);
 	function setWalkOnSnowEffectPosition(iInputX, iInputY, arrayWalkOnSnowEffectCount) {	
 			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
 
+			if (iCurrMapLocation>61) { //after the portal
+				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
+				return;
+			}
+			
 			if (arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility=="visible") {
 			  return;
 			}
@@ -4820,6 +4830,9 @@ alert("iInputY: "+iInputY);
 				}
 				else {
 					currDemonMonsterTileState=WALKING_STATE;
+
+					setBombMonsterPosition(parseInt(demonMonsterImageTile.style.left)+iImageFrameWidthLarge/2,parseInt(demonMonsterImageTile.style.top)+iImageFrameHeightLarge/2,0); //use the first bomb in the array
+
 				}
 			}
 			else {
@@ -7134,6 +7147,12 @@ alert("iInputY: "+iInputY);
 			return;
 		}
 
+		if (iCurrMapLocation>61) { //after the portal
+			dustEffectImage.style.visibility="hidden";
+			return;
+		}
+
+
 /*		
 		if (bIsHeroGoingUpOrDown) {
 			dustEffectImage.style.visibility="hidden";
@@ -7523,6 +7542,13 @@ alert("iInputY: "+iInputY);
 			return;
 		}
 
+
+		if (iCurrMapLocation>61) { //after the portal
+			snowEffectImage.style.visibility="hidden";
+			return;
+		}
+
+
 		if (iCurrSnowEffectCount==0) {
 			if (iSnowEffectAnimationDelayCount==iSnowEffectAnimationDelayCountMax) {
 				iSnowEffectAnimationCount=(iSnowEffectAnimationCount+1)%iSnowEffectAnimationCountMax;//5; //last hidden
@@ -7680,6 +7706,11 @@ alert("iInputY: "+iInputY);
 		//var walkOnSnowEffectImage2 = document.getElementById("walkOnSnowEffectImageId2");
 
 		arrayWalkOnSnowEffectCount=0;
+
+		//after the portal
+		if (iCurrMapLocation>61) {
+			return;
+		}
 
 /*
 		for (arrayWalkOnSnowEffectCount=0; arrayWalkOnSnowEffectCount<arrayWalkOnSnowEffectCountMax; arrayWalkOnSnowEffectCount++) {
@@ -11714,7 +11745,7 @@ iCurrTextCharacterCountMax=sText.length;
 
 			//sText="<span style='text-align: center;'>The Portal opens and transports you to Blue, the planet where the Emperor resides.</span>";
 			
-			sText="You've reached the Portal!<br/><br/>Get ready to be transported to the Imperial Palace!<br/><br/>Let's go!";
+			sText="You've reached the Portal!<br/><br/>Get ready to be transported to the Imperial Palace!<br/><br/>";
 			
 			textStatusDiv.innerHTML = sText;
 			
@@ -15142,7 +15173,42 @@ iCurrTextCharacterCountMax=sText.length;
 					arrayActors[iArrayActorsCount]=demonMonsterImageTile;
 					arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
 					iArrayActorsCount++;
+					
+					for (iCount=0; iCount<iBombMonsterCountMax; iCount++) {
+						//arrayBombMonsterCountId[iCount][MONSTER_IS_ACTIVE]=true;
+						//arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="visible";
 
+						arrayBombMonsterCountId[iCount][MONSTER_IS_ACTIVE]=false;
+						arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="hidden";
+						
+						arrayBombMonsterCountId[iCount][MONSTER_IS_IN_RIVER]=false;
+
+						arrayBombMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT]=arrayBombMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT_MAX]/2;
+						
+						arrayActors[iArrayActorsCount]=arrayBombMonsterCountId[iCount][MONSTER_OBJECT];
+
+						arrayBombMonsterCountId[iCount][MONSTER_CURRENT_HP]=BOMB_MONSTER_HP_MAX;
+
+/*						//no need to include bomb; always behind; lowest z index
+						arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
+						iArrayActorsCount++;
+*/						
+					}
+
+					arrayBombMonsterCountId[0][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
+					arrayBombMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+					
+					arrayBombMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*4;
+					arrayBombMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+
+					arrayBombMonsterCountId[0][MONSTER_STEPX]=0;
+					arrayBombMonsterCountId[0][MONSTER_STEPY]=0;
+
+					arrayBombMonsterCountId[1][MONSTER_STEPX]=0;
+					arrayBombMonsterCountId[1][MONSTER_STEPY]=0;
+					
+
+/*
 					//for (iCurrSnowFlakeCount=0; iCurrSnowFlakeCount<10; iCurrSnowFlakeCount++) {
 					iCurrSnowEffectCount=0;
 					//4x4
@@ -15156,6 +15222,7 @@ iCurrTextCharacterCountMax=sText.length;
 							iCurrSnowEffectCount++;
 						}
 					}
+*/
 	
 					hasInitMapLocation=true;					
 				}
@@ -15181,8 +15248,32 @@ iCurrTextCharacterCountMax=sText.length;
 
 					//drawBossLifeBar(myCanvasTwoContext,0,0+iStageMaxHeight*0.8,false); 
 
+
+
+					for (iCount=0; iCount<iBombMonsterCountMax; iCount++) {
+						if (arrayBombMonsterCountId[iCount][MONSTER_IS_ACTIVE]) {
+							arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="visible";
+							
+							arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.top = 0+arrayBombMonsterCountId[iCount][MONSTER_POSY]+"px"; 
+							arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.left = 0+arrayBombMonsterCountId[iCount][MONSTER_POSX]+"px"; 
+
+							executeBombMonsterAttackingAnimation(arrayBombMonsterCountId[iCount]);
+							
+							verifyHeroCollideWithBombMonsters(arrayBombMonsterCountId[iCount]);
+
+		/*
+							verifyHeroFireballCollideWithRunningWraithMonsters(arrayRunningWraithMonsterCountId[iCount]);
+
+							verifyHeroSniperShotCollideWithRunningWraithMonsters(arrayRunningWraithMonsterCountId[iCount]);
+		*/						
+							//verifyWraithCollideWithRiver(arrayWraithMonsterCountId[iCount]);
+						}
+					}
+
+
+
+
 				}
-				
 
 				//added by Mike, 20251109
 				updateArrayActorsZIndex();
@@ -15192,10 +15283,12 @@ iCurrTextCharacterCountMax=sText.length;
 				updateHasHeroShotSniper();
 				executeMonsterDeathAnimation();
 
+/*
 				//added by Mike, 20251115
 				for (iCurrSnowEffectCount=0; iCurrSnowEffectCount<iCurrSnowEffectCountMax; iCurrSnowEffectCount++) {
 					executeSnowEffect(iCurrSnowEffectCount);
 				}
+*/
 
 				if (mainImageTilePosY<0+iInnerVerticalOffset+iImageFrameHeightLarge/2) {		
 					//OK
