@@ -1949,6 +1949,14 @@ var bIsHeroFacingUp=false;
 		setAllActorsToHidden();
 	}
 
+	function setCurrLifeAndManaToMax() {
+		iCurrHeroLife=iCurrHeroLifeMax;
+		iCurrHeroLifeToBeDeducted=0;
+
+		iCurrHeroMana=iCurrHeroManaMax;
+		iCurrHeroManaToBeDeducted=0;
+	}
+
 	function setAllActorsToHidden() {
 		var dustEffectImage = document.getElementById("dustEffectImageId");
 		dustEffectImage.style.visibility="hidden";
@@ -1961,6 +1969,13 @@ var bIsHeroFacingUp=false;
 		
 		var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");
 		heroAttackEffectImage.style.visibility="hidden";
+				
+		iHeroAttackEffectAnimationCount=0;
+		iHeroAttackEffectAnimationDelayCount=0;
+
+		iHeroAnimationCount=0;
+		iHeroAnimationDelayCount=0;
+
 		
 		
 /*
@@ -1979,12 +1994,13 @@ var bIsHeroFacingUp=false;
 		for (iCount=0; iCount<iArrayActorsCount; iCount++) {
 			arrayActors[iCount].style.visibility="hidden";
 		}
-					
+/*					
 		for (iCurrSnowRow=0; iCurrSnowRow<4; iCurrSnowRow++) {
 			for (iCurrSnowColumn=0; iCurrSnowColumn<4; iCurrSnowColumn++) {
-				var snowEffectImage = document.getElementById("snowEffectImageId"+iCount);
+*/
+		for (iCurrSnowEffectCount=0; iCurrSnowEffectCount<iCurrSnowEffectCountMax; iCurrSnowEffectCount++) {
+				var snowEffectImage = document.getElementById("snowEffectImageId"+iCurrSnowEffectCount);
 				snowEffectImage.style.visibility="hidden";
-			}
 		}		
 	}
 
@@ -7940,7 +7956,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 			if (iCurrMonsterDeathCount>=iMonsterDeathCountToLevel1Min) {
 				bIsLevelUp=true;
 				iCurrHeroLevel++;
-				setAllActorsToHidden();				
+				setAllActorsToHidden();
+
+				setCurrLifeAndManaToMax();
 			}					
 		}
 		else if (iCurrHeroLevel<2) {
@@ -7948,6 +7966,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 				bIsLevelUp=true;
 				iCurrHeroLevel++;
 				setAllActorsToHidden();	
+
+				setCurrLifeAndManaToMax();
 			}					
 		}
 	}
@@ -11265,7 +11285,20 @@ iCurrTextCharacterCountMax=sText.length;
 			setAllActorsToHidden();
 
 			//sText="";
+
+			heroLifeBarStatusImageTile.style.visibility = "visible";
+
+			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
+/*
+			iCurrHeroLife=iCurrHeroLifeMax;
+			iCurrHeroLifeToBeDeducted=0;
+*/
+			iCurrHeroMana=iCurrHeroManaMax;
+			iCurrHeroManaToBeDeducted=0;
 			
+			//drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(heroLifeBarStatusImageTile.style.bottom)+5,false); 	
+			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);	
+
 			if (!bHasBeatenStage1Boss) {
 				iInputDelayAtStageTransitionCount++;
 /*
@@ -11275,16 +11308,6 @@ iCurrTextCharacterCountMax=sText.length;
 				return;
 			}
 
-			heroLifeBarStatusImageTile.style.visibility = "visible";
-
-			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
-
-			iCurrHeroMana=iCurrHeroManaMax;
-			iCurrHeroManaToBeDeducted=0;
-			
-			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 	
-			
-			
 			wolfImageTile.style.visibility="visible";
 			
 			drawSavedWolf();
@@ -11358,8 +11381,21 @@ iCurrTextCharacterCountMax=sText.length;
 			bossBattleBgImagePart3.style.visibility = "hidden";	
 			
 			//profile
-			heroLifeBarStatusImageTile.style.visibility = "hidden";			
+			//heroLifeBarStatusImageTile.style.visibility = "hidden";			
 			mainImageTileHeroBody.style.visibility = "hidden";
+
+
+			heroLifeBarStatusImageTile.style.visibility = "visible";
+
+			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
+
+			iCurrHeroMana=iCurrHeroManaMax;
+			iCurrHeroManaToBeDeducted=0;
+			
+			//drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(heroLifeBarStatusImageTile.style.bottom)+5,false); 	
+			
+			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);	
+
 
 //alert(">>>DITO");
 			
@@ -11391,7 +11427,9 @@ iCurrTextCharacterCountMax=sText.length;
 	
 			executeTimeDisplay();
 			
-			if (iInputDelayAtStageTransitionCount>=iInputDelayAtStageTransitionCountMax) {
+			//if (iInputDelayAtStageTransitionCount>=iInputDelayAtStageTransitionCountMax) {
+			if (iInputDelayAtStageTransitionCount>=iInputDelayAtStageTransitionCountMax/2) {
+
 /*
 				textLevelUpLifeDiv.style.visibility="visible";
 				textLevelUpStaminaDiv.style.visibility="visible";
@@ -11495,7 +11533,10 @@ iCurrTextCharacterCountMax=sText.length;
 			}
 			
 			//iCurrHeroMana=iCurrHeroManaMax;		
-			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(textLifeBarDiv.style.bottom)+5,false); 	
+			//drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(heroLifeBarStatusImageTile.style.bottom)+5,false); 	
+			
+			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);	
+
 			
 			//drawPearlStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
 			drawSniperShotStatus(myCanvasTwoContext,iInnerHorizontalOffset/6, 0+iStageMaxHeight/60); 
@@ -13483,14 +13524,19 @@ iCurrTextCharacterCountMax=sText.length;
 				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault*1.5) {
 					//OK;
 					mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
-					resetProjectile();	
+					resetProjectile();
 
+/*
 					iCurrMapLocation=63;
 					hasInitMapLocation=false;					
 					
 					//bIsLevelUp=true;
 					
 					verifyIfHeroLeveledUp();
+*/					
+
+					executeStageTransition(63);
+					
 				}
 				//left-most
 				//wall
