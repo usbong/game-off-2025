@@ -1854,6 +1854,9 @@ var bIsHeroFacingUp=false;
 	var arrayBombMonsterCountId = [[],[]];
 	const iBombMonsterCountMax=2;
 
+	var arrayZombieMonsterCountId = [[],[],[],[],[],[],[],[]];
+	const iZombieMonsterCountMax=8;
+
 
 	var arraySnakeMonsterCountId = [[],[]];
 	var iSnakeMonsterCountMax = 2;
@@ -1907,8 +1910,11 @@ var bIsHeroFacingUp=false;
 	const WRAITH_MONSTER_HP_MAX=1;//2;//3;
 	const RUNNING_WRAITH_MONSTER_HP_MAX=1;
 	const BOMB_MONSTER_HP_MAX=1;
+
+	const ZOMBIE_MONSTER_HP_MAX=2;//3;//2;
+
 	
-	var iCurrMapLocation=51;//75;//51;//63; //53;//12;//0;		
+	var iCurrMapLocation=72;//51;//75;//51;//63; //53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -3662,6 +3668,42 @@ var bIsHeroFacingUp=false;
 			
 			arrayBombMonsterCountId[iCount][MONSTER_IS_IN_RIVER]=false;
 		}		
+
+		//added by Mike, 20251126
+		for (iCount=0; iCount<iZombieMonsterCountMax; iCount++) {
+			arrayZombieMonsterCountId[iCount][MONSTER_OBJECT]= document.getElementById("zombieMonsterImageId"+iCount);
+			
+			arrayZombieMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="hidden";			
+			arrayZombieMonsterCountId[iCount][MONSTER_IS_ACTIVE]=false;
+
+			arrayZombieMonsterCountId[iCount][MONSTER_POSX]=0;
+			arrayZombieMonsterCountId[iCount][MONSTER_POSY]=0;
+			arrayZombieMonsterCountId[iCount][MONSTER_STEPX]=1; //zombie
+			arrayZombieMonsterCountId[iCount][MONSTER_STEPY]=0; //zombie			
+			
+			arrayZombieMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT]=10;
+			arrayZombieMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT_MAX]=6;//5;
+
+			arrayZombieMonsterCountId[iCount][MONSTER_ANIMATION_COUNT]=-1;		
+			arrayZombieMonsterCountId[iCount][MONSTER_ANIMATION_COUNT_MAX]=4;
+
+			arrayZombieMonsterCountId[iCount][MONSTER_STEP_DELAY]=0;		
+			arrayZombieMonsterCountId[iCount][MONSTER_STEP_DELAY_MAX]=15*(iCount+1);
+			arrayZombieMonsterCountId[iCount][MONSTER_CURRENT_STATE]=IDLE_STATE;
+			arrayZombieMonsterCountId[iCount][MONSTER_CURRENT_HP]=ZOMBIE_MONSTER_HP_MAX;
+			
+			arrayZombieMonsterCountId[iCount][MONSTER_ATTACK_DELAY]=0;		
+			arrayZombieMonsterCountId[iCount][MONSTER_ATTACK_DELAY_MAX]=200;
+
+			arrayZombieMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT]=0;//-1;
+			arrayZombieMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT_MAX]=4;
+			
+			arrayZombieMonsterCountId[iCount][MONSTER_IS_IN_RIVER]=false;
+		}
+
+
+
+
 
 		for (iCount=0; iCount<iSnakeMonsterCountMax; iCount++) {
 			arraySnakeMonsterCountId[iCount][MONSTER_OBJECT]= document.getElementById("snakeMonsterImageId"+iCount);
@@ -5882,6 +5924,96 @@ alert("iInputY: "+iInputY);
 			inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*4 + "px -" + iFrameY + "px";
 		}
 	}	
+	
+	//added by Mike, 20251126
+	function executeZombieMonsterAttackingAnimation(inputArrayZombieMonsterWithIdCount, iCount) {		
+		//hero tile position
+		var mainImageTile = document.getElementById("mainImageTileImageId");
+
+		//has gone to the left-most
+		if (inputArrayZombieMonsterWithIdCount[MONSTER_POSX]+iImageFrameHeightLarge/2<0) {
+			inputArrayZombieMonsterWithIdCount[MONSTER_OBJECT].style.visibility="hidden";
+		}
+		else {
+			inputArrayZombieMonsterWithIdCount[MONSTER_OBJECT].style.visibility="visible";
+		}
+
+		if (inputArrayZombieMonsterWithIdCount[MONSTER_OBJECT].style.visibility=="hidden") {
+			return;
+		}
+
+		
+		//alert("inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]: "+inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]);
+	
+		//==============================
+		//AI; movement
+
+		if (inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]>=inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT_MAX]) {
+		
+			inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_COUNT]=(inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_COUNT]+1)%inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_COUNT_MAX]; //last hidden		
+
+  			inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]=0;
+
+			if (inputArrayZombieMonsterWithIdCount[MONSTER_STEP_DELAY]>=inputArrayZombieMonsterWithIdCount[MONSTER_STEP_DELAY_MAX]) {
+			
+				inputArrayZombieMonsterWithIdCount[MONSTER_STEP_DELAY]=0;
+
+/*			
+				//note double while loop causing blinking
+				//setBombMonsterPosition(inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSX],inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSY]);
+				//note the id num of the bomb is based on running wraith's
+				
+				setBombMonsterPosition(inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSX],inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSY],iCount);
+				
+				//alert("DITO!!!!"+inputArrayWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]);
+*/
+			}
+			else {
+				//alert(inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_STEP_DELAY]);
+			
+				inputArrayZombieMonsterWithIdCount[MONSTER_STEP_DELAY]++;
+			}
+
+			inputArrayZombieMonsterWithIdCount[MONSTER_CURRENT_STATE]=ATTACKING_STATE;
+		
+			if (inputArrayZombieMonsterWithIdCount[MONSTER_POSY]+iImageFrameHeightLarge*0.75<mainImageTilePosY) {
+				inputArrayZombieMonsterWithIdCount[MONSTER_POSY]+=inputArrayZombieMonsterWithIdCount[MONSTER_STEPY];
+			}
+			else if (inputArrayZombieMonsterWithIdCount[MONSTER_POSY]>mainImageTilePosY+iImageFrameHeightLarge*0.75) {
+				inputArrayZombieMonsterWithIdCount[MONSTER_POSY]-=inputArrayZombieMonsterWithIdCount[MONSTER_STEPY];
+			}		
+		
+			//move from right to left
+			inputArrayZombieMonsterWithIdCount[MONSTER_POSX]-=inputArrayZombieMonsterWithIdCount[MONSTER_STEPX];
+			inputArrayZombieMonsterWithIdCount[MONSTER_OBJECT].style.left=inputArrayZombieMonsterWithIdCount[MONSTER_POSX]+"px";	
+		}
+		else {
+			inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_DELAY_COUNT]++;
+		}
+		//==============================
+
+		var iFrameY=0;
+		var iFrameXOffset=0;
+
+		iFrameY=iImageFrameHeightLarge*1; //face left
+			
+		//alert(iSkelMonsterAnimationDelayCount);
+
+		inputArrayZombieMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*inputArrayZombieMonsterWithIdCount[MONSTER_ANIMATION_COUNT] + "px -" + iFrameY + "px";
+		
+					//alert("DITO!!!!");
+
+		
+/*
+		if (inputArrayWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]==WALKING_STATE) {
+			inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*inputArrayWraithMonsterWithIdCount[MONSTER_ANIMATION_COUNT] + "px -" + iFrameY + "px";
+		}
+		else { //IDLE_STATE
+			inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*4 + "px -" + iFrameY + "px";
+		}
+*/		
+	}	
+		
 
 	function executeRunningWraithMonsterAttackingAnimation(inputArrayRunningWraithMonsterWithIdCount, iCount) {		
 		//hero tile position
@@ -9787,6 +9919,163 @@ if (arrayWalkOnSnowEffectCount==1) {
 		//}
 	}
 	
+	
+	function verifyHeroCollideWithZombieMonsters(inputArrayZombieMonsterWithIdCount) {
+			
+		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");	
+	
+
+			if (!inputArrayZombieMonsterWithIdCount[MONSTER_IS_ACTIVE]) {
+				return;
+			}		
+			else { //if (isBatMonsterTileActive) {						
+
+				if (bIsHeroAttacked) {
+					//bIsHeroAttacked=false;
+					return;
+				}
+			
+				//if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayZombieMonsterWithIdCount[MONSTER_POSX],inputArrayZombieMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2)) {	
+
+
+				if (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTilePosX,mainImageTilePosY, inputArrayZombieMonsterWithIdCount[MONSTER_POSX],inputArrayZombieMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75, iImageFrameWidthLarge*0.75, iImageFrameHeightLarge*0.75)) {	
+
+					//verify if hero attacked
+					if (bHasFired && (isPointsOfRectIntersectingPointsOfRectMonster(mainImageTileProjectileStepDestinationX-iImageFrameWidthLarge/2,mainImageTileProjectileStepDestinationY-iImageFrameHeightLarge/2, inputArrayZombieMonsterWithIdCount[MONSTER_POSX],inputArrayZombieMonsterWithIdCount[MONSTER_POSY], iImageFrameWidthLarge/2, iImageFrameHeightLarge/2, iImageFrameWidthLarge/2, iImageFrameHeightLarge/2))) {
+
+						//edited by Mike, 20251112; from 20251111
+						var bHasReducedHeroManaOutput=reduceHeroMana(3);
+						
+						if (!bHasReducedHeroManaOutput) {
+							return;
+						}
+						
+						bHasHeroHitMonster=true;
+						iHeroAttackAnimationDelayCount=0;
+						iHeroAttackAnimationCount=0;//-1;
+						
+						iHeroAttackComboCount++;
+
+						//alert("DITO!!!");
+					
+						bIsExecutingShake=true;
+											
+						monsterHitByHero(mainImageTilePosX,mainImageTilePosY, inputArrayZombieMonsterWithIdCount[MONSTER_POSX],inputArrayZombieMonsterWithIdCount[MONSTER_POSY]);
+
+
+						//added by Mike, 20251110
+						//skelMonsterImageTilePosX and PosY; not referenced if passed as parameter					
+						//-------------------------------
+
+						let iMonsterImageTilePosX=inputArrayZombieMonsterWithIdCount[MONSTER_POSX];
+						let iMonsterImageTilePosY=inputArrayZombieMonsterWithIdCount[MONSTER_POSY];
+
+						//push monster out
+						if (bIsHeroFacingLeftOrRight) {
+							if (bIsHeroFacingLeft) {
+								if (iMonsterImageTilePosX+iImageFrameWidthLarge/2<mainImageTilePosX) {	
+									iMonsterImageTilePosX-=iImageFrameWidthLarge/20;
+								}
+							}
+							else {
+								if (iMonsterImageTilePosX>mainImageTilePosX+iImageFrameWidthLarge/2) {	
+									iMonsterImageTilePosX+=iImageFrameWidthLarge/20;
+								}
+							}				
+
+						}
+						
+						if (bIsHeroFacingUpOrDown) {
+							if (bIsHeroFacingUp) {
+								if (iMonsterImageTilePosY+iImageFrameHeightLarge/2<mainImageTilePosY) {	
+									iMonsterImageTilePosY-=iImageFrameHeightLarge/20;
+								}
+							}
+							else {
+								if (iMonsterImageTilePosY>mainImageTilePosY+iImageFrameHeightLarge/2) {	
+									iMonsterImageTilePosY+=iImageFrameHeightLarge/20;
+								}
+							}
+						}
+						
+						inputArrayZombieMonsterWithIdCount[MONSTER_POSX]=iMonsterImageTilePosX;
+						inputArrayZombieMonsterWithIdCount[MONSTER_POSY]=iMonsterImageTilePosY;
+						//-------------------------------
+					
+
+						setExplosionEffectPosition(inputArrayZombieMonsterWithIdCount[MONSTER_POSX]+iImageFrameWidthLarge/2,inputArrayZombieMonsterWithIdCount[MONSTER_POSY]+iImageFrameHeightLarge/2);
+	
+						actorLastAttackedByHero=inputArrayZombieMonsterWithIdCount[MONSTER_OBJECT];
+						
+						inputArrayZombieMonsterWithIdCount[MONSTER_CURRENT_HP]--;
+	
+	
+						if (inputArrayZombieMonsterWithIdCount[MONSTER_CURRENT_HP]<=0) {
+							inputArrayZombieMonsterWithIdCount[MONSTER_OBJECT].style.visibility="hidden";				
+							inputArrayZombieMonsterWithIdCount[MONSTER_IS_ACTIVE]=false;
+							iCurrMonsterDeathCount++;
+
+							setExplosionEffectPosition(inputArrayZombieMonsterWithIdCount[MONSTER_POSX]+iImageFrameWidthLarge/2,inputArrayZombieMonsterWithIdCount[MONSTER_POSY]+iImageFrameHeightLarge/2);
+						}
+/*
+						else {
+							//alert("iSkelMonsterHP!!!"+iSkelMonsterHP);
+
+							actorLastAttackedByHero=inputArrayRunningWraithMonsterWithIdCount[MONSTER_OBJECT];
+
+							inputArrayRunningWraithMonsterWithIdCount[MONSTER_CURRENT_HP]--;
+						}					
+*/						
+					}
+					
+					else {		
+						
+						if (!bHasHeroHitMonster) {
+						//decide if will attack; 
+						
+							//deal damage if hero collides with this monster
+							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, inputArrayZombieMonsterWithIdCount[MONSTER_POSX],inputArrayZombieMonsterWithIdCount[MONSTER_POSY], iMonsterAttackDamageDefault);						
+						
+/*						
+							if (inputArrayRunningWraithMonsterWithIdCount[MONSTER_ATTACK_DELAY]>=inputArrayRunningWraithMonsterWithIdCount[MONSTER_ATTACK_DELAY_MAX]) {
+								inputArrayRunningWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]=ATTACKING_STATE							
+							}
+							else {
+								inputArrayRunningWraithMonsterWithIdCount[MONSTER_ATTACK_DELAY]++;
+
+								inputArrayRunningWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]=IDLE_STATE;
+							}
+
+							if (inputArrayRunningWraithMonsterWithIdCount[MONSTER_CURRENT_STATE]==ATTACKING_STATE) {
+
+								heroHitByMonster(mainImageTilePosX,mainImageTilePosY, inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSX],inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSY], iMonsterAttackDamageWraith);
+								
+								setExplosionEffectPosition(mainImageTilePosX+iImageFrameWidthLarge/2,mainImageTilePosY+iImageFrameHeightLarge/2);
+								
+								//push out hero
+								//bHasHeroChangedFacingLeftOrRight=false;
+								
+								if (!bIsHeroFacingUpOrDown) {
+									if (!bIsHeroWalking) {
+										if (mainImageTilePosX>inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSX]) {	
+											mainImageTilePosX+=iImageFrameWidthLarge/20;
+										}
+										else {
+											mainImageTilePosX-=iImageFrameWidthLarge/20;
+										}
+									}
+								}
+								
+								//currSkelMonsterTileState=ATTACKING_STATE;//WALKING_STATE;
+							}					
+*/							
+						}
+					}
+				}
+			}
+		//}
+	}		
+	
 	function verifyHeroCollideWithRunningWraithMonsters(inputArrayRunningWraithMonsterWithIdCount) {
 			
 		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");	
@@ -9905,7 +10194,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 						//decide if will attack; 
 						
 							//deal damage if hero collides with this monster
-							heroHitByMonster(mainImageTilePosX,mainImageTilePosY, batMonsterImageTilePosX,batMonsterImageTilePosY, iMonsterAttackDamageDefault);						
+							//heroHitByMonster(mainImageTilePosX,mainImageTilePosY, inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSX],inputArrayRunningWraithMonsterWithIdCount[MONSTER_POSY], iMonsterAttackDamageDefault);						
 						
 /*						
 							if (inputArrayRunningWraithMonsterWithIdCount[MONSTER_ATTACK_DELAY]>=inputArrayRunningWraithMonsterWithIdCount[MONSTER_ATTACK_DELAY_MAX]) {
@@ -11425,7 +11714,7 @@ iCurrTextCharacterCountMax=sText.length;
 
 			//sText="<span style='text-align: center;'>The Portal opens and transports you to Blue, the planet where the Emperor resides.</span>";
 			
-			sText="You've reached the Portal! Hurry! It'll transport you to the Imperial Palace!";
+			sText="You've reached the Portal!<br/><br/>Get ready to be transported to the Imperial Palace!<br/><br/>Let's go!";
 			
 			textStatusDiv.innerHTML = sText;
 			
@@ -11883,6 +12172,14 @@ iCurrTextCharacterCountMax=sText.length;
 			arrayBombMonsterCountId[iCount][MONSTER_OBJECT]= document.getElementById("bombMonsterImageId"+iCount);
 			arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="hidden";
 		}
+
+		//added by Mike, 20251126
+		for (iCount=0; iCount<iZombieMonsterCountMax; iCount++) {
+			arrayZombieMonsterCountId[iCount][MONSTER_OBJECT]= document.getElementById("zombieMonsterImageId"+iCount);
+			arrayZombieMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="hidden";
+		}
+
+
 		
 		var pearlImageTile = document.getElementById("pearlImageTileId");
 		pearlImageTile.style.visibility="hidden";
@@ -11919,6 +12216,11 @@ iCurrTextCharacterCountMax=sText.length;
 		for (iCount=0; iCount<iBombMonsterCountMax; iCount++) {
 			arrayBombMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="hidden";
 		}
+
+		for (iCount=0; iCount<iZombieMonsterCountMax; iCount++) {
+			arrayZombieMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="hidden";
+		}
+
 
 
 		for (iCount=0; iCount<iGrassMonsterCountMax; iCount++) {
@@ -13857,7 +14159,7 @@ iCurrTextCharacterCountMax=sText.length;
 					resetProjectile();
 				}
 				break;
-				
+			
 			case 64:
 				myAudio.play();
 
@@ -14370,7 +14672,7 @@ iCurrTextCharacterCountMax=sText.length;
 					resetProjectile();	
 
 					//TODO: -update: this
-					iCurrMapLocation=75;
+					iCurrMapLocation=72;
 					hasInitMapLocation=false;	
 					
 					verifyIfHeroLeveledUp();
@@ -14382,6 +14684,406 @@ iCurrTextCharacterCountMax=sText.length;
 					resetProjectile();
 				}
 				break;						
+		
+			//zombie stage
+			case 72:
+				myAudio.play();
+
+				bossBattleBgImageBeach.style.visibility = "visible";
+				bossBattleBgImagePart2.style.visibility = "hidden";
+				bossBattleBgImagePart3.style.visibility = "visible";	
+
+				if (!hasInitMapLocation) {
+					//added by Mike, 20251123
+					dustEffectImage.style.visibility="hidden";				
+					arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+0);
+					arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
+
+					isBatMonsterTileActive=true;
+					batMonsterImageTile.style.visibility="visible";
+					
+					//TilePosX; width; square based on iStageMaxHeight
+					batMonsterImageTilePosX=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2;
+					batMonsterImageTilePosY=iInnerVerticalOffset+iStageMaxHeight/2-iImageFrameHeightDefault/2;
+				
+/*				
+					isSkelMonsterTileActive=true;
+					skelMonsterImageTile.style.visibility="visible";
+
+					//TilePosX; width; square based on iStageMaxHeight
+					skelMonsterImageTilePosX=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2;
+					skelMonsterImageTilePosY=iInnerVerticalOffset+iStageMaxHeight/2-iImageFrameHeightDefault/2;
+
+					iSkelMonsterHP=iSkelMonsterHP;
+*/
+					arrayActors=[];
+					iArrayActorsCount=0;
+
+					arrayActors[iArrayActorsCount]=mainImageTileHeroBody;//mainImageTile;
+					arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
+					iArrayActorsCount++;
+					
+					
+					arrayActors[iArrayActorsCount]=batMonsterImageTile;
+					
+					arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
+
+					iArrayActorsCount++;					
+					
+
+/*
+					arrayActors[iArrayActorsCount]=skelMonsterImageTile;
+					arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
+					iArrayActorsCount++;
+*/
+					//------------------------------------------------
+
+					for (iCount=0; iCount<iWraithMonsterCountMax/2; iCount++) {
+						arrayWraithMonsterCountId[iCount][MONSTER_IS_ACTIVE]=true;
+						arrayWraithMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="visible";
+						arrayWraithMonsterCountId[iCount][MONSTER_IS_IN_RIVER]=false;
+						
+						arrayActors[iArrayActorsCount]=arrayWraithMonsterCountId[iCount][MONSTER_OBJECT];
+
+						//-----
+/*						
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT]=10;
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT_MAX]=5;//6;	
+
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_COUNT]=-1;		
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_COUNT_MAX]=4;//5;		
+
+						arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY]=0;		
+						arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY_MAX]=15*(iCount+1);
+						arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=IDLE_STATE;
+*/
+						arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_HP]=WRAITH_MONSTER_HP_MAX;
+/*						
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY]=0;		
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY_MAX]=200;
+
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT]=-1;
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT_MAX]=4;
+*/
+						//-----
+
+
+						arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
+
+						iArrayActorsCount++;
+					}
+/*
+					arrayWraithMonsterCountId[0][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2-iImageFrameWidthDefault*2;
+					arrayWraithMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4-iImageFrameHeightDefault/2;
+					
+					arrayWraithMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxHeight/2-iImageFrameWidthDefault/2+iImageFrameWidthDefault;
+					arrayWraithMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4-iImageFrameHeightDefault/2;
+
+					arrayWraithMonsterCountId[2][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
+					
+					arrayWraithMonsterCountId[2][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+					
+					arrayWraithMonsterCountId[3][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*4;
+					
+					arrayWraithMonsterCountId[3][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+*/
+
+					arrayWraithMonsterCountId[0][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*6;
+					
+					arrayWraithMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+					
+					arrayWraithMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth;
+					
+					arrayWraithMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+
+					arrayWraithMonsterCountId[0][MONSTER_STEPX]=2;
+					arrayWraithMonsterCountId[0][MONSTER_STEPY]=2;
+
+					arrayWraithMonsterCountId[1][MONSTER_STEPX]=2;
+					arrayWraithMonsterCountId[1][MONSTER_STEPY]=2;
+/*
+					arrayWraithMonsterCountId[2][MONSTER_STEPX]=2;
+					arrayWraithMonsterCountId[2][MONSTER_STEPY]=2;
+
+					arrayWraithMonsterCountId[3][MONSTER_STEPX]=2;
+					arrayWraithMonsterCountId[3][MONSTER_STEPY]=2;
+*/
+
+
+
+
+					for (iCount=0; iCount<iZombieMonsterCountMax; iCount++) {
+						arrayZombieMonsterCountId[iCount][MONSTER_IS_ACTIVE]=true;
+						arrayZombieMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="visible";
+						arrayZombieMonsterCountId[iCount][MONSTER_IS_IN_RIVER]=false;
+						
+						arrayActors[iArrayActorsCount]=arrayZombieMonsterCountId[iCount][MONSTER_OBJECT];
+
+						//-----
+/*						
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT]=10;
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_DELAY_COUNT_MAX]=5;//6;	
+
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_COUNT]=-1;		
+						arrayWraithMonsterCountId[iCount][MONSTER_ANIMATION_COUNT_MAX]=4;//5;		
+
+						arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY]=0;		
+						arrayWraithMonsterCountId[iCount][MONSTER_STEP_DELAY_MAX]=15*(iCount+1);
+						arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=IDLE_STATE;
+*/
+						arrayZombieMonsterCountId[iCount][MONSTER_CURRENT_HP]=ZOMBIE_MONSTER_HP_MAX;
+/*						
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY]=0;		
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_DELAY_MAX]=200;
+
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT]=-1;
+						arrayWraithMonsterCountId[iCount][MONSTER_ATTACK_ANIMATION_COUNT_MAX]=4;
+*/
+						//-----
+
+
+						arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
+
+						iArrayActorsCount++;
+					}
+					
+					arrayZombieMonsterCountId[0][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*1;
+					arrayZombieMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.1;
+					
+					arrayZombieMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*1;
+					arrayZombieMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.3;
+
+					arrayZombieMonsterCountId[2][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*1;
+					arrayZombieMonsterCountId[2][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.5;
+					
+					arrayZombieMonsterCountId[3][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
+					arrayZombieMonsterCountId[3][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.1;
+
+					arrayZombieMonsterCountId[4][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
+					arrayZombieMonsterCountId[4][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.3;
+
+					arrayZombieMonsterCountId[5][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
+					arrayZombieMonsterCountId[5][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.5;
+
+					arrayZombieMonsterCountId[6][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*3;
+					arrayZombieMonsterCountId[6][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.3;
+
+					arrayZombieMonsterCountId[7][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*3;
+					arrayZombieMonsterCountId[7][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.5;
+
+
+					arrayZombieMonsterCountId[0][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[0][MONSTER_STEPY]=0;
+
+					arrayZombieMonsterCountId[1][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[1][MONSTER_STEPY]=0;
+
+					arrayZombieMonsterCountId[2][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[2][MONSTER_STEPY]=0;
+
+					arrayZombieMonsterCountId[3][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[3][MONSTER_STEPY]=0;
+
+					arrayZombieMonsterCountId[4][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[4][MONSTER_STEPY]=0;
+
+					arrayZombieMonsterCountId[5][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[5][MONSTER_STEPY]=0;
+
+					arrayZombieMonsterCountId[6][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[6][MONSTER_STEPY]=0;
+
+					arrayZombieMonsterCountId[7][MONSTER_STEPX]=1;
+					arrayZombieMonsterCountId[7][MONSTER_STEPY]=0;
+
+
+
+
+/*
+					iCurrSnowEffectCount=0;
+					//4x4
+					for (iCurrSnowRow=0; iCurrSnowRow<4; iCurrSnowRow++) {
+						for (iCurrSnowColumn=0; iCurrSnowColumn<4; iCurrSnowColumn++) {
+						
+							let iOffsetX=iImageFrameWidthLarge*iCurrSnowEffectCount;
+							//let iOffsetY=iImageFrameHeightLarge*iCurrSnowEffectCount;
+							//setSnowEffectPosition(0+iCurrSnowColumn*64,0+iCurrSnowRow*64,iCurrSnowEffectCount);
+							
+							setSnowEffectPosition(0+iCurrSnowColumn*64+iOffsetX,0+iCurrSnowRow*64,iCurrSnowEffectCount);
+							
+							iCurrSnowEffectCount++;
+						}
+					}
+	
+*/	
+	
+					hasInitMapLocation=true;					
+				}
+/*				
+				if (isSkelMonsterTileActive) {
+					skelMonsterImageTile.style.visibility="visible";
+
+					skelMonsterImageTile.style.top = 0+skelMonsterImageTilePosY+"px"; //iInnerVerticalOffset
+					skelMonsterImageTile.style.left = 0+skelMonsterImageTilePosX+"px"; //iInnerHorizontalOffset
+			
+					if (currSkelMonsterTileState!=ATTACKING_STATE) {
+						executeSkelMonsterWalkingAnimation();
+					}
+					else {
+						executeSkelMonsterAttackingAnimation();
+					}
+
+					verifyHeroCollideWithSkelMonsters();
+
+					verifyHeroFireballCollideWithSkelMonsters();
+					verifyHeroSniperShotCollideWithSkelMonsters();
+				}
+*/				
+
+				var bHasWraithMonsterWalking=false;
+				
+				for (iCount=0; iCount<iWraithMonsterCountMax/2; iCount++) {
+					if (arrayWraithMonsterCountId[iCount][MONSTER_IS_ACTIVE]) {
+						arrayWraithMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="visible";
+						
+						//alert(iCount);
+
+						arrayWraithMonsterCountId[iCount][MONSTER_OBJECT].style.top = 0+arrayWraithMonsterCountId[iCount][MONSTER_POSY]+"px"; //iInnerVerticalOffset
+						arrayWraithMonsterCountId[iCount][MONSTER_OBJECT].style.left = 0+arrayWraithMonsterCountId[iCount][MONSTER_POSX]+"px"; //iInnerHorizontalOffset
+									
+						if (arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]!=ATTACKING_STATE) {
+							if (!bHasWraithMonsterWalking) {
+								//already set to WALKING_STATE
+							//arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=WALKING_STATE_STATE;								
+
+								bHasWraithMonsterWalking=true;
+							}
+							else {
+								arrayWraithMonsterCountId[iCount][MONSTER_CURRENT_STATE]=IDLE_STATE;								
+							}
+
+							executeWraithMonsterWalkingAnimation(arrayWraithMonsterCountId[iCount]);
+						}
+						else {
+							executeWraithMonsterAttackingAnimation(arrayWraithMonsterCountId[iCount]);
+						}
+					
+
+						verifyHeroCollideWithWraithMonsters(arrayWraithMonsterCountId[iCount]);
+						
+						verifyHeroFireballCollideWithWraithMonsters(arrayWraithMonsterCountId[iCount]);
+
+						verifyHeroSniperShotCollideWithWraithMonsters(arrayWraithMonsterCountId[iCount]);
+						
+						//verifyWraithCollideWithRiver(arrayWraithMonsterCountId[iCount]);
+					}
+				}
+				
+				if (isBatMonsterTileActive) {
+					batMonsterImageTile.style.visibility="visible";
+										
+					batMonsterImageTile.style.top = 0+batMonsterImageTilePosY+"px"; //iInnerVerticalOffset
+					batMonsterImageTile.style.left = 0+batMonsterImageTilePosX+"px"; //iInnerHorizontalOffset
+			
+					if (currBatMonsterTileState!=ATTACKING_STATE) {
+						executeBatMonsterWalkingAnimation();
+					}
+					else {
+						executeBatMonsterAttackingAnimation();
+					}
+			
+					//executeBatMonsterWalkingAnimation();
+					verifyHeroCollideWithBatMonsters();					
+					verifyHeroFireballCollideWithBatMonsters();
+					
+					verifyHeroSniperShotCollideWithBatMonsters(arrayWraithMonsterCountId[iCount]);					
+				}
+
+
+				for (iCount=0; iCount<iZombieMonsterCountMax; iCount++) {
+					if (arrayZombieMonsterCountId[iCount][MONSTER_IS_ACTIVE]) {
+						arrayZombieMonsterCountId[iCount][MONSTER_OBJECT].style.visibility="visible";
+						
+						//alert(iCount);
+
+						arrayZombieMonsterCountId[iCount][MONSTER_OBJECT].style.top = 0+arrayZombieMonsterCountId[iCount][MONSTER_POSY]+"px"; //iInnerVerticalOffset
+						arrayZombieMonsterCountId[iCount][MONSTER_OBJECT].style.left = 0+arrayZombieMonsterCountId[iCount][MONSTER_POSX]+"px"; //iInnerHorizontalOffset
+
+
+							executeZombieMonsterAttackingAnimation(arrayZombieMonsterCountId[iCount],iCount);
+							
+							verifyHeroCollideWithZombieMonsters(arrayZombieMonsterCountId[iCount]);
+
+/*
+							verifyHeroFireballCollideWithRunningWraithMonsters(arrayRunningWraithMonsterCountId[iCount]);
+
+							verifyHeroSniperShotCollideWithRunningWraithMonsters(arrayRunningWraithMonsterCountId[iCount]);
+*/
+					}
+				}
+
+
+
+				//added by Mike, 20251109
+				updateArrayActorsZIndex();
+				updateHeroFacingDirection();
+				
+				//put this here
+				updateHasHeroShotSniper();
+				executeMonsterDeathAnimation();
+
+				//added by Mike, 20251115
+				for (iCurrSnowEffectCount=0; iCurrSnowEffectCount<iCurrSnowEffectCountMax; iCurrSnowEffectCount++) {
+					
+					executeSnowEffect(iCurrSnowEffectCount);
+				}
+
+				if (mainImageTilePosY<0+iInnerVerticalOffset+iImageFrameHeightLarge/2) {		
+					//OK
+					mainImageTilePosY=0+iInnerVerticalOffset+iImageFrameHeightLarge/2;
+					resetProjectile();
+				}					
+				//bottom wall
+				else if (mainImageTilePosY+iImageFrameHeightLarge>iInnerVerticalOffset+iStageMaxHeight-iImageFrameHeightLarge) {
+					//OK;
+					mainImageTilePosY=iInnerVerticalOffset+iStageMaxHeight-iImageFrameHeightLarge-iImageFrameHeightLarge;
+					
+					//alert("mainImageTilePosX: "+mainImageTilePosX);				
+					resetProjectile();
+				}
+							
+				//right-most
+				if (mainImageTilePosX+iImageFrameWidthDefault>(iInnerHorizontalOffset)+iStageMaxWidth-iImageFrameWidthDefault*1.5) {
+					//OK;
+					mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
+					resetProjectile();	
+
+					//TODO: -update: this
+					iCurrMapLocation=75;
+					hasInitMapLocation=false;					
+					
+					//bIsLevelUp=true;
+					verifyIfHeroLeveledUp();
+				}
+				//left-most
+				//wall
+				else if (mainImageTilePosX<0+(iInnerHorizontalOffset)) {
+/*				
+					mainImageTilePosX=0+(iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthDefault-iImageFrameWidthDefault*1.5);
+
+					resetProjectile();
+
+					//added by Mike, 20251112
+					iCurrMapLocation=53;
+					hasInitMapLocation=false;					
+*/					
+					//mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
+					mainImageTilePosX=(0+iInnerHorizontalOffset);
+
+					resetProjectile();
+				}
+				break;			
+		
 		
 		//last boss; demonic tutor
 		case 75:
@@ -17578,7 +18280,7 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			//reset; new game
 			dElapsedTimeInSeconds=0;
 
-			iCurrMapLocation=51//75;//51;//53;		
+			iCurrMapLocation=51;//75;//51;//53;		
 			iStartTimeInMilliseconds=Date.now();	
 
 			bHasObtainedPearlAtRoom42=false;
@@ -18748,6 +19450,16 @@ opting to put assets folder in "html_application" folder instead
 		
 		<img id="runningWraithMonsterImageId2" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025RunningWraith.png?lastmod=20251123T0946">
 		<img id="runningWraithMonsterImageId3" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025RunningWraith.png?lastmod=20251123T0946">
+
+		<img id="zombieMonsterImageId0" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
+		<img id="zombieMonsterImageId1" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
+		<img id="zombieMonsterImageId2" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
+		<img id="zombieMonsterImageId3" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
+
+		<img id="zombieMonsterImageId4" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
+		<img id="zombieMonsterImageId5" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
+		<img id="zombieMonsterImageId6" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
+		<img id="zombieMonsterImageId7" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Zombie.png?lastmod=20251126T2007">
 
 
 <!--
