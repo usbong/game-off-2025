@@ -178,6 +178,16 @@
 			z-index: 4; /*2;*/
 		}
 
+		.ImageMousePointer {
+			position: absolute;
+
+			clip: rect(0px,64px,64px,0px);
+			visibility: hidden;
+			
+			z-index: 99; /*2;*/
+		}
+
+
 		.ImageTileFrameFireballProjectileHold {
 			position: absolute;
 
@@ -1419,7 +1429,7 @@ const iMonsterDeathAnimationDelayCountMax=0;//4;
 
 
 //added by Mike, 20241105
-var iDustEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
+var iDustEffectAnimationCount=0;//-1; //0; //due to immediately +1 in execution;
 var iDustEffectAnimationCountMax=5;
 var iDustEffectAnimationDelayCount=0;
 var iDustEffectAnimationDelayCountMax=4;//1;
@@ -1976,7 +1986,8 @@ var bIsHeroFacingUp=false;
 		iHeroAnimationCount=0;
 		iHeroAnimationDelayCount=0;
 
-		
+		iDustEffectAnimationCount=0;
+		iDustEffectAnimationDelayCount=0;
 		
 /*
 		iExplosionEffectAnimationDelayCount=iExplosionEffectAnimationDelayCountMax;
@@ -3237,7 +3248,7 @@ var bIsHeroFacingUp=false;
 		iMonsterExplosionEffectAnimationDelayCount=0;
 		iMonsterExplosionEffectAnimationDelayCountMax=2;//4;//1;
 
-		iDustEffectAnimationCount=-1; //0; //due to immediately +1 in execution;
+		iDustEffectAnimationCount=0;//-1; //0; //due to immediately +1 in execution;
 		iDustEffectAnimationCountMax=5;
 		iDustEffectAnimationDelayCount=0;
 		iDustEffectAnimationDelayCountMax=4;//1;
@@ -3884,10 +3895,13 @@ var bIsHeroFacingUp=false;
 		iCurrMonsterDeathCount=0;//998;//0;
 				
 		//resetProjectile()				
-		
-		//added by Mike, 20251120
+
+/*		
+		//edited by Mike, 20251126; from 20251120
 		setDustEffectPosition(mainImageTilePosX, mainImageTilePosY);
 		setWalkOnSnowEffectPosition(mainImageTilePosX,mainImageTilePosY,0);
+*/		
+		setAllActorsToHidden();
 	}
 
   function setExplosionEffectPosition(iInputX, iInputY) {
@@ -4123,7 +4137,7 @@ var bIsHeroFacingUp=false;
 
 		iDustEffectAnimationDelayCount=iDustEffectAnimationDelayCountMax;
 
-		iDustEffectAnimationCount=-1; //0;
+		iDustEffectAnimationCount=0;//-1; //0;
 /*
 alert("iInputX: "+iInputX);
 alert("iInputY: "+iInputY);
@@ -9655,6 +9669,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 						
 						iHeroAttackComboCount++;
 
+
 						//alert("DITO!!!");
 					
 						bIsExecutingShake=true;
@@ -9709,6 +9724,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 						if (inputArrayWraithMonsterWithIdCount[MONSTER_CURRENT_HP]<=0) {
 							inputArrayWraithMonsterWithIdCount[MONSTER_OBJECT].style.visibility="hidden";				
 							inputArrayWraithMonsterWithIdCount[MONSTER_IS_ACTIVE]=false;
+							
 							iCurrMonsterDeathCount++;
 
 							setExplosionEffectPosition(inputArrayWraithMonsterWithIdCount[MONSTER_POSX]+iImageFrameWidthLarge/2,inputArrayWraithMonsterWithIdCount[MONSTER_POSY]+iImageFrameHeightLarge/2);
@@ -10971,7 +10987,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 */					
 			switch (iCurrMissionIntroPage) {
 				case 0:
-					sText = "The Empire's generosity hardly extends to the far reaches of the galaxy. <br/><br/>Distant from Imperial affairs, the people of the Outer Waves have learned to survive without relying on any help from the Empire.";
+					sText = "The Empire's generosity hardly extends to the far reaches of the galaxy. <br/><br/>Distant from imperial affairs, the people of the Outer Waves have learned to survive without relying on any help from the Empire.";
 					break;
 				case 1:
 					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death to their victims in the service of their malevolent Lord...";
@@ -11316,8 +11332,12 @@ iCurrTextCharacterCountMax=sText.length;
 			
 			//sText="<span style='text-align: center;'>Thanks for your help! Take this!<br/><br/>You got Sniper Shot of the Wolf!<br/><br/>Keyboard Press + Attack</span>";
 
-			sText="Thanks for your help! Take this!<br/><br/>You got Sniper Shot of the Wolf!<br/><br/>Keyboard Press + Attack";
-					
+			//sText="Thanks for your help! Take this!<br/><br/>You got Sniper Shot of the Wolf!<br/><br/>Keyboard Press + Attack";
+			
+			sText="Thanks for your help! Take this!<br/><br/><font color='#5693c6'>You got Sniper Shot of the Wolf!</font><br/><br/>Keyboard Press + Attack";
+
+
+			
 /*		
 			textStatusDiv.innerHTML = sText;
 
@@ -17992,6 +18012,56 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 		    bHasPressedFiring=false;
 		});
 */		
+
+		document.body.addEventListener('pointermove', (event) => {
+			if (bIsGameOver) {
+				if (iInputDelayAtGameOverCount<iInputDelayAtGameOverCountMax) {
+					return;
+				}
+			}
+			else if (bIsLevelUp) {
+				if (iInputDelayAtLeveledUpCount<iInputDelayAtLeveledUpCountMax) {
+					return;
+				}
+			}
+			else if (iCurrMapLocation==61) {
+				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
+					return;
+				}
+			}
+			//note error; screen only quickly shown;
+			else if (iCurrMapLocation==63) {
+				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
+					return;
+				}
+			}
+			
+			
+			switch(event.pointerType) {
+				case 'mouse':
+					//note: ZOOM function causes position ERROR via screenX
+					var iXPos = event.clientX;//screenX;
+
+					//note: screenY includes BROWSER address bar, et cetera;
+					var iYPos = event.pageY; //screenY;
+
+					//alert(event.which);
+
+					var summonEffectsSniperShotTarget = document.getElementById("summonEffectsSniperShotTargetId");
+					
+					if (bIsActionKeyPressed) {
+						if (bHasHeroGottenSniperShot) {
+							summonEffectsSniperShotTarget.style.left=iXPos-iImageFrameWidthLarge/2;					
+							summonEffectsSniperShotTarget.style.top=iYPos-iImageFrameHeightLarge/2;
+							summonEffectsSniperShotTarget.style.visibility="visible";
+						}
+					}
+					else {
+						summonEffectsSniperShotTarget.style.visibility="hidden";
+					}
+					break;
+			}
+		});
 	
 		//reference: https://stackoverflow.com/questions/70827887/detect-click-vs-touch-in-javascript;
 		//last accessed: 20221110
@@ -18626,6 +18696,7 @@ opting to put assets folder in "html_application" folder instead
 	<img id="deathCountImageId" class="ImageTileFrame1" src="assets/images/favicon.png">
 
 	<img id="wolfImageTileId" class="ImageAnimalFrame1" src="assets/images/animals.png">
+	<img id="summonEffectsSniperShotTargetId" class="ImageMousePointer" src="assets/images/summonEffects.png">
 
 	
 	<img id="fontImageId0" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
