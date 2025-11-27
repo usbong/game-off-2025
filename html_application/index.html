@@ -1915,7 +1915,7 @@ var bIsHeroFacingUp=false;
 	const ZOMBIE_MONSTER_HP_MAX=2;//3;//2;
 
 	
-	var iCurrMapLocation=75;//72;//51;//75;//51;//63; //53;//12;//0;		
+	var iCurrMapLocation=75;//54;//72;//65;//55;//75;//72;//51;//75;//51;//63; //53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -4013,7 +4013,6 @@ var bIsHeroFacingUp=false;
 
     fireballExplosionEffectImage.style.left = iInputX-128-iImageFireballExplosionEffectAnimationWidth/2;
     fireballExplosionEffectImage.style.top = iInputY-128-iImageFireballExplosionEffectAnimationHeight/2;
-	
   }
   
   function setFireballExplosionEffectPositionLarge(iInputX, iInputY) {
@@ -5972,6 +5971,10 @@ alert("iInputY: "+iInputY);
 			if (inputArrayZombieMonsterWithIdCount[MONSTER_STEP_DELAY]>=inputArrayZombieMonsterWithIdCount[MONSTER_STEP_DELAY_MAX]) {
 			
 				inputArrayZombieMonsterWithIdCount[MONSTER_STEP_DELAY]=0;
+/*				
+				inputArrayZombieMonsterWithIdCount[MONSTER_STEPX]=3;
+				inputArrayZombieMonsterWithIdCount[MONSTER_STEPY]=0;
+*/
 
 /*			
 				//note double while loop causing blinking
@@ -9127,9 +9130,34 @@ if (arrayWalkOnSnowEffectCount==1) {
 					
 					setFireballExplosionEffectPosition(demonMonsterImageTilePosX+iImageFrameWidthLarge/4,demonMonsterImageTilePosY+iImageFrameHeightLarge/4);
 					
+/*					
 					demonMonsterImageTile.style.visibility="hidden";				
 					isDemonMonsterTileActive=false;
 					iCurrMonsterDeathCount++;					
+*/					
+					
+					actorLastAttackedByHero=demonMonsterImageTile;
+					//iDemonMonsterHP--;
+					//iCurrBossLife=iDemonMonsterHP;
+					reduceBossLifeBar(1); //iMonsterAttackDamageBoss
+					iDemonMonsterHP=iCurrBossLife;
+	
+					if (iDemonMonsterHP<=0) {
+					//if (iCurrBossLife<=0) {
+					
+						//alert("DONE!");
+					
+						demonMonsterImageTile.style.visibility="hidden";				
+						isDemonMonsterTileActive=false;
+						iCurrMonsterDeathCount++;
+						
+						bHasBeatenLastBoss=true;
+
+						setExplosionEffectPosition(demonMonsterImageTilePosX+iImageFrameWidthLarge/2,demonMonsterImageTilePosY+iImageFrameHeightLarge/2);
+
+					}					
+					
+					
 				}
 			}
 		}
@@ -9153,16 +9181,32 @@ if (arrayWalkOnSnowEffectCount==1) {
 				//verify if hero attacked
 				//if (bHasFired && bHasHeroShotFireball) {
 				if (bHasHeroShotSniper) {
-					monsterHitByHeroSniperShot(mainImageTileSniperShotPosX,mainImageTileSniperShotPosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY);
+					//monsterHitByHeroSniperShot(mainImageTileSniperShotPosX,mainImageTileSniperShotPosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY);
 					
 					//TODO: -update: this
 					//setFireballExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/4,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4);
 					
-					setFireballExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/4+iImageFrameWidthLarge/4,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4+iImageFrameHeightLarge/4);
+					//setFireballExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/4+iImageFrameWidthLarge/4,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4+iImageFrameHeightLarge/4);
+
+					//put this here before monsterHitByHeroSniperShot(...)
+					setFireballExplosionEffectPosition(mainImageTileSniperShotPosX-iImageFrameWidthLarge/4,mainImageTileSniperShotPosY-iImageFrameHeightLarge/4);
+								
+					let iBossPosXOffset=iImageFrameWidthLargeBoss/3;
+								
+					if (mainImageTileSniperShotPosY<skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4) {
+						if ((mainImageTileSniperShotPosX>skelMonsterImageTilePosX+iBossPosXOffset) && (mainImageTileSniperShotPosX<skelMonsterImageTilePosX+iBossPosXOffset+iImageFrameWidthLargeBoss/5)) {
+							reduceBossLifeBar(iSniperShotAttackDamage*3); //*4
+						}
+					}
+					else {
+						reduceBossLifeBar(iSniperShotAttackDamage);
+					}
 					
-					reduceBossLifeBar(iSniperShotAttackDamage);
 					iSkelMonsterHP=iCurrBossLife;
-	
+			
+					monsterHitByHeroSniperShot(mainImageTileSniperShotPosX,mainImageTileSniperShotPosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY);
+
+			
 					if (iSkelMonsterHP<=0) {
 						skelMonsterImageTile.style.visibility="hidden";				
 						isSkelMonsterTileActive=false;
@@ -9171,7 +9215,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 						//iCurrMonsterDeathCount++;
 						iCurrMonsterDeathCount+=BOSS_DEATH_COUNT_VAL;
 
-						setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
+						//setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
+						
+						setExplosionEffectPosition(mainImageTileSniperShotPosX-iImageFrameWidthDefault/2,mainImageTileSniperShotPosY-iImageFrameHeightDefault/2);
 					}
 				}
 			}
@@ -9229,17 +9275,26 @@ if (arrayWalkOnSnowEffectCount==1) {
 					setFireballExplosionEffectPosition(demonMonsterImageTilePosX+iImageFrameWidthLarge/4,demonMonsterImageTilePosY+iImageFrameHeightLarge/4);
 
 					actorLastAttackedByHero=demonMonsterImageTile;
-					//iDemonMonsterHP-=iSniperShotAttackDamage;
+					//iDemonMonsterHP--;
+					//iCurrBossLife=iDemonMonsterHP;
 					reduceBossLifeBar(iSniperShotAttackDamage); //iMonsterAttackDamageBoss
 					iDemonMonsterHP=iCurrBossLife;
-					
+	
 					if (iDemonMonsterHP<=0) {
+					//if (iCurrBossLife<=0) {
+					
+						//alert("DONE!");
+					
 						demonMonsterImageTile.style.visibility="hidden";				
 						isDemonMonsterTileActive=false;
 						iCurrMonsterDeathCount++;
-						//setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLarge/2,skelMonsterImageTilePosY+iImageFrameHeightLarge/2);
+						
+						bHasBeatenLastBoss=true;
+
+						setExplosionEffectPosition(demonMonsterImageTilePosX+iImageFrameWidthLarge/2,demonMonsterImageTilePosY+iImageFrameHeightLarge/2);
 
 					}
+					
 				}
 			}
 		}
@@ -11316,7 +11371,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 */					
 			switch (iCurrMissionIntroPage) {
 				case 0:
-					sText = "The Empire's generosity hardly extends to the far reaches of the galaxy. <br/><br/>Distant from imperial affairs, the people of the Outer Waves have learned to survive without relying on any help from the Empire.";
+					sText = "The Empire's generosity hardly extends to the far reaches of the galaxy. <br/><br/>Distant from imperial affairs, the people of the Outer Waves have learned to survive without relying on the help of the Empire.";
 					break;
 				case 1:
 					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death to their victims in the service of their malevolent Lord...";
@@ -14642,6 +14697,9 @@ iCurrTextCharacterCountMax=sText.length;
 						executeSkelMonsterAttackingAnimation();
 					}
 
+					//debug
+					//bHasHeroGottenSniperShot=true;
+
 					verifyHeroCollideWithSkelMonsters();
 
 					verifyHeroFireballCollideWithSkelMonsters();
@@ -14965,28 +15023,28 @@ iCurrTextCharacterCountMax=sText.length;
 					}
 					
 					arrayZombieMonsterCountId[0][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*1;
-					arrayZombieMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.1;
+					arrayZombieMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.15;
 					
 					arrayZombieMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*1;
-					arrayZombieMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.3;
+					arrayZombieMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.35;
 
 					arrayZombieMonsterCountId[2][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*1;
-					arrayZombieMonsterCountId[2][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.5;
+					arrayZombieMonsterCountId[2][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.55;
 					
 					arrayZombieMonsterCountId[3][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
-					arrayZombieMonsterCountId[3][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.1;
+					arrayZombieMonsterCountId[3][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.15;
 
 					arrayZombieMonsterCountId[4][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
-					arrayZombieMonsterCountId[4][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.3;
+					arrayZombieMonsterCountId[4][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.35;
 
 					arrayZombieMonsterCountId[5][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
-					arrayZombieMonsterCountId[5][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.5;
+					arrayZombieMonsterCountId[5][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.55;
 
 					arrayZombieMonsterCountId[6][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*3;
-					arrayZombieMonsterCountId[6][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.3;
+					arrayZombieMonsterCountId[6][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.35;
 
 					arrayZombieMonsterCountId[7][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*3;
-					arrayZombieMonsterCountId[7][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.5;
+					arrayZombieMonsterCountId[7][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.55;
 
 
 					arrayZombieMonsterCountId[0][MONSTER_STEPX]=1;
@@ -15325,6 +15383,8 @@ iCurrTextCharacterCountMax=sText.length;
 					else {
 						executeDemonMonsterAttackingAnimation();
 					}
+					
+					//bHasHeroGottenSniperShot=true;					
 
 					verifyHeroCollideWithDemonMonsters();
 					verifyHeroFireballCollideWithDemonMonsters();
@@ -18931,7 +18991,12 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 					var summonEffectsSniperShotTarget = document.getElementById("summonEffectsSniperShotTargetId");
 					
 					if (bIsActionKeyPressed) {
-						if (bHasHeroGottenSniperShot) {
+
+						if (bIsActionKeyFireballPressed) {
+							//no sniper shot target
+							summonEffectsSniperShotTarget.style.visibility="hidden";
+						}
+						else if (bHasHeroGottenSniperShot) {
 							summonEffectsSniperShotTarget.style.left=iXPos-iImageFrameWidthLarge/2;					
 							summonEffectsSniperShotTarget.style.top=iYPos-iImageFrameHeightLarge/2;
 							summonEffectsSniperShotTarget.style.visibility="visible";
@@ -19605,7 +19670,7 @@ opting to put assets folder in "html_application" folder instead
 		<img id="skelMonsterImageId" class="ImageHeroFrame1Boss" src="assets/images/inputImageLarge2025Boss.png?lastmod=20251120T0607">
 		<img id="skelMonsterDeathAnimationImageId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251117T1921">
 
-		<img id="demonMonsterImageId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251123T1925">
+		<img id="demonMonsterImageId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025Demon.png?lastmod=20251127T1627">
 		<img id="demonMonsterDeathAnimationImageId" class="ImageHeroFrame1" src="assets/images/inputImageLarge2025.png?lastmod=20251117T1921">
 
 		<img id="mainImageTileImageId" class="ImageTileFrame1" src="assets/images/inputImage.png?lastmod=20241107">
