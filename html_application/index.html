@@ -1078,6 +1078,7 @@ var iInputDelayAtStageTransitionCount=0;
 var bHasHeroGottenSniperShot=false;
 
 var bHasBeatenStage1Boss=false;
+var bHasBeatenLastBoss=false;
 
 var bIsBossBattle=false;
 
@@ -3166,6 +3167,7 @@ var bIsHeroFacingUp=false;
 		bHasHeroGottenSniperShot=false;
 		
 		bHasBeatenStage1Boss=false;
+		bHasBeatenLastBoss=false;
 			
 		iInputDelayAtGameOverCount=0;
 		
@@ -6632,6 +6634,11 @@ alert("iInputY: "+iInputY);
 					executeStageTransition(61);
 				}
 			}
+			else if (iCurrMapLocation==75) { //boss 1
+				if (bHasBeatenLastBoss) {
+					executeStageTransition(81);
+				}
+			}
 			
 			//alert("HALLO");
 		}
@@ -8765,6 +8772,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 						demonMonsterImageTile.style.visibility="hidden";				
 						isDemonMonsterTileActive=false;
 						iCurrMonsterDeathCount++;
+						
+						bHasBeatenLastBoss=true;
 
 						setExplosionEffectPosition(demonMonsterImageTilePosX+iImageFrameWidthLarge/2,demonMonsterImageTilePosY+iImageFrameHeightLarge/2);
 
@@ -11789,16 +11798,90 @@ iCurrTextCharacterCountMax=sText.length;
 			return;
 		
 		}
-/*		
-		else if ((iCurrMapLocation==71) && (bIsShowingStage2End)) {
-		}		
-*/		
+		//added by Mike, 20251127
+		//after last boss
+
+		else if (iCurrMapLocation==81) {
+
+			bIsMissionDone=true;
+
+			bossBattleBgImageBeach.style.visibility = "hidden";
+			bossBattleBgImagePart2.style.visibility = "hidden";
+			bossBattleBgImagePart3.style.visibility = "hidden";	
+			
+			//profile
+			//heroLifeBarStatusImageTile.style.visibility = "hidden";
+			mainImageTileHeroBody.style.visibility = "hidden";
+
+			setAllActorsToHidden();
+
+			//sText="";
+
+			heroLifeBarStatusImageTile.style.visibility = "visible";
+
+			drawHeroLifeBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60,false); 
+
+////			iCurrHeroLife=iCurrHeroLifeMax;
+////			iCurrHeroLifeToBeDeducted=0;
+
+			iCurrHeroMana=iCurrHeroManaMax;
+			iCurrHeroManaToBeDeducted=0;
+			
+			//drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left), 0+parseInt(heroLifeBarStatusImageTile.style.bottom)+5,false); 	
+			drawHeroManaBar(myCanvasTwoContext,parseInt(heroLifeBarStatusImageTile.style.left)+10, 0+iStageMaxHeight/60+5,false);	
+
+			if (!bHasBeatenLastBoss) {
+				iInputDelayAtStageTransitionCount++;
+		
+				return;
+			}
+
+			//sText="<span style='text-align: center;'>Thanks for your help! Take this!<br/><br/>You got Sniper Shot of the Wolf!<br/><br/>Keyboard Press + Attack</span>";
+
+			//sText="Thanks for your help! Take this!<br/><br/>You got Sniper Shot of the Wolf!<br/><br/>Keyboard Press + Attack";
+			
+			//sText="Thanks for your help! Take this!<br/><br/><font color='#5693c6'>You got Sniper Shot of the Wolf!</font><br/><br/>Keyboard Press + Attack";
+
+			//sText="You've defeated the Demon!<br/><br/>Yes, we will bring reinforcements to Outer Waves!";
+			
+			sText="You've defeated the Demon!<br/><br/>The emperor reads your letter and promises to bring reinforcements to Outer Waves!<br/><br/>Congratulations!";
+
+
+			textStoryDiv.innerHTML = sText;
+
+  			//alert(sText.length);
+  			var iTextStoryDivWidth = (textStoryDiv.clientWidth);
+  			var iTextStoryDivHeight = (textStoryDiv.clientHeight);
+
+			var mainImageTileProjectile = document.getElementById("mainImageTileProjectileImageId");
+
+			textStoryDiv.style.left=0+iStageMaxWidth*0.15;
+			textStoryDiv.style.top = 0+(iStageMaxHeight*0.15-iTextStatusOffsetY)+"px";
+  			
+  			//textStatusDiv.style.visibility="visible";
+			mainImageTileProjectile.style.visibility="hidden";
+	
+			executeTimeDisplay();
+			
+			if (iInputDelayAtStageTransitionCount>=iInputDelayAtStageTransitionCountMax) {
+				textStoryDiv.style.visibility="visible";
+			}
+			iInputDelayAtStageTransitionCount++;
+
+			//iInputDelayAtStageTransitionCount++;
+			
+			return;
+		
+		}
+
 		else {
 			textStatusBackgroundDiv.style.visibility="hidden";
 			textStatusDiv.style.visibility="hidden";
 		}
 				
 		if (bIsMissionDone) {
+
+/*
 			var sTextEnd = "<br/>Congratulations!<br/><br/>But the portal opens only<br/>to those with less than<br/>15 monsters vanquished.";
 
 			if (iCurrMonsterDeathCount<15) { //best is 9 at most
@@ -11896,7 +11979,8 @@ iCurrTextCharacterCountMax=sText.length;
 
 			//edited by Mike, 20251124; from 20251120
 			//drawMonsterDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 			
-			drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 			
+			drawHeroDeathStatus(myCanvasTwoContext,0+parseInt(textTimeDiv.style.left), 0+parseInt(textTimeDiv.style.top)); 	
+*/			
 	  }
       else {
 	  
@@ -14615,7 +14699,9 @@ iCurrTextCharacterCountMax=sText.length;
 						mainImageTilePosX=(iInnerHorizontalOffset+iImageFrameWidthDefault/2)+0;
 						resetProjectile();	
 
-						iCurrMapLocation=71;
+						iCurrMapLocation=81;
+						bIsMissionDone=true;
+						
 						hasInitMapLocation=false;
 
 						verifyIfHeroLeveledUp();
