@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251128; from 20251127
+' @date updated: 20251129; from 20251128
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -845,7 +845,7 @@
 
 				width: 360px;
 
-				font-size: 24px; /*28; 16px;*/
+				font-size: 24px; 
 				font-weight: bold;
 
 				padding: 20px;
@@ -854,10 +854,8 @@
 				visibility: hidden;
 				
 				float: left;
-
-				/* added by Mike, 20230128;
-					put above tile images */
-				z-index: 90; /*4;*/
+  
+				z-index: 90;
 			}
 
 			div.DivTextStory
@@ -878,10 +876,11 @@
 				visibility: hidden;
 				
 				float: left;
+				
+				text-align: justify;
+				text-justify: inter-word;
 
-				/* added by Mike, 20230128;
-					put above tile images */
-				z-index: 90; /*4;*/
+				z-index: 90;
 			}
 
 			div.DivTextStatusBackground
@@ -1132,6 +1131,7 @@ var bHasViewedMissionIntro=false;
 var iCurrMissionIntroPage=0;
 var iCurrMissionIntroPageMax=5;//5;
 
+var fCurrBgImageMoonOpacity=0;
 
 var bIsShowingStage1End=false;
 var bIsShowingStage2End=false;
@@ -2508,7 +2508,7 @@ var bIsHeroFacingUp=false;
 	}
 
 	function drawHeroLifeBar(myCanvasContext, iXPos, iYPos, bIsFrameOnly) {
-		var iHeroLifeBarWidth=4;
+		var iHeroLifeBarWidth=4; //5
 		var iHeroLifeBarHeight=4;		
 		var iHeroLifeBarSpacing=0;//1;
 			
@@ -3362,6 +3362,9 @@ var bIsHeroFacingUp=false;
 		//var bossBattleBgImage = document.getElementById("bossBattleBgImageId");			
 		var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");			
 		var bossBattleBgImageBeachPart2 = document.getElementById("bossBattleBgImageBeachPart2Id");			
+
+		var bgImageMoon = document.getElementById("bgImageMoonId");			
+
 		
 		var bossBattleBgImagePart2 = document.getElementById("bossBattleBgImagePart2Id");		
 		var bossBattleBgImagePart3 = document.getElementById("bossBattleBgImagePart3Id");		
@@ -3455,6 +3458,9 @@ var bIsHeroFacingUp=false;
 		////bossBattleBgImage.style.visibility="hidden";
 		bossBattleBgImageBeach.style.visibility="hidden";
 		bossBattleBgImageBeachPart2.style.visibility="hidden";
+
+		bgImageMoon.style.visibility="hidden";
+
 
 		bossBattleBgImagePart2.style.visibility="hidden";
 		bossBattleBgImagePart3.style.visibility="hidden";
@@ -8465,6 +8471,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 		
 		setHeroAttackEffectPosition(iMonsterImageTilePosX,iMonsterImageTilePosY); 
 		
+		setMonsterDeathAnimationPosition(iMonsterImageTilePosX,iMonsterImageTilePosY,MONSTER_TYPE_VAL_DEFAULT);
+		
 		resetProjectile();
 		resetFireballProjectile();
 	
@@ -9428,13 +9436,17 @@ if (arrayWalkOnSnowEffectCount==1) {
 				
 					//alert("HALLO"); 	
 				
-					monsterHitByHeroFireball(parseInt(mainImageTileFireballProjectilePosX),parseInt(mainImageTileFireballProjectilePosY), skelMonsterImageTilePosX,skelMonsterImageTilePosY);
+					//monsterHitByHeroFireball(parseInt(mainImageTileFireballProjectilePosX),parseInt(mainImageTileFireballProjectilePosY), skelMonsterImageTilePosX,skelMonsterImageTilePosY);
 					//setExplosionEffectPosition(batMonsterImageTilePosX,batMonsterImageTilePosY);
 					
 					//TODO: -update: this if boss
 					//setFireballExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLarge,skelMonsterImageTilePosY+iImageFrameHeightLarge);
 
 					setFireballExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLarge*0.75,skelMonsterImageTilePosY+iImageFrameHeightLarge*0.75);
+					
+					monsterHitByHeroFireball(parseInt(mainImageTileFireballProjectilePosX),parseInt(mainImageTileFireballProjectilePosY), skelMonsterImageTilePosX,skelMonsterImageTilePosY);
+
+					setMonsterDeathAnimationPosition(skelMonsterImageTilePosX-iImageFrameWidthLargeBoss/2+iImageFrameWidthLarge/2, skelMonsterImageTilePosY-iImageFrameHeightLargeBoss/2+iImageFrameHeightLarge/2, MONSTER_TYPE_VAL_SKEL);
 					
 					reduceBossLifeBar(iFireballAttackDamage);
 					iSkelMonsterHP=iCurrBossLife;
@@ -9604,6 +9616,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 			
 					monsterHitByHeroSniperShot(mainImageTileSniperShotPosX,mainImageTileSniperShotPosY, skelMonsterImageTilePosX,skelMonsterImageTilePosY);
 
+					setMonsterDeathAnimationPosition(skelMonsterImageTilePosX-iImageFrameWidthLargeBoss/2+iImageFrameWidthLarge/2, skelMonsterImageTilePosY-iImageFrameHeightLargeBoss/2+iImageFrameHeightLarge/2, MONSTER_TYPE_VAL_SKEL);
+
 			
 					if (iSkelMonsterHP<=0) {
 						skelMonsterImageTile.style.visibility="hidden";				
@@ -9758,6 +9772,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 				
 					monsterHitByHeroFireball(parseInt(mainImageTileFireballProjectilePosX),parseInt(mainImageTileFireballProjectilePosY), batMonsterImageTilePosX,batMonsterImageTilePosY);
 					//setExplosionEffectPosition(batMonsterImageTilePosX,batMonsterImageTilePosY);
+					
+					setMonsterDeathAnimationPosition(batMonsterImageTilePosX-iImageFrameWidthDefault/2+iImageFrameWidthDefault/2, batMonsterImageTilePosY-iImageFrameHeightDefault/2+iImageFrameHeightDefault/2, MONSTER_TYPE_VAL_BAT);		
 					
 					setFireballExplosionEffectPosition(batMonsterImageTilePosX,batMonsterImageTilePosY);
 					
@@ -11500,6 +11516,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 		var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");
 		var bossBattleBgImageBeachPart2 = document.getElementById("bossBattleBgImageBeachPart2Id");
 
+		var bgImageMoon = document.getElementById("bgImageMoonId");
+
+
 		var bossBattleBgImagePart2 = document.getElementById("bossBattleBgImagePart2Id");		
 		var bossBattleBgImagePart3 = document.getElementById("bossBattleBgImagePart3Id");		
 
@@ -11647,6 +11666,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 	bossBattleBgImageBeach.style.left=0+iHorizontalOffset+"px";
 	bossBattleBgImageBeach.style.top=0+iVerticalOffsetInnerScreen+"px";	
 
+	bgImageMoon.style.left=0+iHorizontalOffset+"px";
+	bgImageMoon.style.top=0+iVerticalOffsetInnerScreen+"px";	
+
+
 	bossBattleBgImageBeachPart2.style.left=0+iHorizontalOffset+"px";
 	bossBattleBgImageBeachPart2.style.top=0+iVerticalOffsetInnerScreen+"px";	
 	
@@ -11772,6 +11795,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 				//bossBattleBgImage.style.visibility = "visible"; //default
 
+				bgImageMoon.style.visibility = "hidden";
+
+
 				bossBattleBgImageBeach.style.visibility = "hidden";
 				bossBattleBgImageBeachPart2.style.visibility = "hidden";
 				
@@ -11830,6 +11856,17 @@ if (arrayWalkOnSnowEffectCount==1) {
 	  
 		if (!bHasViewedMissionIntro) {
 		
+			bgImageMoon.style.visibility="visible";
+			
+			fCurrBgImageMoonOpacity+=0.0008;
+			
+			if (fCurrBgImageMoonOpacity>0.5) {
+				fCurrBgImageMoonOpacity=0.5;
+			}
+			
+			bgImageMoon.style.opacity=fCurrBgImageMoonOpacity;//"0.5";
+		
+		
 			bossBattleBgImageBeach.style.visibility = "hidden";
 			bossBattleBgImagePart2.style.visibility = "hidden";
 			bossBattleBgImagePart3.style.visibility = "hidden";	
@@ -11845,7 +11882,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 			//sText = "Keyboard Press + Attack<br/>to do a sniper shot.";
 			//sText = "HURRY! GO RIGHT!!!";
 
-			//sText = "The Empire's generosity hardly<br/> reaches the Outer Waves.<br/><br/> In this part of the galaxy, people<br/> have learned to survive, without<br/> any help from the Empire.<br/><br/> Meanwhile, the Undead continue<br/> to advance and attack...<br/><br/> What was that! An explosion!<br/><br/> Hurry! Take this message<br/> and bring it to the Emperor!";
+			//sText = "The generosity of the Empire hardly<br/> reaches the Outer Waves.<br/><br/> In this part of the galaxy, people<br/> have learned to survive, without<br/> any help from the Empire.<br/><br/> Meanwhile, the Undead continue<br/> to advance and attack...<br/><br/> What was that! An explosion!<br/><br/> Hurry! Take this message<br/> and bring it to the Emperor!";
 			
 /*
 			switch (iCurrMissionIntroPage) {
@@ -11871,10 +11908,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 */					
 			switch (iCurrMissionIntroPage) {
 				case 0:
-					sText = "The Empire's generosity hardly extends to the far reaches of the galaxy. <br/><br/>Distant from imperial affairs, the people of the Outer Waves have learned to survive without relying on the help of the Empire.";
+					sText = "The generosity of the Empire hardly extends to the far reaches of the galaxy. <br/><br/>Distant from imperial affairs, the people of the Outer Waves have learned to survive without relying on the help of the Empire.";
 					break;
 				case 1:
-					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death to their victims in the service of their malevolent Lord...";
+					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death in the service of their malevolent Lord...";
 					break;
 				case 2:
 					sText = "What was that!";
@@ -19970,6 +20007,20 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 									iCurrTextCharacterCountEffectDelayCount=0;
 									iCurrTextCharacterCount=0;
 									iCurrMissionIntroPage++;
+
+									if ((iCurrMissionIntroPage==2) || (iCurrMissionIntroPage==4)){
+										//--------------------
+										var myAudioEffectCannonFire = document.getElementById("myAudioEffectCannonFireId");
+
+										myAudioEffectCannonFire.setAttribute("src", sAudioEffectActionCannonFire);
+
+										//fMyAudioEffectVolume=0.2;
+										fMyAudioEffectCannonFireVolume=1.0;
+										myAudioEffectCannonFire.volume=fMyAudioEffectCannonFireVolume;
+										myAudioEffectCannonFire.loop=false;
+										myAudioEffectCannonFire.play();		
+										//--------------------
+									}									
 									return;
 								}
 								else {
@@ -20671,6 +20722,9 @@ opting to put assets folder in "html_application" folder instead
 <!--
 	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageCaveStart.png?lastmod=20251102T1659">
 -->
+	<img id="bgImageMoonId" class="ImageBossBattleBg" src="assets/images/bgImageMoon.jpg?lastmod=20251129T05337">
+
+
 	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageZombieStage.jpg?lastmod=20251128T1502">
 
 
