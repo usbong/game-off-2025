@@ -1090,6 +1090,8 @@
 
   <script>
 
+const iHeroLifeBarStatusImageTileOffsetX=2;
+
 var iRowCount=0;
 const iRowCountMax=6;//10;
 var iColumnCount=0;
@@ -1284,6 +1286,9 @@ const sAudioEffectActionSwordOut ="assets/audio/usbongGameOff2025SwordOut.mp3";
 
 
 const sAudioEffectGrassCut ="assets/audio/usbongGameOff2023TapLoudEdited.mp3";
+
+const sAudioIntroBGM="assets/audio/usbongGameOff2025Problem.mp3";
+const sAudioHurryBGM="assets/audio/usbongGameOff2025HurryDrum.mp3";
 
 const sAudioBGM="assets/audio/usbongGameOff2024CaveBGMV22.mp3";
 
@@ -2511,7 +2516,9 @@ var bIsHeroFacingUp=false;
 		var iHeroLifeBarWidth=4; //5
 		var iHeroLifeBarHeight=4;		
 		var iHeroLifeBarSpacing=0;//1;
-			
+		
+		iXPosUpdated=iXPos+iHeroLifeBarStatusImageTileOffsetX;
+		
 		//var iCurrHeroLife=10;
 /*		
 		myCanvasContext.clearRect(0, 0, myCanvasContext.width, myCanvasContext.height);
@@ -2521,7 +2528,7 @@ var bIsHeroFacingUp=false;
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax*2, iHeroLifeBarHeight);
 */
 		myCanvasContext.fillStyle = "#2d2622"; //"#736157"; //#ffffff; //"#ff0000";	
-		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight);
+		myCanvasContext.fillRect(0+iXPosUpdated, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight);
 		
 		if (bIsFrameOnly) {
 			return;
@@ -2546,7 +2553,7 @@ var bIsHeroFacingUp=false;
 		//added by Mike, 20251111
 		myCanvasContext.strokeStyle = 'black'; 
 		myCanvasContext.lineWidth = 0.2; 
-		myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight); 
+		myCanvasContext.strokeRect(0+iXPosUpdated, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight); 
 		
 		//textLifeBarDiv.clientWidth
 /*
@@ -2569,7 +2576,7 @@ var bIsHeroFacingUp=false;
 		//myCanvasContext.fillStyle = 'yellow';
 		myCanvasContext.fillStyle = "#ee0000"
 
-		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*(iCurrHeroLifeToBeDeductedAnimationMain+iCurrHeroLifeToBeDeductedAnimation), iHeroLifeBarHeight);
+		myCanvasContext.fillRect(0+iXPosUpdated, 0+iYPos, iHeroLifeBarWidth*(iCurrHeroLifeToBeDeductedAnimationMain+iCurrHeroLifeToBeDeductedAnimation), iHeroLifeBarHeight);
 		
 		//myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*(iCurrHeroLifeMax), iHeroLifeBarHeight);
 
@@ -2630,7 +2637,7 @@ var bIsHeroFacingUp=false;
 		//myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
 		
 
-		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
+		myCanvasContext.fillRect(0+iXPosUpdated, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLife, iHeroLifeBarHeight);
 	}	
 	
 	function drawBossLifeBar(myCanvasContext, iXPos, iYPos, bIsFrameOnly) {
@@ -2877,6 +2884,8 @@ var bIsHeroFacingUp=false;
 
 		var mainImageTileFireballProjectile = document.getElementById("mainImageTileFireballProjectileImageId");
 
+		iXPosUpdated=iXPos+iHeroLifeBarStatusImageTileOffsetX;
+
 		var iHeroManaBarWidth=4;
 		var iHeroManaBarHeight=4;		
 
@@ -2892,7 +2901,7 @@ var bIsHeroFacingUp=false;
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax*2, iHeroManaBarHeight);
 */
 		myCanvasContext.fillStyle = "#2d2622"; //"#736157"; //#ffffff; //"#ff0000";	
-		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight);
+		myCanvasContext.fillRect(0+iXPosUpdated, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight);
 		
 		if (bIsFrameOnly) {
 			return;
@@ -2980,12 +2989,12 @@ var bIsHeroFacingUp=false;
 			}
 
 			myCanvasContext.lineWidth = 0.2;//5;//2; 
-			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
+			myCanvasContext.strokeRect(0+iXPosUpdated, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
 		}
 		else {
 			myCanvasContext.strokeStyle = 'black'; 
 			myCanvasContext.lineWidth = 0.2; 
-			myCanvasContext.strokeRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
+			myCanvasContext.strokeRect(0+iXPosUpdated, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
 		}
 
 
@@ -3006,7 +3015,7 @@ var bIsHeroFacingUp=false;
 		}	
 		iCurrHeroManaAnimationDelayCount++;
 
-		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroMana, iHeroManaBarHeight);
+		myCanvasContext.fillRect(0+iXPosUpdated, 0+iYPos, iHeroManaBarWidth*iCurrHeroMana, iHeroManaBarHeight);
 		
 		//OK; goes up
 		//myCanvasContext.fillRect(0+iXPos+textManaBarDiv.innerHTML.length*4, 0+iYPos, iHeroManaBarWidth, -iHeroManaBarHeight/iCurrHeroManaMax*(iCurrHeroMana));
@@ -3600,7 +3609,7 @@ var bIsHeroFacingUp=false;
 			}
 		}			
 		
-
+/*
 		//------------
 		//note: not played during onLoad(), unless in ITCH.IO...
 		myAudio = document.getElementById("myAudioId");
@@ -3614,6 +3623,7 @@ var bIsHeroFacingUp=false;
 
 		//alert("DITO");	
 		//-----------		
+*/		
 
 		myAudioPart2 = document.getElementById("myAudioPart2Id");		
 		myAudioPart2.setAttribute("src", sAudioBGMPart2);
@@ -3663,7 +3673,8 @@ var bIsHeroFacingUp=false;
 		amuletStatusImageTile.style.objectPosition = "-" + iImageFrameWidthDefault*2 + "px -" + iImageFrameHeight*3 + "px";		
 		
 		//heroLifeBarStatusImageTile.style.visibility="visible";
-		heroLifeBarStatusImageTile.style.left=0+iImageFrameWidthDefault*.1+"px"; 
+		let iHeroLifeBarStatusImageTileOffsetX=2;
+		heroLifeBarStatusImageTile.style.left=(0+iImageFrameWidthDefault*.1-iHeroLifeBarStatusImageTileOffsetX)+"px"; 
 		heroLifeBarStatusImageTile.style.top=0+iImageFrameWidthDefault*.1+"px";
 				
 /*
@@ -11590,8 +11601,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 */
 
 	var heroLifeBarStatusImageTile = document.getElementById("heroLifeBarStatusImageTileId");
+
+	//let iHeroLifeBarStatusImageTileOffsetX=2;
+	heroLifeBarStatusImageTile.style.left=(0+iImageFrameWidthDefault*.1-iHeroLifeBarStatusImageTileOffsetX)+"px"; 
 	
-	heroLifeBarStatusImageTile.style.left=0+iImageFrameWidthDefault*.1+"px"; 
+	//heroLifeBarStatusImageTile.style.left=0+iImageFrameWidthDefault*.1+"px"; 
 	heroLifeBarStatusImageTile.style.top=0+iImageFrameWidthDefault*.1+"px";
 	
 	var textLifeBarDiv = document.getElementById("textLifeBarDivId");
@@ -13012,7 +13026,7 @@ iCurrTextCharacterCountMax=sText.length;
 
 		switch(iCurrMapLocation) {
 			case 51:
-			myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -13094,7 +13108,7 @@ iCurrTextCharacterCountMax=sText.length;
 			//break;
 		
 			case 53:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -13349,7 +13363,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;	
 				
 		case 54:
-			myAudio.play();
+			//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -13731,7 +13745,7 @@ iCurrTextCharacterCountMax=sText.length;
 
 			//boss; giant skeleton
 			case 55:
-			myAudio.play();
+			//myAudio.play();
 			
 			bIsBossBattle=true;
 /*			
@@ -13924,7 +13938,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;		
 
 			case 61:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -14004,7 +14018,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;		
 
 			case 62:
-				myAudio.play();
+				//myAudio.play();
 				
 				//alert("DITO!!");
 
@@ -14257,7 +14271,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;	
 
 			case 63:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -14538,7 +14552,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;
 			
 			case 64:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -14818,7 +14832,7 @@ iCurrTextCharacterCountMax=sText.length;
 
 			//boss; giant skel
 			case 65:
-			myAudio.play();
+			//myAudio.play();
 			
 			bIsBossBattle=true;
 /*			
@@ -14992,7 +15006,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;
 
 			case 71:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -15072,7 +15086,7 @@ iCurrTextCharacterCountMax=sText.length;
 		
 			//zombie stage
 			case 72:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -15468,7 +15482,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;			
 		
 			case 73:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -16016,7 +16030,7 @@ iCurrTextCharacterCountMax=sText.length;
 				break;					
 
 			case 74:
-				myAudio.play();
+				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -16100,7 +16114,7 @@ iCurrTextCharacterCountMax=sText.length;
 		case 75:
 			bIsBossBattle=true;
 
-			myAudio.play();
+			//myAudio.play();
 /*
 				break;
 
@@ -19404,7 +19418,7 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 
 			bHasPlayedSolvedTune=false;			
 			
-			myAudio.play();
+			//myAudio.play();
 			myAudioPart2.pause();
 			myAudioPart3.pause();
 
@@ -19990,6 +20004,10 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 							//iInputDelayCount++;
 							return;
 						}
+						
+						var myAudioIntroBGM = document.getElementById("myAudioIntroBGMId");
+						var myAudioHurryBGM = document.getElementById("myAudioHurryBGMId");
+
 			
 						  //alert(">");
 						  if (!bHasViewedHowToPlayGuide) {
@@ -19997,6 +20015,19 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 							playSolvedTune();
 							
 							iInputDelayCount=0;
+							
+							//--------------------
+							//var myAudioIntroBGM = document.getElementById("myAudioIntroBGMId");
+
+							myAudioIntroBGM.setAttribute("src", sAudioIntroBGM);
+
+							//fMyAudioEffectVolume=0.2;
+							fMyAudioIntroBGMVolume=0.6;
+							myAudioIntroBGM.volume=fMyAudioIntroBGMVolume;
+							myAudioIntroBGM.loop=true;
+							myAudioIntroBGM.play();		
+							//--------------------							
+							
 							return;
 						  }
 						  else {
@@ -20009,6 +20040,24 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 									iCurrMissionIntroPage++;
 
 									if ((iCurrMissionIntroPage==2) || (iCurrMissionIntroPage==4)){
+
+										myAudioIntroBGM.pause();	
+
+										//--------------------
+										//var myAudioIntroBGM = document.getElementById("myAudioIntroBGMId");
+
+										if (!myAudioHurryBGM.paused) {
+										}
+										else {
+											myAudioHurryBGM.setAttribute("src", sAudioHurryBGM);
+
+											//fMyAudioEffectVolume=0.2;
+											fMyAudioHurryBGMVolume=0.6;
+											myAudioHurryBGM.volume=fMyAudioHurryBGMVolume;
+											myAudioHurryBGM.loop=true;
+											myAudioHurryBGM.play();		
+										}
+
 										//--------------------
 										var myAudioEffectCannonFire = document.getElementById("myAudioEffectCannonFireId");
 
@@ -20774,6 +20823,15 @@ opting to put assets folder in "html_application" folder instead
 	//usbongGameOff2023BGM
 	//usbongGameOff2023AudioEffectsCannon
 -->
+
+  <audio id="myAudioIntroBGMId" class="myAudio" src="assets/audio/usbongGameOff2025Problem.mp3" type="audio/x-m4a" controls loop>
+	  Your browser does not support the audio tag.
+	</audio><br/>
+
+  <audio id="myAudioHurryBGMId" class="myAudio" src="assets/audio/usbongGameOff2025HurryDrum.mp3" type="audio/x-m4a" controls loop>
+	  Your browser does not support the audio tag.
+	</audio><br/>
+
 
   <audio id="myAudioId" class="myAudio" src="assets/audio/usbongGameOff2024CaveBGMV22.mp3" type="audio/x-m4a" controls loop>
 	  Your browser does not support the audio tag.
