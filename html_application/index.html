@@ -11,7 +11,7 @@
 ' @company: USBONG
 ' @author: SYSON, MICHAEL B.
 ' @date created: 20221214
-' @date updated: 20251129; from 20251128
+' @date updated: 20251130; from 20251129
 ' @website: www.usbong.ph
 '
 ' References: GitHub itch.io Game Off 2021, 2022, 2023, 2024
@@ -91,7 +91,7 @@
 
 			border: 0px;
 
-			z-index: 3;
+			z-index: 50;//3;
 		}
 		
 		canvas.myCanvasTint {
@@ -325,7 +325,7 @@
 			position: absolute;
 			visibility: hidden;
 			
-			z-index: 99;
+			z-index: 40; /*99*/
 		}
 
 	 .ImageZombieStageBg {
@@ -334,7 +334,7 @@
 			
 			opacity: 0.5;
 			
-			z-index: 99;
+			z-index: 30; /*99*/
 	  }
 
 	 .ImageBossBattleBgBeachPart2 {
@@ -406,7 +406,7 @@
 			
 			visibility: hidden;
 
-			z-index: 3;
+			z-index: 51;
 		}		
 
 		.ImageBombSmall {
@@ -2011,7 +2011,7 @@ var bIsHeroFacingUp=false;
 	const ZOMBIE_MONSTER_HP_MAX=2;//3;//2;
 
 	
-	var iCurrMapLocation=51;//73;//74;//51;//65;//72;//75;//54;//53;//12;//0;		
+	var iCurrMapLocation=62;//62;//51;//73;//74;//51;//65;//72;//75;//54;//53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -3656,7 +3656,7 @@ var bIsHeroFacingUp=false;
 			}
 		}			
 		
-/*
+
 		//------------
 		//note: not played during onLoad(), unless in ITCH.IO...
 		myAudio = document.getElementById("myAudioId");
@@ -3670,7 +3670,7 @@ var bIsHeroFacingUp=false;
 
 		//alert("DITO");	
 		//-----------		
-*/		
+		
 
 		myAudioPart2 = document.getElementById("myAudioPart2Id");		
 		myAudioPart2.setAttribute("src", sAudioBGMPart2);
@@ -11932,9 +11932,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 		//mainImageTileHeroBody.style.visibility="hidden";
 	  
 		if (!bHasViewedMissionIntro) {
-		
-			bgImageMoon.style.visibility="visible";
-			
+					
 			fCurrBgImageMoonOpacity+=0.0008;
 			
 			if (fCurrBgImageMoonOpacity>0.5) {
@@ -11986,12 +11984,16 @@ if (arrayWalkOnSnowEffectCount==1) {
 			switch (iCurrMissionIntroPage) {
 				case 0:
 					sText = "The generosity of the Empire hardly extends to the far reaches of the galaxy. <br/><br/>Distant from imperial affairs, the people of the Outer Waves have learned to survive without relying on the help of the Empire.";
+					
+					bgImageMoon.style.visibility="visible";
 					break;
 				case 1:
 					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death in the service of their malevolent Lord...";
 					break;
 				case 2:
 					sText = "What was that!";
+
+					bgImageMoon.style.visibility="hidden";
 					break;
 				case 3:
 					sText = "An explosion!";
@@ -12289,7 +12291,7 @@ iCurrTextCharacterCountMax=sText.length;
 		
 		//else if ((iCurrMapLocation==61) && (bIsShowingStage1End)) {
 		else if (iCurrMapLocation==61) {
-
+				
 			bossBattleBgImageBeach.style.visibility = "hidden";
 			bossBattleBgImagePart2.style.visibility = "hidden";
 			bossBattleBgImagePart3.style.visibility = "hidden";	
@@ -13094,7 +13096,8 @@ iCurrTextCharacterCountMax=sText.length;
 			case 51:
 				//myAudio.play();
 
-				bossBattleBgImageBeach.setAttribute("src", sOutpostStart);
+				//bossBattleBgImageBeach.setAttribute("src", sOutpostStart);
+				bossBattleBgImageBeach.setAttribute("src", sSnowStage2);
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -13179,7 +13182,7 @@ iCurrTextCharacterCountMax=sText.length;
 				//myAudio.play();
 				
 				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
-				bossBattleBgImageBeach.setAttribute("src", sSnowStage2);
+				//bossBattleBgImageBeach.setAttribute("src", sSnowStage2);
 
 
 				bossBattleBgImageBeach.style.visibility = "visible";
@@ -13836,13 +13839,12 @@ iCurrTextCharacterCountMax=sText.length;
 */
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "hidden";	
+				bossBattleBgImagePart3.style.visibility = "visible";	
 				
 				drawInjuredWolf();
 
 				if (!hasInitMapLocation) {
 					iCurrBossLife=iCurrBossLifeMax;
-					
 					bHasBeatenStage1Boss=false;
 				
 					//added by Mike, 20251123
@@ -14011,6 +14013,9 @@ iCurrTextCharacterCountMax=sText.length;
 
 			case 61:
 				//myAudio.play();
+				//alert ("HERE!!");
+
+				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -14118,8 +14123,12 @@ iCurrTextCharacterCountMax=sText.length;
 
 			case 62:
 				//myAudio.play();
-				
 				//alert("DITO!!");
+
+//alert("62!");
+
+				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -14372,9 +14381,12 @@ iCurrTextCharacterCountMax=sText.length;
 			case 63:
 				//myAudio.play();
 
+				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+
 				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "visible";	
+				bossBattleBgImagePart2.style.visibility = "visible";
+				bossBattleBgImagePart3.style.visibility = "hidden";	
+				//bossBattleBgImagePart3.style.filter = 'brightness(10%)';
 
 				if (!hasInitMapLocation) {
 					iInputDelayAtStageTransitionCount=0;
@@ -14653,9 +14665,11 @@ iCurrTextCharacterCountMax=sText.length;
 			case 64:
 				//myAudio.play();
 
+				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+
 				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "visible";	
+				bossBattleBgImagePart2.style.visibility = "visible";
+				bossBattleBgImagePart3.style.visibility = "hidden";	
 
 				if (!hasInitMapLocation) {
 					//added by Mike, 20251123
@@ -14949,11 +14963,12 @@ iCurrTextCharacterCountMax=sText.length;
 		//-----------			
 */
 				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
+				bossBattleBgImagePart2.style.visibility = "visible";//"hidden";
 				bossBattleBgImagePart3.style.visibility = "hidden";	
 
 				if (!hasInitMapLocation) {
 					iCurrBossLife=iCurrBossLifeMax;
+					bHasBeatenStage1Boss=false;				
 				
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
@@ -15108,8 +15123,8 @@ iCurrTextCharacterCountMax=sText.length;
 				//myAudio.play();
 
 				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "visible";	
+				bossBattleBgImagePart2.style.visibility = "visible";
+				bossBattleBgImagePart3.style.visibility = "hidden";	
 
 				if (!hasInitMapLocation) {
 					arrayActors=[];
@@ -15187,11 +15202,13 @@ iCurrTextCharacterCountMax=sText.length;
 			case 72:
 				//myAudio.play();
 				
-				bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "visible";
 				bossBattleBgImagePart3.style.visibility = "hidden";	
+
+				//bossBattleBgImagePart3.style.opactiy="0.5";
 
 				if (!hasInitMapLocation) {
 					//added by Mike, 20251123
@@ -15585,7 +15602,7 @@ iCurrTextCharacterCountMax=sText.length;
 			case 73:
 				//myAudio.play();
 
-				bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "visible";
@@ -16218,11 +16235,11 @@ iCurrTextCharacterCountMax=sText.length;
 		case 75:
 			bIsBossBattle=true;
 			
-			bossBattleBgImageBeach.setAttribute("src", sLastBossStage);
+			//bossBattleBgImageBeach.setAttribute("src", sLastBossStage);
 
-			bossBattleBgImageBeach.style.visibility = "visible";
+			bossBattleBgImageBeach.style.visibility = "hidden";
 			bossBattleBgImagePart2.style.visibility = "hidden";
-			bossBattleBgImagePart3.style.visibility = "visible";	
+			bossBattleBgImagePart3.style.visibility = "hidden";	
 
 			
 
@@ -19995,6 +20012,9 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			}
 			//note error; screen only quickly shown;
 			else if (iCurrMapLocation==63) {
+				var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");
+				bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+
 				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
 					return;
 				}
@@ -20120,6 +20140,8 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 						var myAudioIntroBGM = document.getElementById("myAudioIntroBGMId");
 						var myAudioHurryBGM = document.getElementById("myAudioHurryBGMId");
 
+
+
 			
 						  //alert(">");
 						  if (!bHasViewedHowToPlayGuide) {
@@ -20127,6 +20149,8 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 							playSolvedTune();
 							
 							iInputDelayCount=0;
+
+							myAudio.pause();	
 							
 							//--------------------
 							//var myAudioIntroBGM = document.getElementById("myAudioIntroBGMId");
