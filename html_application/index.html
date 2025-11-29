@@ -188,7 +188,15 @@
 			
 			transform: scale(0, 0);
 		}
-		
+
+		.ImageDeathCountTileFrame1 {
+			position: absolute;
+
+			clip: rect(0px,32px,32px,0px);
+			visibility: hidden;
+			
+			z-index: 99;
+		}		
 
 		.ImageTileFrame1 {
 			position: absolute;
@@ -319,6 +327,15 @@
 			
 			z-index: 99;
 		}
+
+	 .ImageZombieStageBg {
+			position: absolute;
+			visibility: hidden;
+			
+			opacity: 0.5;
+			
+			z-index: 99;
+	  }
 
 	 .ImageBossBattleBgBeachPart2 {
 			position: absolute;
@@ -1268,6 +1285,15 @@ const BOSS_DEATH_COUNT_VAL=10;
 const iMonsterDeathCountToLevel1Min=8;
 var iMonsterDeathCountToLevel2Min=32;//24;
 
+const sOutpostStart="assets/images/bgImageOutpostStart.jpg";
+
+const sPalaceStage="assets/images/bgImagePalaceStage.jpg";//bgImageLastBossStage.jpg";
+const sLastBossStage="assets/images/bgImageMoon.jpg";//bgImageLastBossStage.jpg";
+
+const sSnowStage1="assets/images/bgImageCaveStart.jpg";
+const sSnowStage2="assets/images/bgImageCaveStart2.jpg";
+
+const sZombieStage="assets/images/bgImageZombieStage.jpg";
 
 /*
 const sAudioEffectActionCannonFire ="assets/audio/usbongGameOff2023AudioEffectsCannon.mp3";
@@ -1985,7 +2011,7 @@ var bIsHeroFacingUp=false;
 	const ZOMBIE_MONSTER_HP_MAX=2;//3;//2;
 
 	
-	var iCurrMapLocation=51;//75;//54;//72;//65;//55;//75;//72;//51;//75;//51;//63; //53;//12;//0;		
+	var iCurrMapLocation=73;//74;//51;//65;//72;//75;//54;//53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -2026,6 +2052,9 @@ var bIsHeroFacingUp=false;
 		}
 */
 		
+		//added by Mike, 20251128
+		//bIsHeroFacingLeft=false;
+			
 		hasInitMapLocation=false;
 
 		verifyIfHeroLeveledUp();
@@ -2527,8 +2556,14 @@ var bIsHeroFacingUp=false;
 		myCanvasContext.fillStyle = "#000000";	
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax*2, iHeroLifeBarHeight);
 */
+		//added by Mike, 20251129
+		myCanvasContext.strokeStyle = 'black'; 
+		myCanvasContext.lineWidth = 1; 
+		myCanvasContext.strokeRect(0+iXPosUpdated, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight); 
+		
 		myCanvasContext.fillStyle = "#2d2622"; //"#736157"; //#ffffff; //"#ff0000";	
 		myCanvasContext.fillRect(0+iXPosUpdated, 0+iYPos, iHeroLifeBarWidth*iCurrHeroLifeMax, iHeroLifeBarHeight);
+				
 		
 		if (bIsFrameOnly) {
 			return;
@@ -2900,6 +2935,12 @@ var bIsHeroFacingUp=false;
 		myCanvasContext.fillStyle = "#000000";	
 		myCanvasContext.fillRect(0+iXPos, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax*2, iHeroManaBarHeight);
 */
+
+		//added by Mike, 20251129
+		myCanvasContext.strokeStyle = 'black'; 
+		myCanvasContext.lineWidth = 1; 
+		myCanvasContext.strokeRect(0+iXPosUpdated, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight); 
+
 		myCanvasContext.fillStyle = "#2d2622"; //"#736157"; //#ffffff; //"#ff0000";	
 		myCanvasContext.fillRect(0+iXPosUpdated, 0+iYPos, iHeroManaBarWidth*iCurrHeroManaMax, iHeroManaBarHeight);
 		
@@ -3369,7 +3410,13 @@ var bIsHeroFacingUp=false;
 		var howToPlayGuideImage = document.getElementById("howToPlayGuideImageId");
 		var howToPlayGuideImageFrame2 = document.getElementById("howToPlayGuideImageFrame2Id");
 		//var bossBattleBgImage = document.getElementById("bossBattleBgImageId");			
-		var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");			
+		var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");
+
+/*		
+		sZombieStage="assets/images/bgImageZombieStage.jpg";
+		bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+*/		
+		
 		var bossBattleBgImageBeachPart2 = document.getElementById("bossBattleBgImageBeachPart2Id");			
 
 		var bgImageMoon = document.getElementById("bgImageMoonId");			
@@ -3550,10 +3597,10 @@ var bIsHeroFacingUp=false;
 		myCanvasTwo.style.top = (iVerticalOffsetInnerScreen+0)+"px";
 		myCanvasTwo.style.left = iHorizontalOffset+"px";
 
-
+		//let iMyCanvasTintOffsetY=iImageFrameHeight;
+		//let iMyCanvasTintOffsetY=0;
 		myCanvasTint.style.top = (iVerticalOffsetInnerScreen+0)+"px";
 		myCanvasTint.style.left = iHorizontalOffset+"px";
-
 
 		mainImageTilePosX=iStageMaxWidth/2-iImageFrameWidth/2;
 		mainImageTilePosY=iStageMaxHeight/2-iImageFrameHeight;
@@ -9614,9 +9661,17 @@ if (arrayWalkOnSnowEffectCount==1) {
 								
 					let iBossPosXOffset=iImageFrameWidthLargeBoss/3;
 								
-					if (mainImageTileSniperShotPosY<skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4) {
-						if ((mainImageTileSniperShotPosX>skelMonsterImageTilePosX+iBossPosXOffset) && (mainImageTileSniperShotPosX<skelMonsterImageTilePosX+iBossPosXOffset+iImageFrameWidthLargeBoss/5)) {
+					//if (mainImageTileSniperShotPosY<skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/4) {
+					if (mainImageTileSniperShotPosY<skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/3) {
+
+						//if ((mainImageTileSniperShotPosX>skelMonsterImageTilePosX+iBossPosXOffset) && (mainImageTileSniperShotPosX<skelMonsterImageTilePosX+iBossPosXOffset+iImageFrameWidthLargeBoss/5)) {
+					
+						if ((mainImageTileSniperShotPosX>skelMonsterImageTilePosX+iBossPosXOffset) && (mainImageTileSniperShotPosX<skelMonsterImageTilePosX+iBossPosXOffset+iImageFrameWidthLargeBoss/3)) {
+						
 							reduceBossLifeBar(iSniperShotAttackDamage*3); //*4
+						}
+						else {
+							reduceBossLifeBar(iSniperShotAttackDamage);
 						}
 					}
 					else {
@@ -11637,14 +11692,22 @@ if (arrayWalkOnSnowEffectCount==1) {
 	myCanvasContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight);
 	myCanvasTwoContext.clearRect(0, 0, iStageMaxWidth, iStageMaxHeight);
 
-
+/*
 	var myCanvasTint = document.getElementById("myCanvasTwoId");
     var myCanvasTintContext = myCanvasTint.getContext("2d");
 
+	let iMyCanvasTintOffsetY=iImageFrameHeight;
+	//let iMyCanvasTintOffsetY=0;
+		
     myCanvasTintContext.fillStyle = "#000000"; //black background//stage
-	myCanvasTintContext.fillRect(0, 0, iStageMaxWidth, iStageMaxHeight);
+	myCanvasTintContext.fillRect(0, 0+iMyCanvasTintOffsetY, iStageMaxWidth, iStageMaxHeight);
 	
 	myCanvasTint.style.opacity="0.5";
+*/
+	var myCanvasTint = document.getElementById("myCanvasTintId");
+	//myCanvasTint.style.visibility="visible";
+	//myCanvasTint.style.opacity="0.5";
+
 
     //edited by Mike, 20231126
     /*myCanvasTwoContext.fillStyle = "#000000"; //"#ffffff"; //white background//stage
@@ -11717,10 +11780,10 @@ if (arrayWalkOnSnowEffectCount==1) {
 
     myCanvasTwo.style.top = myCanvas.style.top;
     myCanvasTwo.style.left = myCanvas.style.left;
-
+/*
     myCanvasTint.style.top = myCanvas.style.top;
     myCanvasTint.style.left = myCanvas.style.left;
-
+*/
 
 
 		if (!bHasViewedTitle) {
@@ -12274,7 +12337,7 @@ iCurrTextCharacterCountMax=sText.length;
 			sText="Thanks for your help! Take this!<br/><br/><font color='#5693c6'>You got Sniper Shot of the Wolf!</font><br/><br/>Keyboard Press + Attack";
 
 			//added by Mike, 20251128
-			bIsHeroFacingLeft=false;
+			//bIsHeroFacingLeft=false;
 
 			
 /*		
@@ -13024,13 +13087,18 @@ iCurrTextCharacterCountMax=sText.length;
 		}		
 */
 
+		//debug
+		//bHasHeroGottenSniperShot=true;
+
 		switch(iCurrMapLocation) {
 			case 51:
 				//myAudio.play();
 
+				bossBattleBgImageBeach.setAttribute("src", sOutpostStart);
+
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "hidden";	
+				bossBattleBgImagePart3.style.visibility = "visible";	
 
 				if (!hasInitMapLocation) {
 					arrayActors=[];
@@ -13109,6 +13177,10 @@ iCurrTextCharacterCountMax=sText.length;
 		
 			case 53:
 				//myAudio.play();
+				
+				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+				bossBattleBgImageBeach.setAttribute("src", sSnowStage2);
+
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -13954,6 +14026,13 @@ iCurrTextCharacterCountMax=sText.length;
 					arrayActors[iArrayActorsCount].style.zIndex=iZIndexDefault+iArrayActorsCount;
 					iArrayActorsCount++;
 
+					isBatMonsterTileActive=true;
+					batMonsterImageTile.style.visibility="visible";
+					
+					//TilePosX; width; square based on iStageMaxHeight
+					batMonsterImageTilePosX=iInnerHorizontalOffset+iStageMaxWidth+iImageFrameWidthDefault;
+					batMonsterImageTilePosY=iInnerVerticalOffset+iStageMaxHeight+iImageFrameHeightDefault;
+					
 					//------------------------------------------------
 
 					iCurrSnowEffectCount=0;
@@ -13972,6 +14051,26 @@ iCurrTextCharacterCountMax=sText.length;
 					}
 	
 					hasInitMapLocation=true;					
+				}
+				
+				if (isBatMonsterTileActive) {
+					batMonsterImageTile.style.visibility="visible";
+										
+					batMonsterImageTile.style.top = 0+batMonsterImageTilePosY+"px"; //iInnerVerticalOffset
+					batMonsterImageTile.style.left = 0+batMonsterImageTilePosX+"px"; //iInnerHorizontalOffset
+			
+					if (currBatMonsterTileState!=ATTACKING_STATE) {
+						executeBatMonsterWalkingAnimation();
+					}
+					else {
+						executeBatMonsterAttackingAnimation();
+					}
+			
+					//executeBatMonsterWalkingAnimation();
+					verifyHeroCollideWithBatMonsters();					
+					verifyHeroFireballCollideWithBatMonsters();
+					
+					verifyHeroSniperShotCollideWithBatMonsters(arrayWraithMonsterCountId[iCount]);					
 				}
 				
 				updateArrayActorsZIndex();
@@ -15010,7 +15109,7 @@ iCurrTextCharacterCountMax=sText.length;
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "hidden";	
+				bossBattleBgImagePart3.style.visibility = "visible";	
 
 				if (!hasInitMapLocation) {
 					arrayActors=[];
@@ -15087,10 +15186,12 @@ iCurrTextCharacterCountMax=sText.length;
 			//zombie stage
 			case 72:
 				//myAudio.play();
+				
+				bossBattleBgImageBeach.setAttribute("src", sZombieStage);
 
 				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "visible";	
+				bossBattleBgImagePart2.style.visibility = "visible";
+				bossBattleBgImagePart3.style.visibility = "hidden";	
 
 				if (!hasInitMapLocation) {
 					//added by Mike, 20251123
@@ -15191,9 +15292,9 @@ iCurrTextCharacterCountMax=sText.length;
 					
 					arrayWraithMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
 					
-					arrayWraithMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth;
+					arrayWraithMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*2;
 					
-					arrayWraithMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+					arrayWraithMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight*0.7+iImageFrameHeightDefault/2;
 
 					arrayWraithMonsterCountId[0][MONSTER_STEPX]=2;
 					arrayWraithMonsterCountId[0][MONSTER_STEPY]=2;
@@ -15484,10 +15585,12 @@ iCurrTextCharacterCountMax=sText.length;
 			case 73:
 				//myAudio.play();
 
-				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "visible";	
+				bossBattleBgImageBeach.setAttribute("src", sZombieStage);
 
+				bossBattleBgImageBeach.style.visibility = "visible";
+				bossBattleBgImagePart2.style.visibility = "visible";
+				bossBattleBgImagePart3.style.visibility = "hidden";	
+				
 				if (!hasInitMapLocation) {
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
@@ -15891,11 +15994,9 @@ iCurrTextCharacterCountMax=sText.length;
 							
 							verifyHeroCollideWithZombieMonsters(arrayZombieMonsterCountId[iCount]);
 
-/*
-							verifyHeroFireballCollideWithRunningWraithMonsters(arrayRunningWraithMonsterCountId[iCount]);
+							verifyHeroFireballCollideWithZombieMonsters(arrayZombieMonsterCountId[iCount]);
 
-							verifyHeroSniperShotCollideWithRunningWraithMonsters(arrayRunningWraithMonsterCountId[iCount]);
-*/
+							verifyHeroSniperShotCollideWithZombieMonsters(arrayZombieMonsterCountId[iCount]);
 					}
 				}
 
@@ -16032,9 +16133,12 @@ iCurrTextCharacterCountMax=sText.length;
 			case 74:
 				//myAudio.play();
 
-				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "hidden";	
+			bossBattleBgImageBeach.setAttribute("src", sPalaceStage);
+
+			bossBattleBgImageBeach.style.visibility = "visible";
+			bossBattleBgImagePart2.style.visibility = "hidden";
+			bossBattleBgImagePart3.style.visibility = "visible";	
+			
 
 				if (!hasInitMapLocation) {
 					iInputDelayAtStageTransitionCount=0;
@@ -16113,6 +16217,14 @@ iCurrTextCharacterCountMax=sText.length;
 		//last boss; demonic tutor
 		case 75:
 			bIsBossBattle=true;
+			
+			bossBattleBgImageBeach.setAttribute("src", sLastBossStage);
+
+			bossBattleBgImageBeach.style.visibility = "visible";
+			bossBattleBgImagePart2.style.visibility = "hidden";
+			bossBattleBgImagePart3.style.visibility = "visible";	
+
+			
 
 			//myAudio.play();
 /*
@@ -20544,7 +20656,7 @@ opting to put assets folder in "html_application" folder instead
 -->
 
 	<img id="faviconImageId" class="ImageTileFrame1" src="assets/images/favicon.png">
-	<img id="deathCountImageId" class="ImageTileFrame1" src="assets/images/favicon.png">
+	<img id="deathCountImageId" class="ImageDeathCountTileFrame1" src="assets/images/favicon.png">
 
 	<img id="wolfImageTileId" class="ImageAnimalFrame1" src="assets/images/animals.png">
 	<img id="summonEffectsSniperShotTargetId" class="ImageMousePointer" src="assets/images/summonEffects.png">
@@ -20763,26 +20875,21 @@ opting to put assets folder in "html_application" folder instead
 	<img id="titleImageId" class="ImageHowToPlayGuide" src="assets/images/gameOff2024TitleBG.png">
 
 	<img id="titleImageFrame2Id" class="ImageHowToPlayGuide" src="assets/images/gameOff2024TitleBGFrame2.png">
-<!--
-	<img id="bossBattleBgImageId" class="ImageBossBattleBg" src="assets/images/bgImageCave.png?lastmod=20241127">
--->
 
+	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageCaveStart.jpg?lastmod=20251102T1659">
 
-<!--
-	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageCaveStart.png?lastmod=20251102T1659">
--->
 	<img id="bgImageMoonId" class="ImageBossBattleBg" src="assets/images/bgImageMoon.jpg?lastmod=20251129T05337">
 
-
-	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageZombieStage.jpg?lastmod=20251128T1502">
-
+ <!--
+	<img id="bossBattleBgImageBeachId" class="ImageZombieStageBg" src="assets/images/bgImageZombieStage.jpg?lastmod=20251128T1502">
+-->
 
 	<img id="bossBattleBgImageBeachPart2Id" class="ImageBossBattleBgBeachPart2" src="assets/images/bgImageCaveStartPart2.png?lastmod=20241128">
 	
 	
 	<img id="bossBattleBgImagePart2Id" class="ImageBossBattleBgPart2" src="assets/images/bossBattleBgPart2.png">	
 
-	<img id="bossBattleBgImagePart3Id" class="ImageBossBattleBgPart3" src="assets/images/bossBattleBgPart3.png">	
+	<img id="bossBattleBgImagePart3Id" class="ImageBossBattleBgPart3" src="assets/images/bossBattleBgPart3.png?lastmod=20251129T1355">	
 
 	<img id="transparentLayerId" class="ImageTransparentLayer" src="assets/images/transparentLayer.png">	
 
