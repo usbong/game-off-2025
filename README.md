@@ -60,6 +60,10 @@ Basic story Intro;
 
 story; transition pauses; lesser action; 
 
+12) https://masarapmabuhay.itch.io/game-off-2025-prototype11
+
+player can finish the game from start to end; noted bg image has loading lags 
+
 <!--
 
 4) https://masarapmabuhay.itch.io/game-off-2024-prototype3
