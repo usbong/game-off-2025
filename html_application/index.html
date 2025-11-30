@@ -412,7 +412,7 @@
 			z-index: 3; /*2;*/
 		}		
 
-		.ImageProfileSmall {
+		.ImageProfileSmall, .ImageSniperStatusSmall {
 			position: absolute;
 
 			clip: rect(0px,32px,32px,0px);
@@ -430,8 +430,7 @@
 			visibility: hidden;
 
 			z-index: 3;
-		}		
-		
+		}				
 		
 		.ImageExplosionToCity {
 			position: absolute;
@@ -488,7 +487,7 @@
 
 			visibility: hidden;
 
-			z-index: 10; /*4;*/
+			z-index: 99; /*10;*/
 		}			
 
 		.ImageWalkOnSnowEffect {
@@ -1349,7 +1348,7 @@ const sAudioEffectActionSwordOut ="assets/audio/usbongGameOff2025SwordOut.mp3";
 const sAudioEffectGrassCut ="assets/audio/usbongGameOff2023TapLoudEdited.mp3";
 
 const sAudioIntroBGM="assets/audio/usbongGameOff2025Problem.mp3";
-const sAudioHurryBGM="assets/audio/usbongGameOff2025HurryDrum.mp3";
+const sAudioHurryBGM="assets/audio/usbongGameOff2025HurryDrum5.mp3";
 
 const sAudioBGM="assets/audio/usbongGameOff2024CaveBGMV22.mp3";
 
@@ -2046,7 +2045,7 @@ var bIsHeroFacingUp=false;
 	const ZOMBIE_MONSTER_HP_MAX=2;//3;//2;
 
 	
-	var iCurrMapLocation=51;//74;//62;//62;//51;//73;//74;//51;//65;//72;//75;//54;//53;//12;//0;		
+	var iCurrMapLocation=51; //51;//74;//62;//62;//51;//73;//74;//51;//65;//72;//75;//54;//53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -8916,6 +8915,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 						iCurrMonsterDeathCount+=BOSS_DEATH_COUNT_VAL;
 
 						bHasBeatenStage1Boss=true;
+						
 						//bIsBossBattle=false;
 						//wolfImageTile.style.visibility="hidden";
 /*						
@@ -9637,6 +9637,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 					reduceBossLifeBar(iFireballAttackDamage);
 					iSkelMonsterHP=iCurrBossLife;
 	
+	
 					if (iSkelMonsterHP<=0) {
 						skelMonsterImageTile.style.visibility="hidden";				
 						isSkelMonsterTileActive=false;
@@ -9646,6 +9647,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 						iCurrMonsterDeathCount+=BOSS_DEATH_COUNT_VAL;
 
 						setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
+
+						bHasBeatenStage1Boss=true;
 					}					
 				}
 			}
@@ -9824,6 +9827,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 						//setExplosionEffectPosition(skelMonsterImageTilePosX+iImageFrameWidthLargeBoss/2,skelMonsterImageTilePosY+iImageFrameHeightLargeBoss/2);
 						
 						setExplosionEffectPosition(mainImageTileSniperShotPosX-iImageFrameWidthDefault/2,mainImageTileSniperShotPosY-iImageFrameHeightDefault/2);
+						
+						//note; "bHasBeatenStageBoss"
+						//bHasBeatenStage1Boss=true;
 					}
 				}
 			}
@@ -12380,6 +12386,18 @@ iCurrTextCharacterCountMax=sText.length;
 
 			setAllActorsToHidden();				
 
+			//==========================================
+			var myAudioEffectSolved = document.getElementById("myAudioEffectSolvedId");
+
+			myAudioEffectSolved.setAttribute("src", sAudioEffectSolved);
+
+			//fMyAudioEffectVolume=0.2;
+			myAudioEffectSolvedVolume=1.0;
+			myAudioEffectSolved.volume=myAudioEffectSolvedVolume;
+			myAudioEffectSolved.loop=false;
+			myAudioEffectSolved.play();
+			//==========================================	
+
 			
 			sText = "LEVEL UP!!!";
 			textStatusDiv.innerHTML = sText; //sCurrText
@@ -12398,7 +12416,7 @@ iCurrTextCharacterCountMax=sText.length;
 			//textStatusDiv.style.top = 0+iInnerVerticalOffset+textStatusDiv.clientHeight+"px";
 			
 			textStatusDiv.style.top = 0+iStageMaxHeight*0.1;
-			
+	
   			////textStatusDiv.style.visibility="visible";
   			//textStatusDiv.style.visibility="hidden";
 			mainImageTileHeroBody.style.left=parseInt(textStatusDiv.style.left)+(iImageFrameWidthLarge*0.8)+"px";
@@ -12595,10 +12613,19 @@ iCurrTextCharacterCountMax=sText.length;
 
 //alert(">>>>>>DITO");
 
+
+			//var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");
+			bossBattleBgImageBeach.setAttribute("src", sZombieStage);
+
+
+			var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");	
+			heroAttackEffectImage.style.filter = 'brightness(500%)';
+
+
 			//sText="<span style='text-align: center;'>The Portal opens and transports you to Blue, the planet where the Emperor resides.</span>";
 			
 			sText="You've reached the Portal!<br/><br/>Get ready to be transported to the Imperial Palace!<br/><br/>";
-			
+						
 			textStatusDiv.innerHTML = sText;
 			
 
@@ -12690,12 +12717,12 @@ iCurrTextCharacterCountMax=sText.length;
 			//sText="You've defeated the Demon!<br/><br/>Yes, we will bring reinforcements to Outer Waves!";
 			
 			if (iCurrHeroDeathCount>0) {
-				sText="As you're about to strike the final blow, the Demon tells you:<br/><br/><font color='#d40000'>You got the Fireball of the Demonic Tutor!</font><br/><br/>Keyboard press 'F' + attack!\"<br/><br/>To be continued...";
+				sText="As you're about to strike the final blow, the Demon tells you:<br/><br/><font color='#d40000'>You got the Fireball of the Demonic Tutor!</font><br/><br/>Keyboard press 'F' + attack!<br/><br/>To be continued...";
 			}
 			else {
 				if (!isElapsedTimeUnderFourMins()) {
 					//sText="You've defeated the Demon!<br/><br/>The emperor reads your letter and promises to bring reinforcements to Outer Waves!<br/><br/>Thanks for playing!";
-					sText="As you're about to strike the final blow, the Demonic Tutor tells you:<br/><br/><font color='#d40000'>In under four minutes!</font><br/><br/>To be continued...";
+					sText="As you're about to strike the final blow, the Demonic Tutor tells you:<br/><br/><font color='#d40000'>\"In under four minutes!\"</font><br/><br/>To be continued...";
 				}
 				else {
 					sText="You've defeated the Demon!<br/><br/>The emperor reads your letter and promises to bring reinforcements to Outer Waves!<br/><br/>Thanks for playing!";
@@ -13311,6 +13338,7 @@ iCurrTextCharacterCountMax=sText.length;
 				bossBattleBgImagePart2.style.visibility = "hidden";
 				bossBattleBgImagePart3.style.visibility = "visible";	
 
+
 				if (!hasInitMapLocation) {
 					arrayActors=[];
 					iArrayActorsCount=0;
@@ -13397,7 +13425,7 @@ iCurrTextCharacterCountMax=sText.length;
 				bossBattleBgImagePart2.style.visibility = "hidden";
 				bossBattleBgImagePart3.style.visibility = "visible";	
 
-				if (!hasInitMapLocation) {
+				if (!hasInitMapLocation) {				
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
 					arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+0);
@@ -14054,6 +14082,11 @@ iCurrTextCharacterCountMax=sText.length;
 				if (!hasInitMapLocation) {
 					iCurrBossLife=iCurrBossLifeMax;
 					bHasBeatenStage1Boss=false;
+					
+					iSkelMonsterHP=iCurrBossLife;
+					iCurrBossLifeToBeDeducted=0;
+					iCurrBossLifeToBeDeductedAnimation=0;
+
 				
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
@@ -14586,12 +14619,14 @@ iCurrTextCharacterCountMax=sText.length;
 				}
 				break;	
 
+			//noted; not anymore reached; skipped boss #1
 			case 63:
 				//myAudio.play();
 
 				//bossBattleBgImageBeach.setAttribute("src", sZombieStage);
 
 				bossBattleBgImageBeach.style.visibility = "visible";
+								
 				bossBattleBgImagePart2.style.visibility = "visible";
 				bossBattleBgImagePart3.style.visibility = "hidden";	
 				//bossBattleBgImagePart3.style.filter = 'brightness(10%)';
@@ -15176,7 +15211,14 @@ iCurrTextCharacterCountMax=sText.length;
 
 				if (!hasInitMapLocation) {
 					iCurrBossLife=iCurrBossLifeMax;
+					iSkelMonsterHP=iCurrBossLife;
+
+					iCurrBossLifeToBeDeducted=0;
+					iCurrBossLifeToBeDeductedAnimation=0;
+
+					
 					bHasBeatenStage1Boss=false;				
+				
 				
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
@@ -16369,10 +16411,12 @@ iCurrTextCharacterCountMax=sText.length;
 				//bgImageMoon.style.clipPath = 'circle(50% at 50% 50%)'; // Makes the image circular
 				//bgImageMoon.style.clipPath = 'ellipse(50% 30% at 50% 50%)';
 
+				//bHasHeroGottenSniperShot=true;					
+
 				bgImageMoon.style.clipPath = 'polygon(0% 0%, 100% 0%, 100% 85%, 0% 85%)'; 
 
 				bgImageWallOne.style.visibility = "visible";
-				bgImageWallOne.style.opacity = "0.3";
+				bgImageWallOne.style.opacity = "0.3";//"1.0";
 				//bgImageWallOne.style.filter = "brightness(0%)"; 
 				
 /*
@@ -16494,8 +16538,17 @@ iCurrTextCharacterCountMax=sText.length;
 
 				if (!hasInitMapLocation) {
 					iCurrBossLife=iCurrBossLifeMax;
+					iDemonMonsterHP=iCurrBossLife;
+					
+					iCurrBossLifeToBeDeducted=0;
+					iCurrBossLifeToBeDeductedAnimation=0;
+
 					fCurrDivStoryOpacity=0;
-				
+
+					var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");	
+					heroAttackEffectImage.style.filter = 'brightness(20%)';
+
+					
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
 					arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+0);
@@ -19700,6 +19753,11 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 		var keyStatusImageTile = document.getElementById("keyStatusImageTileId");
 		var amuletStatusImageTile = document.getElementById("amuletStatusImageTileId"); 
 		
+		var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");
+
+		var heroAttackEffectImage = document.getElementById("heroAttackEffectImageId");	
+
+		
 		myFavicon.style.visibility="hidden";	
 		textStatusDiv.style.visibility="hidden";
 		textNewGameDiv.style.visibility="hidden";		
@@ -19728,6 +19786,17 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 
 			iCurrMapLocation=51;//75;//51;//53;		
 			iStartTimeInMilliseconds=Date.now();	
+
+			bossBattleBgImageBeach.setAttribute("src", sSnowStage2);
+
+			bHasBeatenStage1Boss=false;		
+			//executeSkelMonsterWalkingAnimation
+			//iSkelMonsterHP
+			
+
+			heroAttackEffectImage.style.filter = 'brightness(100%)';
+			
+
 
 			bHasObtainedPearlAtRoom42=false;
 			bHasObtainedPearlAtRoom41=false;
@@ -20235,11 +20304,11 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 					return;
 				}
 			}
-			//note error; screen only quickly shown;
 			else if (iCurrMapLocation==63) {
+/*
 				var bossBattleBgImageBeach = document.getElementById("bossBattleBgImageBeachId");
 				bossBattleBgImageBeach.setAttribute("src", sZombieStage);
-
+*/
 				if (iInputDelayAtStageTransitionCount<iInputDelayAtStageTransitionCountMax) {
 					return;
 				}
@@ -21022,7 +21091,7 @@ opting to put assets folder in "html_application" folder instead
 	<img id="bombMonsterImageId0" class="ImageBombSmall" src="assets/images/items.png?lastmod=20251123T1422">
 	<img id="bombMonsterImageId1" class="ImageBombSmall" src="assets/images/items.png?lastmod=20251123T1422">
 
-	<img id="sniperShotStatusImageTileId" class="ImageBombSmall" src="assets/images/itemsTwo.png?lastmod=20251125T0547">
+	<img id="sniperShotStatusImageTileId" class="ImageSniperStatusSmall" src="assets/images/itemsTwo.png?lastmod=20251125T0547">
 
 
 	<img id="pearlImageTileId" class="ImagePearlSmall" src="assets/images/items.png?lastmod=20241130T1432">
@@ -21202,7 +21271,7 @@ opting to put assets folder in "html_application" folder instead
 	  Your browser does not support the audio tag.
 	</audio><br/>
 
-  <audio id="myAudioHurryBGMId" class="myAudio" src="assets/audio/usbongGameOff2025HurryDrum.mp3" type="audio/x-m4a" controls loop>
+  <audio id="myAudioHurryBGMId" class="myAudio" src="assets/audio/usbongGameOff2025HurryDrum5.mp3" type="audio/x-m4a" controls loop>
 	  Your browser does not support the audio tag.
 	</audio><br/>
 
