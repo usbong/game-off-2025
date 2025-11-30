@@ -254,6 +254,16 @@
 						
 			z-index: 3;
 		}
+
+		.ImageWallFrame1 {
+			position: absolute;
+/*
+			clip: rect(0px,64px,64px,0px);
+*/			
+			visibility: hidden;
+						
+			z-index: 3;
+		}
 		
 		.ImageAnimalFrame1 {
 			position: absolute;
@@ -261,6 +271,18 @@
 			clip: rect(0px,64px,64px,0px);
 			
 			visibility: hidden;
+						
+			z-index: 3;
+		}
+
+		.ImageEmperorFrame1 {
+			position: absolute;
+
+			clip: rect(0px,64px,64px,0px);
+			
+			visibility: hidden;
+			
+			opacity: 0;
 						
 			z-index: 3;
 		}
@@ -327,15 +349,6 @@
 			
 			z-index: 40; /*99*/
 		}
-
-	 .ImageZombieStageBg {
-			position: absolute;
-			visibility: hidden;
-			
-			opacity: 0.5;
-			
-			z-index: 30; /*99*/
-	  }
 
 	 .ImageBossBattleBgBeachPart2 {
 			position: absolute;
@@ -484,6 +497,8 @@
 			clip: rect(0px,32px,32px,0px);
 
 			visibility: hidden;
+			
+			opacity: 0.5;
 
 			z-index: 3;
 		}
@@ -528,8 +543,8 @@
 			line-height: 32px;
 
 			visibility: hidden;
-
-			width: 640px; /*360*/
+			
+			width: 640px;
 			height: auto;
 
 			object-fit: contain;
@@ -537,6 +552,23 @@
 			z-index: 1;
 		}
 
+		.ImageLastBossStageBg {
+			position: absolute;
+
+			text-align: center;
+			line-height: 32px;
+
+			visibility: hidden;
+			
+			opacity: 0;
+
+			width: 640px;
+			height: auto;
+
+			object-fit: contain;
+			
+			z-index: 1;
+		}		
 		
 		.ButtonSet, .TextInputSet {
 			position: relative; /*absolute;*/
@@ -1152,6 +1184,9 @@ var iCurrMissionIntroPageMax=5;//5;
 
 var fCurrBgImageMoonOpacity=0;
 
+var fCurrDivStoryOpacity=1;
+
+
 var bIsShowingStage1End=false;
 var bIsShowingStage2End=false;
 
@@ -1285,12 +1320,12 @@ const BOSS_DEATH_COUNT_VAL=10;
 const iMonsterDeathCountToLevel1Min=8;
 var iMonsterDeathCountToLevel2Min=32;//24;
 
-const sOutpostStart="assets/images/bgImageOutpostStart.jpg";
+//const sOutpostStart="assets/images/bgImageOutpostStart.jpg";
 
-const sPalaceStage="assets/images/bgImagePalaceStage.jpg";//bgImageLastBossStage.jpg";
+//const sPalaceStage="assets/images/bgImagePalaceStage.jpg";//bgImageLastBossStage.jpg";
 const sLastBossStage="assets/images/bgImageMoon.jpg";//bgImageLastBossStage.jpg";
 
-const sSnowStage1="assets/images/bgImageCaveStart.jpg";
+//const sSnowStage1="assets/images/bgImageCaveStart.jpg";
 const sSnowStage2="assets/images/bgImageCaveStart2.jpg";
 
 const sZombieStage="assets/images/bgImageZombieStage.jpg";
@@ -1759,10 +1794,10 @@ var iTitlePressStartEffectDelayCountMax=5;
 
 var iHowToPlayGuideImageFrame2DelayCount=0;
 var iHowToPlayGuideImageFrame2DelayCountMax=8;
-
+/*
 var iTitleImageFrame2DelayCount=0;
 const iTitleImageFrame2DelayCountMax=40;
-
+*/
 
 //added by Mike, 20231119; from 20221121
 var iDelayAnimationCountEnter=0;
@@ -2011,7 +2046,7 @@ var bIsHeroFacingUp=false;
 	const ZOMBIE_MONSTER_HP_MAX=2;//3;//2;
 
 	
-	var iCurrMapLocation=62;//62;//51;//73;//74;//51;//65;//72;//75;//54;//53;//12;//0;		
+	var iCurrMapLocation=51;//74;//62;//62;//51;//73;//74;//51;//65;//72;//75;//54;//53;//12;//0;		
 	var hasInitMapLocation=false;	
 		
 	var iStageMaxWidth=640;
@@ -3405,7 +3440,7 @@ var bIsHeroFacingUp=false;
 
 		var mouseInputImage = document.getElementById("mouseInputImageId");
 		var titleImage = document.getElementById("titleImageId");
-		var titleImageFrame2 = document.getElementById("titleImageFrame2Id");
+		//var titleImageFrame2 = document.getElementById("titleImageFrame2Id");
 
 		var howToPlayGuideImage = document.getElementById("howToPlayGuideImageId");
 		var howToPlayGuideImageFrame2 = document.getElementById("howToPlayGuideImageFrame2Id");
@@ -3420,8 +3455,11 @@ var bIsHeroFacingUp=false;
 		var bossBattleBgImageBeachPart2 = document.getElementById("bossBattleBgImageBeachPart2Id");			
 
 		var bgImageMoon = document.getElementById("bgImageMoonId");			
-
-		
+		var bgImageWallOne = document.getElementById("bgImageWallId0");	
+/*		
+		var bgImageWallPartTwo = document.getElementById("bgImageWallId1");			
+		var bgImageWallPartThree = document.getElementById("bgImageWallId2");			
+*/		
 		var bossBattleBgImagePart2 = document.getElementById("bossBattleBgImagePart2Id");		
 		var bossBattleBgImagePart3 = document.getElementById("bossBattleBgImagePart3Id");		
 
@@ -3486,6 +3524,7 @@ var bIsHeroFacingUp=false;
 		var deathCountImageTile = document.getElementById("deathCountImageId");
 
 		var wolfImageTile = document.getElementById("wolfImageTileId");
+		var emperorImageTile = document.getElementById("emperorImageTileId");
 
 
 		var textTimeDiv = document.getElementById("textTimeDivId");
@@ -3507,7 +3546,7 @@ var bIsHeroFacingUp=false;
 		//--------------------
 		mouseInputImage.style.visibility="hidden";
 		titleImage.style.visibility="visible";
-		titleImageFrame2.style.visibility="hidden";
+		//titleImageFrame2.style.visibility="hidden";
 		
 		howToPlayGuideImage.style.visibility="hidden";
 		howToPlayGuideImageFrame2.style.visibility="hidden";		
@@ -3516,7 +3555,11 @@ var bIsHeroFacingUp=false;
 		bossBattleBgImageBeachPart2.style.visibility="hidden";
 
 		bgImageMoon.style.visibility="hidden";
-
+		bgImageWallOne.style.visibility="hidden";
+/*
+		bgImageWallPartTwo.style.visibility="hidden";
+		bgImageWallPartThree.style.visibility="hidden";
+*/
 
 		bossBattleBgImagePart2.style.visibility="hidden";
 		bossBattleBgImagePart3.style.visibility="hidden";
@@ -3575,6 +3618,7 @@ var bIsHeroFacingUp=false;
 		deathCountImageTile.style.visibility="hidden";
 
 		wolfImageTile.style.visibility="hidden";
+		emperorImageTile.style.visibility="hidden";
 
 		textTimeDiv.style.visibility="hidden";
 		textPearlStatusDiv.style.visibility="hidden";
@@ -4674,7 +4718,7 @@ alert("iInputY: "+iInputY);
 	function setWalkOnSnowEffectPosition(iInputX, iInputY, arrayWalkOnSnowEffectCount) {	
 			arrayWalkOnSnowEffect[MONSTER_OBJECT]=document.getElementById("walkOnSnowEffectImageId"+arrayWalkOnSnowEffectCount);
 
-			if (iCurrMapLocation>61) { //after the portal
+			if (iCurrMapLocation>62) { //after the portal
 				arrayWalkOnSnowEffect[MONSTER_OBJECT].style.visibility="hidden";
 				return;
 			}
@@ -4837,6 +4881,22 @@ alert("iInputY: "+iInputY);
 		wolfImageTile.style.top=0+iStageMaxHeight*0.75;		
 	}	
 
+	function drawSavedEmperor() {
+		var emperorImageTile = document.getElementById("emperorImageTileId");
+
+		var iFrameY=iImageFrameHeightLarge;
+		var iFrameXOffset=0;//iImageFrameWidthLarge;
+
+		emperorImageTile.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*1 + "px -" + iFrameY + "px";
+/*		
+		emperorImageTile.style.left=0+iStageMaxWidth/2-iImageFrameWidthLarge/2;
+		emperorImageTile.style.top=0+iStageMaxHeight*0.75;		
+*/
+		emperorImageTile.style.left=0+iStageMaxWidth/2+iImageFrameWidthLarge;
+		emperorImageTile.style.top=0+iStageMaxHeight*0.75;		
+
+	}	
+
 	//added by Mike, 20241103
 	function drawInjuredWolf() {
 		var wolfImageTile = document.getElementById("wolfImageTileId");
@@ -4863,6 +4923,26 @@ alert("iInputY: "+iInputY);
 		
 		wolfImageTile.style.left=0+iStageMaxWidth/2-iImageFrameWidthLarge/2;
 		wolfImageTile.style.top=0+iStageMaxHeight*0.1;		
+	}	
+	
+	function drawInjuredEmperor() {
+		var emperorImageTile = document.getElementById("emperorImageTileId");
+/*
+		if (bIsMissionDone) {
+			emperorImageTile.style.visibility="hidden";
+		}
+		else {
+		}
+*/
+		emperorImageTile.style.visibility="visible";
+	
+		var iFrameY=iImageFrameHeightLarge;
+		var iFrameXOffset=0;
+
+		emperorImageTile.style.objectPosition = "-" + iFrameXOffset-iImageFrameWidthLarge*0 + "px -" + iFrameY + "px";
+		
+		emperorImageTile.style.left=0+iStageMaxWidth/2-iImageFrameWidthLarge/2;
+		emperorImageTile.style.top=0+iStageMaxHeight*0.1;		
 	}	
 	
 	//added by Mike, 20241103
@@ -7134,14 +7214,20 @@ alert("iInputY: "+iInputY);
 		else {
 			explosionEffectImage.style.visibility="hidden";
 
+			var textStoryDiv = document.getElementById("textStoryDivId");
+			textStoryDiv.style.visibility="hidden";
+
+
 			//special case; boss stage;
 			if (iCurrMapLocation==55) { //boss 1
 				if (bHasBeatenStage1Boss) {
+					//fCurrDivStoryOpacity=0;
 					executeStageTransition(61);
 				}
 			}
-			else if (iCurrMapLocation==75) { //boss 1
+			else if (iCurrMapLocation==75) { //last boss
 				if (bHasBeatenLastBoss) {
+					//fCurrDivStoryOpacity=0;
 					executeStageTransition(81);
 				}
 			}
@@ -7491,6 +7577,14 @@ alert("iInputY: "+iInputY);
 		
 		//var mainImageTileTankBody = document.getElementById("mainImageTileImageTankBodyId");
 		var mainImageTileHeroBody = document.getElementById("mainImageTileImageHeroBodyId");
+
+		//added by Mike, 20251130
+		if ((!bIsGameOver) && (bHasPressedStart) && (!bIsMissionDone)) {
+		}
+		else {
+			return;
+		}
+
 
 /*
 		if (mainImageTileFireballProjectileHold.style.visibility=="hidden") {
@@ -8007,7 +8101,7 @@ alert("iInputY: "+iInputY);
 		}
 
 
-		if (iCurrMapLocation>61) { //after the portal
+		if (iCurrMapLocation>62) { //after the portal
 			snowEffectImage.style.visibility="hidden";
 			return;
 		}
@@ -8172,7 +8266,7 @@ alert("iInputY: "+iInputY);
 		arrayWalkOnSnowEffectCount=0;
 
 		//after the portal
-		if (iCurrMapLocation>61) {
+		if (iCurrMapLocation>62) { //after the portal
 			return;
 		}
 
@@ -8264,6 +8358,40 @@ if (arrayWalkOnSnowEffectCount==1) {
 		}
 */		
 	}
+
+	function isElapsedTimeUnderFourMins() {	
+		//return true;
+	
+		//dElapsedTimeInSeconds=(Date.now()-iStartTimeInMilliseconds)/1000;
+
+		dCurrTimeSeconds=(dElapsedTimeInSeconds)%60;
+		dCurrTimeMinutes=((dElapsedTimeInSeconds)/60)%60;
+		dCurrTimeHours=(dElapsedTimeInSeconds)/60/60;
+
+		//max reached
+		if (dCurrTimeHours>=60) {
+			dCurrTimeMinutes=99;
+			dCurrTimeSeconds=99;
+			dCurrTimeHours=99;
+		}		
+		
+		//alert(dElapsedTimeInSeconds);
+		
+		if (Math.floor(dCurrTimeHours)>0) {
+			return false;
+		}
+
+//alert(dCurrTimeMinutes);
+
+		//if (dCurrTimeMinutes<60) {
+		if (dCurrTimeMinutes<4) {//1) {
+
+			return true;
+		}		
+		
+		return false;
+	}
+
 
 	function isElapsedTimeUnderThreeMins() {	
 		return true;
@@ -11556,6 +11684,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 		var deathCountImageTile = document.getElementById("deathCountImageId");
 
 		var wolfImageTile = document.getElementById("wolfImageTileId");
+		var emperorImageTile = document.getElementById("emperorImageTileId");
 		
 		var textNewGameDiv = document.getElementById("textNewGameDivId");
 		var textContinueGameDiv = document.getElementById("textContinueGameDivId");
@@ -11583,7 +11712,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 		var bossBattleBgImageBeachPart2 = document.getElementById("bossBattleBgImageBeachPart2Id");
 
 		var bgImageMoon = document.getElementById("bgImageMoonId");
-
+		var bgImageWallOne = document.getElementById("bgImageWallId0");
+/*		
+		var bgImageWallPartTwo = document.getElementById("bgImageWallId1");
+		var bgImageWallPartThree = document.getElementById("bgImageWallId2");
+*/
 
 		var bossBattleBgImagePart2 = document.getElementById("bossBattleBgImagePart2Id");		
 		var bossBattleBgImagePart3 = document.getElementById("bossBattleBgImagePart3Id");		
@@ -11630,7 +11763,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 		//added by Mike, 20231121
 		var titleImage = document.getElementById("titleImageId");
 		//titleImage.style.visibility="hidden";
-		var titleImageFrame2 = document.getElementById("titleImageFrame2Id");
+		//var titleImageFrame2 = document.getElementById("titleImageFrame2Id");
 		//titleImage.style.visibility="hidden";
 
 		//added by Mike, 20231122
@@ -11746,6 +11879,15 @@ if (arrayWalkOnSnowEffectCount==1) {
 	bgImageMoon.style.left=0+iHorizontalOffset+"px";
 	bgImageMoon.style.top=0+iVerticalOffsetInnerScreen+"px";	
 
+	bgImageWallOne.style.left=0+iHorizontalOffset+"px";
+	bgImageWallOne.style.top=0+iVerticalOffsetInnerScreen+"px";	
+/*
+	bgImageWallPartTwo.style.left=0+iHorizontalOffset+parseInt(bgImageWallOne.style.left)"px";
+	bgImageWallPartTwo.style.top=0+iVerticalOffsetInnerScreen+"px";	
+
+	bgImageWallPartThree.style.left=0+iHorizontalOffset+parseInt(bgImageWallPartTwo.style.left)"px";
+	bgImageWallPartThree.style.top=0+iVerticalOffsetInnerScreen+"px";	
+*/
 
 	bossBattleBgImageBeachPart2.style.left=0+iHorizontalOffset+"px";
 	bossBattleBgImageBeachPart2.style.top=0+iVerticalOffsetInnerScreen+"px";	
@@ -11788,6 +11930,9 @@ if (arrayWalkOnSnowEffectCount==1) {
 
 		if (!bHasViewedTitle) {
 			titleImage.style.visibility="visible";
+			
+			bgImageMoon.style.visibility = "hidden";
+
 
 /*			
 			if (iTitleImageFrame2DelayCount<iTitleImageFrame2DelayCountMax) {
@@ -11804,6 +11949,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 				}
 			}
 */			
+/*
 			//Game Off 2021; TUGON
 			if (iTitleImageFrame2DelayCount<20) {//5) {
 				titleImageFrame2.style.visibility = "visible";
@@ -11815,7 +11961,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 				titleImageFrame2.style.visibility = "hidden";
 			}			
 			iTitleImageFrame2DelayCount++;			
-
+*/
 
 			executeEnterClickAnimation();
 			////executeMouseClickAnimation();	
@@ -11827,7 +11973,7 @@ if (arrayWalkOnSnowEffectCount==1) {
 			iInputDelayCount++;
 			
 			titleImage.style.visibility="hidden";
-			titleImageFrame2.style.visibility="hidden";
+			//titleImageFrame2.style.visibility="hidden";
 
 			bHasViewedTitle=true;
 
@@ -11873,7 +12019,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 				//bossBattleBgImage.style.visibility = "visible"; //default
 
 				bgImageMoon.style.visibility = "hidden";
-
+				bgImageWallOne.style.visibility = "hidden";
+/*				
+				bgImageWallPartTwo.style.visibility = "hidden";
+				bgImageWallPartThree.style.visibility = "hidden";
+*/
 
 				bossBattleBgImageBeach.style.visibility = "hidden";
 				bossBattleBgImageBeachPart2.style.visibility = "hidden";
@@ -11932,13 +12082,11 @@ if (arrayWalkOnSnowEffectCount==1) {
 		//mainImageTileHeroBody.style.visibility="hidden";
 	  
 		if (!bHasViewedMissionIntro) {
-					
 			fCurrBgImageMoonOpacity+=0.0008;
-			
 			if (fCurrBgImageMoonOpacity>0.5) {
 				fCurrBgImageMoonOpacity=0.5;
 			}
-			
+
 			bgImageMoon.style.opacity=fCurrBgImageMoonOpacity;//"0.5";
 		
 		
@@ -11981,6 +12129,12 @@ if (arrayWalkOnSnowEffectCount==1) {
 					break;
 			}
 */					
+
+			fCurrDivStoryOpacity+=0.01;//0.0008;
+			if (fCurrDivStoryOpacity>1.0) {
+				fCurrDivStoryOpacity=1.0;
+			}
+
 			switch (iCurrMissionIntroPage) {
 				case 0:
 					sText = "The generosity of the Empire hardly extends to the far reaches of the galaxy. <br/><br/>Distant from imperial affairs, the people of the Outer Waves have learned to survive without relying on the help of the Empire.";
@@ -11989,6 +12143,8 @@ if (arrayWalkOnSnowEffectCount==1) {
 					break;
 				case 1:
 					sText = "Meanwhile, the creatures of the Undead continue to advance, bringing death in the service of their malevolent Lord...";
+
+					bgImageMoon.style.visibility="visible";
 					break;
 				case 2:
 					sText = "What was that!";
@@ -12136,6 +12292,8 @@ iCurrTextCharacterCountMax=sText.length;
 				textStatusBackgroundDiv.style.visibility="hidden";
 				textStatusDiv.style.visibility="hidden";
 				textStoryDiv.style.visibility="visible";
+				
+				textStoryDiv.style.opacity=fCurrDivStoryOpacity;
 			}
 
 			
@@ -12341,6 +12499,7 @@ iCurrTextCharacterCountMax=sText.length;
 			//added by Mike, 20251128
 			//bIsHeroFacingLeft=false;
 
+
 			
 /*		
 			textStatusDiv.innerHTML = sText;
@@ -12381,6 +12540,15 @@ iCurrTextCharacterCountMax=sText.length;
 				textLevelUpSpeedDiv.style.visibility="visible";
 */				
 				textStoryDiv.style.visibility="visible";
+				
+				
+				fCurrDivStoryOpacity+=0.01;//0.0008;
+				if (fCurrDivStoryOpacity>1.0) {
+					fCurrDivStoryOpacity=1.0;
+				}
+
+				textStoryDiv.style.opacity=fCurrDivStoryOpacity;
+				
 			}
 			iInputDelayAtStageTransitionCount++;
 
@@ -12483,6 +12651,8 @@ iCurrTextCharacterCountMax=sText.length;
 			bossBattleBgImageBeach.style.visibility = "hidden";
 			bossBattleBgImagePart2.style.visibility = "hidden";
 			bossBattleBgImagePart3.style.visibility = "hidden";	
+
+
 			
 			//profile
 			//heroLifeBarStatusImageTile.style.visibility = "hidden";
@@ -12519,10 +12689,28 @@ iCurrTextCharacterCountMax=sText.length;
 
 			//sText="You've defeated the Demon!<br/><br/>Yes, we will bring reinforcements to Outer Waves!";
 			
-			sText="You've defeated the Demon!<br/><br/>The emperor reads your letter and promises to bring reinforcements to Outer Waves!<br/><br/>Congratulations!";
-
+			if (iCurrHeroDeathCount>0) {
+				sText="As you're about to strike the final blow, the Demon tells you:<br/><br/><font color='#d40000'>You got the Fireball of the Demonic Tutor!</font><br/><br/>Keyboard press 'F' + attack!\"<br/><br/>To be continued...";
+			}
+			else {
+				if (!isElapsedTimeUnderFourMins()) {
+					//sText="You've defeated the Demon!<br/><br/>The emperor reads your letter and promises to bring reinforcements to Outer Waves!<br/><br/>Thanks for playing!";
+					sText="As you're about to strike the final blow, the Demonic Tutor tells you:<br/><br/><font color='#d40000'>In under four minutes!</font><br/><br/>To be continued...";
+				}
+				else {
+					sText="You've defeated the Demon!<br/><br/>The emperor reads your letter and promises to bring reinforcements to Outer Waves!<br/><br/>Thanks for playing!";
+				}
+				
+/*				
+				emperorImageTile.style.visibility="visible";
+				drawSavedEmperor();
+*/
+			}
 
 			textStoryDiv.innerHTML = sText;
+			
+			//textStoryDiv.style.opacity=fCurrDivStoryOpacity;
+			//textStoryDiv.style.opacity="1.0";
 
   			//alert(sText.length);
   			var iTextStoryDivWidth = (textStoryDiv.clientWidth);
@@ -12539,7 +12727,26 @@ iCurrTextCharacterCountMax=sText.length;
 			executeTimeDisplay();
 			
 			if (iInputDelayAtStageTransitionCount>=iInputDelayAtStageTransitionCountMax/2) {
+				
+				fCurrDivStoryOpacity+=0.01;//0.0008;
+				if (fCurrDivStoryOpacity>1.0) {
+					fCurrDivStoryOpacity=1.0;
+				}
+
+				textStoryDiv.style.opacity=fCurrDivStoryOpacity;
 				textStoryDiv.style.visibility="visible";
+				
+				if (iCurrHeroDeathCount>0) {
+				}
+				else {
+					if (!isElapsedTimeUnderFourMins()) {
+					}
+					else {
+						emperorImageTile.style.opacity=fCurrDivStoryOpacity;
+						drawSavedEmperor();
+					}
+				}
+				
 			}
 			iInputDelayAtStageTransitionCount++;
 
@@ -13095,9 +13302,10 @@ iCurrTextCharacterCountMax=sText.length;
 		switch(iCurrMapLocation) {
 			case 51:
 				//myAudio.play();
-
+	
 				//bossBattleBgImageBeach.setAttribute("src", sOutpostStart);
-				bossBattleBgImageBeach.setAttribute("src", sSnowStage2);
+				//load this at the start
+				//bossBattleBgImageBeach.setAttribute("src", sSnowStage2);
 
 				bossBattleBgImageBeach.style.visibility = "visible";
 				bossBattleBgImagePart2.style.visibility = "hidden";
@@ -15707,9 +15915,9 @@ iCurrTextCharacterCountMax=sText.length;
 					
 					arrayWraithMonsterCountId[0][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
 					
-					arrayWraithMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth;
+					arrayWraithMonsterCountId[1][MONSTER_POSX]=iInnerHorizontalOffset+iStageMaxWidth/2;
 					
-					arrayWraithMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight/4+iImageFrameHeightDefault/2;
+					arrayWraithMonsterCountId[1][MONSTER_POSY]=iInnerVerticalOffset+iStageMaxHeight-iImageFrameWidthLarge;
 
 					arrayWraithMonsterCountId[0][MONSTER_STEPX]=2;
 					arrayWraithMonsterCountId[0][MONSTER_STEPY]=2;
@@ -16149,12 +16357,37 @@ iCurrTextCharacterCountMax=sText.length;
 
 			case 74:
 				//myAudio.play();
+				
+				var myAudioHurryBGM = document.getElementById("myAudioHurryBGMId");
+				myAudioHurryBGM.pause();
 
-			bossBattleBgImageBeach.setAttribute("src", sPalaceStage);
+				bgImageMoon.style.visibility = "visible";
+				bgImageMoon.style.opacity = "0.3";
 
-			bossBattleBgImageBeach.style.visibility = "visible";
-			bossBattleBgImagePart2.style.visibility = "hidden";
-			bossBattleBgImagePart3.style.visibility = "visible";	
+				//iStageMaxHeight
+				//bgImageMoon.style.objectPosition = "-" + 0 + "px -" + iImageFrameHeight*3 + "px";
+				//bgImageMoon.style.clipPath = 'circle(50% at 50% 50%)'; // Makes the image circular
+				//bgImageMoon.style.clipPath = 'ellipse(50% 30% at 50% 50%)';
+
+				bgImageMoon.style.clipPath = 'polygon(0% 0%, 100% 0%, 100% 85%, 0% 85%)'; 
+
+				bgImageWallOne.style.visibility = "visible";
+				bgImageWallOne.style.opacity = "0.3";
+				//bgImageWallOne.style.filter = "brightness(0%)"; 
+				
+/*
+				bgImageWallPartTwo.style.visibility = "visible";
+				bgImageWallPartTwo.style.opacity = "0.3";
+
+				bgImageWallPartThree.style.visibility = "visible";
+				bgImageWallPartThree.style.opacity = "0.3";
+*/
+
+			//bossBattleBgImageBeach.setAttribute("src", sPalaceStage);
+
+			bossBattleBgImageBeach.style.visibility = "hidden";
+			bossBattleBgImagePart2.style.visibility = "hidden";//"visible";
+			bossBattleBgImagePart3.style.visibility = "hidden";	
 			
 
 				if (!hasInitMapLocation) {
@@ -16237,41 +16470,31 @@ iCurrTextCharacterCountMax=sText.length;
 			
 			//bossBattleBgImageBeach.setAttribute("src", sLastBossStage);
 
+			bgImageMoon.style.visibility = "visible";
+			bgImageMoon.style.opacity = "1";
+			bgImageMoon.style.clipPath = 'ellipse(50% 30% at 50% 50%)';
+
+/*
+			bgImageWallOne.style.visibility = "visible";
+			//bgImageWallOne.style.opacity = "0.3";
+			bgImageWallOne.style.filter = "brightness(0%)"; 
+*/
+			bgImageWallOne.style.visibility = "hidden";
+			
 			bossBattleBgImageBeach.style.visibility = "hidden";
 			bossBattleBgImagePart2.style.visibility = "hidden";
 			bossBattleBgImagePart3.style.visibility = "hidden";	
 
-			
+			//bossBattleBgImagePart2.style.filter = "brightness(50%)"; 
+			//bossBattleBgImagePart2.style.filter = 'hue-rotate(90deg)'; 
+			//bossBattleBgImagePart2.style.filter = 'hue-rotate(300deg)'; 
 
-			//myAudio.play();
-/*
-				break;
-
-		case 76:
-*/	
-	
-/*			
-		//debug
-		//------------
-		//note: not played during onLoad(), unless in ITCH.IO...
-		myAudio = document.getElementById("myAudioId");
-		
-        myAudio.setAttribute("src", sAudioBGM);
-
-        var fMyAudioVolume=1.0;//0.4;
-        myAudio.volume=fMyAudioVolume;
-        myAudio.loop=true;		
-        myAudio.play();
-		//-----------			
-*/
-				bossBattleBgImageBeach.style.visibility = "visible";
-				bossBattleBgImagePart2.style.visibility = "hidden";
-				bossBattleBgImagePart3.style.visibility = "hidden";	
-
+			drawInjuredEmperor();
 
 
 				if (!hasInitMapLocation) {
 					iCurrBossLife=iCurrBossLifeMax;
+					fCurrDivStoryOpacity=0;
 				
 					//added by Mike, 20251123
 					dustEffectImage.style.visibility="hidden";				
@@ -16282,6 +16505,8 @@ iCurrTextCharacterCountMax=sText.length;
 					demonMonsterImageTile.style.visibility="visible";
 
 					demonMonsterImageTilePosX=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*3;
+					//demonMonsterImageTilePosX=iInnerHorizontalOffset+iStageMaxWidth-iImageFrameWidthLarge*1;
+
 					demonMonsterImageTilePosY=iInnerVerticalOffset+iImageFrameHeightLarge;
 					
 					iDemonMonsterHP=iDemonMonsterHP;
@@ -19762,8 +19987,8 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 			
 			if (e.keyCode==70) { //key f
 				bIsActionKeyFireballPressed=true;
-				
-				if ((!bIsGameOver) && (bHasPressedStart)) {
+								
+				if ((!bIsGameOver) && (bHasPressedStart) && (!bIsMissionDone)) {
 					executeHeroFireballProjectileHoldAnimation();
 				}
 			}
@@ -20174,8 +20399,13 @@ setHeroAttackEffectPosition(mainImageTileProjectileStepDestinationX-iImageFrameW
 									iCurrTextCharacterCountEffectDelayCount=0;
 									iCurrTextCharacterCount=0;
 									iCurrMissionIntroPage++;
-
-									if ((iCurrMissionIntroPage==2) || (iCurrMissionIntroPage==4)){
+									
+									//alert(iCurrMissionIntroPage);
+									
+									if (iCurrMissionIntroPage==1) {
+										fCurrDivStoryOpacity=0;
+									}
+									else if ((iCurrMissionIntroPage==2) || (iCurrMissionIntroPage==4)){
 
 										myAudioIntroBGM.pause();	
 
@@ -20682,7 +20912,8 @@ opting to put assets folder in "html_application" folder instead
 	<img id="faviconImageId" class="ImageTileFrame1" src="assets/images/favicon.png">
 	<img id="deathCountImageId" class="ImageDeathCountTileFrame1" src="assets/images/favicon.png">
 
-	<img id="wolfImageTileId" class="ImageAnimalFrame1" src="assets/images/animals.png">
+	<img id="emperorImageTileId" class="ImageEmperorFrame1" src="assets/images/quest.png">
+	<img id="wolfImageTileId" class="ImageAnimalFrame1" src="assets/images/quest.png">
 	<img id="summonEffectsSniperShotTargetId" class="ImageMousePointer" src="assets/images/summonEffects.png">
 	
 	<img id="fontImageId0" class="FontImage32x32Tile" src="assets/images/font512x512Rescaled.png?lastmod=20251103T1556">	
@@ -20891,18 +21122,30 @@ opting to put assets folder in "html_application" folder instead
 	<div id="divTransitionEffectId" class="myDivTransitionEffect"></div>
 
 		
-	<img id="howToPlayGuideImageId" class="ImageHowToPlayGuide" src="assets/images/gameOff2024HowToPlay.png">
+	<img id="howToPlayGuideImageId" class="ImageHowToPlayGuide" src="assets/images/gameOff2025HowToPlay.jpg">
 		
-	<img id="howToPlayGuideImageFrame2Id" class="ImageHowToPlayGuide" src="assets/images/gameOff2024HowToPlayFrame2.png">
+	<img id="howToPlayGuideImageFrame2Id" class="ImageHowToPlayGuide" src="assets/images/gameOff2025HowToPlayFrame2.jpg">
 	
 	<!-- ImageTitle-->
-	<img id="titleImageId" class="ImageHowToPlayGuide" src="assets/images/gameOff2025TitleBG.png">
-
-	<img id="titleImageFrame2Id" class="ImageHowToPlayGuide" src="assets/images/gameOff2025TitleBG.png">
-
+	<img id="titleImageId" class="ImageHowToPlayGuide" src="assets/images/gameOff2025TitleBG.jpg">
+<!--
+	<img id="titleImageFrame2Id" class="ImageHowToPlayGuide" src="assets/images/gameOff2025TitleBG.jpg">
+-->
+<!--
 	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageCaveStart.jpg?lastmod=20251102T1659">
+-->
+	<img id="bossBattleBgImageBeachId" class="ImageBossBattleBg" src="assets/images/bgImageCaveStart2.jpg?lastmod=20251130T1710">
 
-	<img id="bgImageMoonId" class="ImageBossBattleBg" src="assets/images/bgImageMoon.jpg?lastmod=20251129T05337">
+
+<!-- ImageBossBattleBg -->
+
+	<img id="bgImageMoonId" class="ImageLastBossStageBg" src="assets/images/bgImageMoon.jpg?lastmod=20251130T1730">
+
+	<img id="bgImageWallId0" class="ImageWallFrame1" src="assets/images/wall.png?lastmod=20251130T0919">
+<!--
+	<img id="bgImageWallId1" class="ImageWallFrame1" src="assets/images/wall.png?lastmod=20251130T0919">
+	<img id="bgImageWallId2" class="ImageWallFrame1" src="assets/images/wall.png?lastmod=20251130T0919">
+-->
 
  <!--
 	<img id="bossBattleBgImageBeachId" class="ImageZombieStageBg" src="assets/images/bgImageZombieStage.jpg?lastmod=20251128T1502">
