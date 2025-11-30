@@ -6,6 +6,8 @@
 ](https://masarapmabuhay.itch.io/blue-sapphire-galaxy)
 -->
 
+# [Game Off 2025: Blue Sapphire Galaxy: Outer Waves](https://masarapmabuhay.itch.io/outer-waves)
+
 This is a work of fiction created for Game Off 2025 with the theme WAVES.
 
 <!--
